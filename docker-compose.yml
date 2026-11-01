@@ -41,6 +41,36 @@ services:
       retries: 5
       start_period: 10s
 
+  worker:
+    image: doclink:dev
+    command: ["python", "-m", "app.worker"]
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - files:/data/files
+      - ./corpus:/data/corpus:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
+  mock1c:
+    image: doclink:dev
+    command: ["uvicorn", "mock1c.main:app", "--host", "0.0.0.0", "--port", "8001"]
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "8001:8001"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - 'import json, urllib.request; response = urllib.request.urlopen("http://localhost:8001/health", timeout=2); payload = json.load(response); assert response.status == 200 and payload.get("status") == "ok"'
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
 volumes:
   pgdata:
   files:

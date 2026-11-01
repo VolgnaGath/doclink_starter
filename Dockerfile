@@ -19,6 +19,7 @@ RUN uv sync --frozen --no-cache
 
 COPY alembic.ini ./
 COPY app ./app
+COPY mock1c ./mock1c
 COPY migrations ./migrations
 COPY tests ./tests
 
