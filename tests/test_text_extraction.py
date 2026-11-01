@@ -96,3 +96,25 @@ def test_real_ocr_smoke(tmp_path: Path, settings: Settings) -> None:
     result = extract_text(path, "application/pdf", settings)
     assert "Договор" in result.text and "Contract" in result.text
     assert (result.pages, result.ocr_pages) == (2, 1)
+
+
+def test_resource_limits_and_invalid_docx(tmp_path: Path, settings: Settings) -> None:
+    path = tmp_path / "mixed.pdf"
+    make_pdf(path, mixed=True)
+    settings.max_pdf_pages = 1
+    with pytest.raises(TextExtractionError, match="лимит страниц"):
+        extract_text(path, "application/pdf", settings)
+    settings.max_pdf_pages = 100
+    settings.max_render_pixels = 10
+    with pytest.raises(TextExtractionError, match="лимит растеризации"):
+        extract_text(path, "application/pdf", settings)
+    docx = tmp_path / "broken.docx"
+    docx.write_bytes(b"not a zip")
+    with pytest.raises(TextExtractionError):
+        extract_text(docx, document_mime(docx.name), settings)
+    doc = Document()
+    doc.add_paragraph("Text")
+    doc.save(docx)
+    settings.max_docx_uncompressed_bytes = 1
+    with pytest.raises(TextExtractionError, match="лимит распакованного"):
+        extract_text(docx, document_mime(docx.name), settings)

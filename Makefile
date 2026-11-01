@@ -8,6 +8,7 @@ VERIFY_COMPOSE = docker compose -p doclink-verify -f docker-compose.verify.yml
 
 .DEFAULT_GOAL := help
 .PHONY: help spec spec-check spec-lint lock up down logs ps build migrate revision seed import-corpus test test-fast lint format smoke-paid db-shell
+.PHONY: smoke-ocr verify-up verify-down verify-test verify-migrations verify-import
 
 help: ## Показать список целей
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -93,3 +94,13 @@ verify-down: ## Удалить только изолированные конт�
 
 verify-test: verify-up ## Интеграционные тесты на отдельной PostgreSQL, включая импорт и веб
 	$(MAKE) test COMPOSE='$(VERIFY_COMPOSE)'
+
+verify-migrations: verify-up ## Откат/повтор миграции 0002 и проверка metadata на изолированной БД
+	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0001
+	$(VERIFY_COMPOSE) exec -T db psql -U doclink -d doclink -v ON_ERROR_STOP=1 -c "SELECT extversion FROM pg_extension WHERE extname = 'vector'"
+	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
+	$(VERIFY_COMPOSE) run --rm api alembic check
+
+verify-import: verify-up ## Два CLI-импорта исходного корпуса на изолированной БД
+	$(MAKE) import-corpus COMPOSE='$(VERIFY_COMPOSE)'
+	$(MAKE) import-corpus COMPOSE='$(VERIFY_COMPOSE)'

@@ -61,7 +61,7 @@ def split_deals(deals: list[str], seed: int, tune_share: float) -> dict[str, str
 
 
 def csv_rows(content: bytes, required: set[str], path: str) -> list[dict[str, str]]:
-    reader = csv.DictReader(io.StringIO(content.decode("utf-8-sig")), delimiter=";")
+    reader = csv.DictReader(io.StringIO(content.decode("utf-8-sig")), delimiter=";", strict=True)
     headers = reader.fieldnames or []
     if not required <= set(headers) or len(set(headers)) != len(headers):
         raise CorpusError(f"Некорректные колонки: {path}")
@@ -220,7 +220,7 @@ def prepare_corpus(root: Path, seed: int, tune_share: float, settings: Settings)
                             "target_date": target_date,
                         }
                     )
-    except (OSError, UnicodeError, ValueError, InvalidOperation) as exc:
+    except (OSError, UnicodeError, ValueError, InvalidOperation, csv.Error) as exc:
         if isinstance(exc, CorpusError):
             raise
         raise CorpusError(f"Ошибка входных данных корпуса ({type(exc).__name__})") from exc

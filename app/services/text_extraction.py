@@ -35,33 +35,32 @@ class TextResult:
 def extract_pdf(path: Path, settings: Settings) -> TextResult:
     parts: list[str] = []
     ocr_pages = 0
-    with pdfplumber.open(path) as pdf:
-        if len(pdf.pages) > settings.max_pdf_pages:
+    with pdfium.PdfDocument(path) as raster, pdfplumber.open(path) as pdf:
+        if len(raster) > settings.max_pdf_pages:
             raise TextExtractionError("Превышен лимит страниц PDF")
         for index, page in enumerate(pdf.pages):
             text = page.extract_text() or ""
             if len(text.strip()) < 30:
-                with pdfium.PdfDocument(path) as raster:
-                    raster_page = raster[index]
+                raster_page = raster[index]
+                try:
+                    scale = settings.ocr_dpi / 72
+                    width, height = raster_page.get_size()
+                    pixels = math.ceil(width * scale) * math.ceil(height * scale)
+                    if pixels > settings.max_render_pixels:
+                        raise TextExtractionError("Превышен лимит растеризации PDF")
+                    bitmap = raster_page.render(scale=scale)
                     try:
-                        scale = settings.ocr_dpi / 72
-                        width, height = raster_page.get_size()
-                        pixels = math.ceil(width * scale) * math.ceil(height * scale)
-                        if pixels > settings.max_render_pixels:
-                            raise TextExtractionError("Превышен лимит растеризации PDF")
-                        bitmap = raster_page.render(scale=scale)
+                        image = bitmap.to_pil()
                         try:
-                            image = bitmap.to_pil()
-                            try:
-                                text = pytesseract.image_to_string(
-                                    image, lang="rus", timeout=settings.ocr_timeout_seconds
-                                )
-                            finally:
-                                image.close()
+                            text = pytesseract.image_to_string(
+                                image, lang="rus", timeout=settings.ocr_timeout_seconds
+                            )
                         finally:
-                            bitmap.close()
+                            image.close()
                     finally:
-                        raster_page.close()
+                        bitmap.close()
+                finally:
+                    raster_page.close()
                 ocr_pages += 1
             parts.append(text)
     return TextResult("\n\n".join(parts).strip(), len(parts), ocr_pages)
