@@ -9,6 +9,7 @@ from app import __version__
 from app.auth import router as auth_router
 from app.config import Settings
 from app.db import check_database
+from app.documents import router as documents_router
 from app.health import router as health_router
 from app.web import router as web_router
 
@@ -33,6 +34,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application.include_router(auth_router)
     application.include_router(health_router)
     application.include_router(web_router)
+    application.include_router(documents_router)
     return application
 
 

@@ -64,3 +64,16 @@ button {
 .error {
   color: #b42318;
 }
+/* Documents */
+.filters { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; }
+.stack { display: grid; gap: 1rem; max-width: 42rem; }
+.stack label { display: grid; gap: .4rem; }
+select, input { max-width: 100%; padding: .5rem; }
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+td, th { text-align: left; padding: .7rem; border-bottom: 1px solid #ddd; }
+dt { font-weight: bold; margin-top: .7rem; }
+dd { margin: .2rem 0; }
+.document-text { white-space: pre-wrap; overflow-wrap: anywhere; background: #f7f7f7; padding: 1rem; }
+.hash { overflow-wrap: anywhere; }
+.pagination { display: flex; gap: 2rem; margin: 1rem 0; }

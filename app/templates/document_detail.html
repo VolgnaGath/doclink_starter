@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ document.filename }} — DocLink{% endblock %}
+{% block content %}
+<p><a href="/documents">← Документы</a></p>
+<h1>{{ document.filename }}</h1>
+<dl>
+  <dt>ID</dt><dd>{{ document.id }}</dd>
+  <dt>Клиент</dt><dd>{{ client.name }} ({{ client.namespace }})</dd>
+  <dt>Статус</dt><dd>{{ statuses[document.status] }}</dd>
+  <dt>Зарегистрирован</dt><dd>{{ document.registered_at.strftime('%d.%m.%Y %H:%M') }}</dd>
+  <dt>Источник / часть</dt><dd>{{ document.source }} / {{ document.split or '—' }}</dd>
+  <dt>Обезличен</dt><dd>{{ 'Да' if document.is_anonymized else 'Нет' }}</dd>
+  <dt>SHA-256</dt><dd class="hash">{{ document.sha256 }}</dd>
+  <dt>Рабочие реквизиты</dt><dd>Вид: {{ document.doc_kind or 'не определён' }}; номер: {{ document.number or '—' }}; дата: {{ document.date.strftime('%d.%m.%Y') if document.date else '—' }}. Извлечение реквизитов — этап 3.</dd>
+</dl>
+<p><a href="/documents/{{ document.id }}/original">Скачать оригинал</a></p>
+{% if document.status == 'error' %}
+<form method="post" action="/documents/{{ document.id }}/retry-text"><button type="submit">Повторить получение текста</button></form>
+{% endif %}
+<h2>Текст</h2>
+{% if text %}
+<p>Страниц: {{ text.pages }}; символов: {{ text.chars }}; OCR-страниц: {{ text.ocr_pages }}.</p>
+<pre class="document-text">{{ text.text }}</pre>
+{% else %}<p>Текст не получен. Причина указана в журнале.</p>{% endif %}
+<h2>Журнал обработки</h2>
+<div class="table-scroll"><table><thead><tr><th>Начало</th><th>Этап</th><th>Время, мс</th><th>Результат</th><th>Ошибка</th></tr></thead>
+<tbody>{% for timing in timings %}<tr><td>{{ timing.started_at.strftime('%d.%m.%Y %H:%M:%S') }}</td><td>{{ timing.stage }}</td><td>{{ timing.duration_ms }}</td><td>{{ 'Успех' if timing.ok else 'Ошибка обработки' }}</td><td>{{ timing.error or '—' }}</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

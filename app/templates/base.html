@@ -10,6 +10,7 @@
     <header class="header">
       <a class="brand" href="/">DocLink</a>
       {% if user %}
+        <nav><a href="/documents">Документы</a> · <a href="/documents/upload">Загрузить</a></nav>
         <form method="post" action="/logout">
           <span>{{ user }}</span>
           <button type="submit">Выйти</button>
