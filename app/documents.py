@@ -11,7 +11,10 @@ from sqlalchemy.orm import Session
 
 from app.auth import require_user, templates
 from app.db import get_session
-from app.models import Client, Document, DocumentText, StageTiming
+from app.models import Client, Document, DocumentText, Extraction, Job, ModelConfig, StageTiming
+from app.services.extraction import select_card
+from app.services.jobs import enqueue
+from app.services.model_calls import ProcessingError
 from app.services.storage import StorageError, document_mime, save_blob
 from app.services.text_extraction import process_text
 
@@ -174,6 +177,8 @@ def upload_document(
     session.add(document)
     session.flush()
     process_text(session, document, settings)
+    if document.status == "text":
+        enqueue(session, document)
     session.commit()
     return RedirectResponse(f"/documents/{document.id}", status_code=303)
 
@@ -187,6 +192,15 @@ def document_detail(request: Request, session: DB, document_id: UUID) -> Respons
         document=document,
         client=session.get(Client, document.client_id),
         text=session.get(DocumentText, document_id),
+        extractions=session.scalars(
+            select(Extraction)
+            .where(Extraction.document_id == document_id)
+            .order_by(Extraction.created_at.desc())
+        ).all(),
+        models=session.scalars(select(ModelConfig).where(ModelConfig.active)).all(),
+        jobs=session.scalars(
+            select(Job).where(Job.document_id == document_id).order_by(Job.run_after.desc())
+        ).all(),
         timings=session.scalars(
             select(StageTiming)
             .where(StageTiming.document_id == document_id)
@@ -208,6 +222,31 @@ def retry_text(request: Request, session: DB, document_id: UUID) -> Response:
     document = find_document(session, document_id, lock=True)
     if document.status != "error":
         raise HTTPException(409, "Повтор доступен только для ошибочного документа")
-    process_text(session, document, request.app.state.settings)
+    enqueue(session, document, text_only=True)
+    session.commit()
+    return RedirectResponse(f"/documents/{document_id}", status_code=303)
+
+
+@router.post("/{document_id}/extract")
+def queue_extraction(session: DB, document_id: UUID, model_id: Annotated[UUID, Form()]) -> Response:
+    document = find_document(session, document_id)
+    model = session.get(ModelConfig, model_id)
+    if model is None or session.get(DocumentText, document_id) is None:
+        raise HTTPException(422, "Нет модели или текста")
+    try:
+        enqueue(session, document, [model], retry=True)
+    except ProcessingError as exc:
+        raise HTTPException(409, str(exc)) from exc
+    session.commit()
+    return RedirectResponse(f"/documents/{document_id}", status_code=303)
+
+
+@router.post("/{document_id}/card")
+def choose_card(session: DB, document_id: UUID, extraction_id: Annotated[UUID, Form()]) -> Response:
+    find_document(session, document_id)
+    result = session.get(Extraction, extraction_id)
+    if result is None or result.document_id != document_id or not result.valid:
+        raise HTTPException(422, "Извлечение недоступно")
+    select_card(session, result)
     session.commit()
     return RedirectResponse(f"/documents/{document_id}", status_code=303)

@@ -11,6 +11,7 @@ from app.config import Settings
 from app.db import check_database
 from app.documents import router as documents_router
 from app.health import router as health_router
+from app.model_web import router as models_router
 from app.web import router as web_router
 
 STATIC_DIR = Path(__file__).parent / "static"
@@ -35,6 +36,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application.include_router(health_router)
     application.include_router(web_router)
     application.include_router(documents_router)
+    application.include_router(models_router)
     return application
 
 

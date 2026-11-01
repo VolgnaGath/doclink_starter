@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Модели — DocLink{% endblock %}
+{% block content %}
+<h1>Модели и тарифы</h1>
+<p>Настройки и тарифы сохраняются снимком в заданиях и результатах. Единственный источник карточки по умолчанию выбирается явно; существующий выбор документа сохраняется. Секреты задаются в окружении.</p>
+{% for model in models %}<section><h2>{{ model.name }}</h2>
+<p>{{ model.provider }} · {{ 'открытые веса, облачное размещение' if model.placement == 'open-weights-cloud' else model.placement }}</p>
+<form method="post" action="/models/{{ model.id }}">
+<label>Идентификатор модели <input name="model_uri" value="{{ model.model_uri }}" required></label>
+<label>Параметры JSON <textarea name="params" required>{{ model.params | tojson }}</textarea></label>
+<label>₽ / 1000 входных токенов <input name="price_in" value="{{ model.price_in_1k if model.price_in_1k is not none else '' }}"></label>
+<label>₽ / 1000 выходных токенов <input name="price_out" value="{{ model.price_out_1k if model.price_out_1k is not none else '' }}"></label>
+<label><input type="checkbox" name="active" value="true" {{ 'checked' if model.active }}> Активна</label>
+<label><input type="checkbox" name="default_card" value="true" {{ 'checked' if model.default_card }}> Источник карточки по умолчанию</label>
+<button>Сохранить</button></form></section>{% endfor %}
+{% endblock %}

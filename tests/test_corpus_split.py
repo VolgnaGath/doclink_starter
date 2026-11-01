@@ -29,7 +29,7 @@ def test_full_corpus_gold_and_report(settings: Settings) -> None:
     )
     assert report["distribution"]["real"]["tune"]["deals"] == 2
     assert report["distribution"]["synth"]["tune"]["deals"] == 23
-    assert len(report["warnings"]) == 10
+    assert report["warnings"] == []
     documents = {doc.key: doc for doc in corpus.documents}
     for doc in corpus.documents:
         assert (

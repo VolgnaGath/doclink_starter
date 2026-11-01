@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Вызовы моделей — DocLink{% endblock %}
+{% block content %}<h1>Вызовы моделей</h1>
+<form method="get"><select name="model_id"><option value="">Все модели</option>{% for model in models %}<option value="{{ model.id }}" {{ 'selected' if selected_model == model.id|string }}>{{ model.name }}</option>{% endfor %}</select>
+<select name="status"><option value="">Все статусы</option>{% for status in ['started','success','invalid','error','uncertain'] %}<option {{ 'selected' if selected_status == status }}>{{ status }}</option>{% endfor %}</select><button>Фильтр</button></form>
+<p>Физических попыток: {{ totals[0] }}; известные расходы: {{ totals[1] if totals[1] is not none else '—' }} ₽; вход / выход: {{ totals[2] if totals[2] is not none else '—' }} / {{ totals[3] if totals[3] is not none else '—' }} токенов. Неизвестная стоимость: {{ totals[4] }} попыток.</p>
+<table><thead><tr><th>Начало</th><th>Модель</th><th>Статус</th><th>Стоимость, ₽</th><th>Обрезан</th></tr></thead><tbody>{% for call in calls %}<tr><td><a href="/calls/{{ call.id }}">{{ call.started_at.strftime('%d.%m.%Y %H:%M:%S') }}</a></td><td>{{ call.snapshot.name }}</td><td>{{ call.status }}</td><td>{{ call.cost_rub if call.cost_rub is not none else 'неизвестна' }}</td><td>{{ 'Да' if call.truncated else 'Нет' }}</td></tr>{% endfor %}</tbody></table>
+{% if page > 1 %}<a href="?page={{ page-1 }}&model_id={{ selected_model }}&status={{ selected_status }}">Назад</a>{% endif %}
+{% if calls|length == 50 %}<a href="?page={{ page+1 }}&model_id={{ selected_model }}&status={{ selected_status }}">Далее</a>{% endif %}
+{% endblock %}

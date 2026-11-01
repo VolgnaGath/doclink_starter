@@ -1,0 +1,198 @@
+{
+  "revision": "v2-chronology-2026-11-01",
+  "archive_sha256": "0a9dcd5d9b2e8469805b6b7d3be10066000dfc22429c374165d1fae2045f9feb",
+  "original": {
+    "fingerprint": "e06eb925bbd31c9d36f6f896af318b42ded26d5279994a2c3a756c32bfdc71ac",
+    "parameters": {
+      "algorithm": "corpus-v1/split-v1",
+      "seed": 2026,
+      "tune_share": 0.3
+    },
+    "total": 233,
+    "in_scope": 231,
+    "links": 156,
+    "link_sources": 138,
+    "distribution": {
+      "real": {
+        "tune": {
+          "deals": 2,
+          "documents": 6
+        },
+        "test": {
+          "deals": 5,
+          "documents": 12
+        }
+      },
+      "synth": {
+        "tune": {
+          "deals": 23,
+          "documents": 50
+        },
+        "test": {
+          "deals": 55,
+          "documents": 165
+        }
+      }
+    },
+    "warnings": [
+      {
+        "source": "synth/synth_010/doc_02",
+        "target": "synth/synth_010/doc_07",
+        "source_date": "2025-03-13",
+        "target_date": "2026-02-13"
+      },
+      {
+        "source": "synth/synth_010/doc_04",
+        "target": "synth/synth_010/doc_07",
+        "source_date": "2025-03-22",
+        "target_date": "2026-02-13"
+      },
+      {
+        "source": "synth/synth_012/doc_02",
+        "target": "synth/synth_012/doc_06",
+        "source_date": "2025-03-01",
+        "target_date": "2025-05-30"
+      },
+      {
+        "source": "synth/synth_012/doc_03",
+        "target": "synth/synth_012/doc_06",
+        "source_date": "2025-03-16",
+        "target_date": "2025-05-30"
+      },
+      {
+        "source": "synth/synth_013/doc_02",
+        "target": "synth/synth_013/doc_04",
+        "source_date": "2025-07-19",
+        "target_date": "2025-10-18"
+      },
+      {
+        "source": "synth/synth_013/doc_03",
+        "target": "synth/synth_013/doc_04",
+        "source_date": "2025-08-02",
+        "target_date": "2025-10-18"
+      },
+      {
+        "source": "synth/synth_019/doc_02",
+        "target": "synth/synth_019/doc_07",
+        "source_date": "2024-04-10",
+        "target_date": "2025-03-13"
+      },
+      {
+        "source": "synth/synth_019/doc_03",
+        "target": "synth/synth_019/doc_07",
+        "source_date": "2024-04-25",
+        "target_date": "2025-03-13"
+      },
+      {
+        "source": "synth/synth_025/doc_02",
+        "target": "synth/synth_025/doc_09",
+        "source_date": "2025-01-05",
+        "target_date": "2025-12-07"
+      },
+      {
+        "source": "synth/synth_025/doc_04",
+        "target": "synth/synth_025/doc_09",
+        "source_date": "2025-01-16",
+        "target_date": "2025-12-07"
+      }
+    ]
+  },
+  "current": {
+    "fingerprint": "538864335f3b943a733a7242d0b3f3a6d3afd3d3c126ba5bbbf1acc2b3f5d8ab",
+    "parameters": {
+      "algorithm": "corpus-v1/split-v1",
+      "seed": 2026,
+      "tune_share": 0.3
+    },
+    "total": 233,
+    "in_scope": 231,
+    "links": 156,
+    "link_sources": 138,
+    "distribution": {
+      "real": {
+        "tune": {
+          "deals": 2,
+          "documents": 6
+        },
+        "test": {
+          "deals": 5,
+          "documents": 12
+        }
+      },
+      "synth": {
+        "tune": {
+          "deals": 23,
+          "documents": 50
+        },
+        "test": {
+          "deals": 55,
+          "documents": 165
+        }
+      }
+    },
+    "warnings": []
+  },
+  "changed_files": [
+    {
+      "path": "synth/documents.csv",
+      "before_sha256": "303f1bff3505bc6279cdb4272ecb792ac95b497838c3570bb242fbf4b9fd284b",
+      "after_sha256": "dc7a57fa6eb6b0d14ef6483e91234ac3765452fd7c3969403bdde73572c70d90"
+    },
+    {
+      "path": "synth/synth_010/doc_07.txt",
+      "before_sha256": "f34ffec2c0165899c858bde5d75b921e292e09c11cb9c060a4056de5c5c492d0",
+      "after_sha256": "d91f179405db48db8907a0a2a3b9aa517f22e2cee8df49230135854145239342"
+    },
+    {
+      "path": "synth/synth_012/doc_03.txt",
+      "before_sha256": "09a9809c608ef8bb0b41912c8015df906703c164e1917371e65c4943df0ab7a2",
+      "after_sha256": "695782c322be74776f6d24c4d0b177c8daa78f3d0df04a97da4d8c9c52ff8891"
+    },
+    {
+      "path": "synth/synth_012/doc_06.txt",
+      "before_sha256": "de03745f2ddeb0d1e8bdbb61e56246bb1ddfb79cfb9439c018f0e80f4afd9093",
+      "after_sha256": "61c215246cddee2fffddb536a8a6ff3fb19fc127644c669e82532ba4133c9f9d"
+    },
+    {
+      "path": "synth/synth_013/doc_04.txt",
+      "before_sha256": "1f53384fa8c214061de670ade93a2da3c3c8a53d8d028964fe16424e3c0ffa5f",
+      "after_sha256": "a509c2af8ca1d376b0eaafde2ee1b9cb62698a45f2c0691041b0d410df0195ff"
+    },
+    {
+      "path": "synth/synth_019/doc_07.txt",
+      "before_sha256": "2a9268f4f3239947bb09faf605b8963c9ab16de219d19c5d2dadc04606071179",
+      "after_sha256": "1b6b74a50e1fc94bb9dd2f9b2c4d082b0f2a12cc8e774aa2c78178cb0545c627"
+    },
+    {
+      "path": "synth/synth_025/doc_09.txt",
+      "before_sha256": "1dbe1d39444f9e4257a72bd511576e5c385af098829f2594a1d2acc24d0b8fa9",
+      "after_sha256": "b3d84a95b0cbb1c98acc3303502978572f6cc95f855f918c7b14ed3ab584ad01"
+    }
+  ],
+  "split_unchanged": true,
+  "csv_field_changes": {
+    "synth_012/doc_03": {
+      "date": "05.04.2025"
+    },
+    "synth_010/doc_07": {
+      "number": "642-ОК/2025",
+      "date": "13.02.2025"
+    },
+    "synth_012/doc_06": {
+      "number": "3005/24",
+      "date": "30.05.2024"
+    },
+    "synth_013/doc_04": {
+      "number": "10/24",
+      "date": "18.10.2024"
+    },
+    "synth_019/doc_07": {
+      "number": "79/24",
+      "date": "13.03.2024"
+    },
+    "synth_025/doc_09": {
+      "number": "0712/24",
+      "date": "07.12.2024"
+    }
+  }
+}

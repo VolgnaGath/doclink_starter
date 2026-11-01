@@ -11,7 +11,8 @@
   <dt>Источник / часть</dt><dd>{{ document.source }} / {{ document.split or '—' }}</dd>
   <dt>Обезличен</dt><dd>{{ 'Да' if document.is_anonymized else 'Нет' }}</dd>
   <dt>SHA-256</dt><dd class="hash">{{ document.sha256 }}</dd>
-  <dt>Рабочие реквизиты</dt><dd>Вид: {{ document.doc_kind or 'не определён' }}; номер: {{ document.number or '—' }}; дата: {{ document.date.strftime('%d.%m.%Y') if document.date else '—' }}. Извлечение реквизитов — этап 3.</dd>
+  <dt>Рабочие реквизиты</dt><dd>Вид: {{ document.doc_kind or 'не определён' }}; номер: {{ document.number or '—' }}; дата: {{ document.date.strftime('%d.%m.%Y') if document.date else '—' }}.</dd>
+  <dt>Источник карточки</dt><dd>{{ document.card_extraction_id or 'Ещё не выбран' }}</dd>
 </dl>
 <p><a href="/documents/{{ document.id }}/original">Скачать оригинал</a></p>
 {% if document.status == 'error' %}
@@ -22,6 +23,25 @@
 <p>Страниц: {{ text.pages }}; символов: {{ text.chars }}; OCR-страниц: {{ text.ocr_pages }}.</p>
 <pre class="document-text">{{ text.text }}</pre>
 {% else %}<p>Текст не получен. Причина указана в журнале.</p>{% endif %}
+<h2>Извлечение по моделям</h2>
+{% if text %}<form method="post" action="/documents/{{ document.id }}/extract">
+<select name="model_id" required>{% for model in models %}<option value="{{ model.id }}">{{ model.name }}</option>{% endfor %}</select>
+<button>Поставить извлечение / повтор в очередь</button></form>{% endif %}
+{% for extraction in extractions %}
+<section><h3>{{ extraction.snapshot.name }} · {{ 'Текущий результат' if extraction.is_current else 'История' }}</h3>
+<p>{{ 'Валидный ответ' if extraction.valid else 'Ошибка обработки' }}; цитаты: {{ 'проверены' if extraction.evidence_ok else 'не подтверждены' }}; {{ 'переиспользован кэш' if extraction.cache_hit else 'новая обработка' }}.</p>
+{% if extraction.error %}<p>{{ extraction.error }}</p>{% endif %}
+<dl><dt>Вид / номер / дата</dt><dd>{{ extraction.doc_kind or '—' }} / {{ extraction.number or '—' }} / {{ extraction.date.strftime('%d.%m.%Y') if extraction.date else '—' }}</dd>
+<dt>Контрагент</dt><dd>{{ extraction.cp_name or '—' }}; ИНН {{ extraction.cp_inn or '—' }}</dd>
+<dt>Сумма</dt><dd>{{ '{:,.2f}'.format(extraction.amount).replace(',', ' ') if extraction.amount is not none else '—' }}</dd>
+<dt>Предмет</dt><dd>{{ extraction.subject or '—' }}</dd>
+<dt>Договоры-основания</dt><dd>{{ extraction.contract_refs }}</dd>
+<dt>Допсоглашение / счёт</dt><dd>{{ extraction.supp_ref or '—' }} / {{ extraction.invoice_ref or '—' }}</dd></dl>
+{% if extraction.llm_call_id %}<a href="/calls/{{ extraction.llm_call_id }}">Физический вызов</a>{% endif %}
+<ul>{% for check in extraction.evidence_checks %}<li>{{ check.field }}: <q>{{ check.original_quote or check.quote or 'цитата отсутствует' }}</q> — {{ check.method }}{% if check.ok %}, диапазон {{ check.start }}–{{ check.end }} отправленного текста{% endif %}</li>{% endfor %}</ul>
+{% if extraction.valid %}<form method="post" action="/documents/{{ document.id }}/card"><input type="hidden" name="extraction_id" value="{{ extraction.id }}"><button>Использовать для рабочей карточки</button></form>{% endif %}
+</section>{% endfor %}
+<h2>Фоновые задания</h2><ul>{% for job in jobs %}<li>{{ job.type }}: {{ job.status }}; попыток {{ job.attempts }}; {{ job.error or '' }}</li>{% endfor %}</ul>
 <h2>Журнал обработки</h2>
 <div class="table-scroll"><table><thead><tr><th>Начало</th><th>Этап</th><th>Время, мс</th><th>Результат</th><th>Ошибка</th></tr></thead>
 <tbody>{% for timing in timings %}<tr><td>{{ timing.started_at.strftime('%d.%m.%Y %H:%M:%S') }}</td><td>{{ timing.stage }}</td><td>{{ timing.duration_ms }}</td><td>{{ 'Успех' if timing.ok else 'Ошибка обработки' }}</td><td>{{ timing.error or '—' }}</td></tr>{% endfor %}</tbody></table></div>

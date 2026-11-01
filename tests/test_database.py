@@ -27,7 +27,13 @@ def test_migrated_schema_and_constraints(db_session: Session) -> None:
         c["column_names"] == ["corpus_version_id", "corpus_doc_id"]
         for c in schema.get_unique_constraints("documents")
     )
-    assert len(schema.get_foreign_keys("documents")) == 3
+    assert {tuple(fk["constrained_columns"]) for fk in schema.get_foreign_keys("documents")} == {
+        ("client_id",),
+        ("corpus_version_id",),
+        ("counterparty_id",),
+        ("card_model_config_id",),
+        ("card_extraction_id",),
+    }
     assert "run_id" not in {column["name"] for column in schema.get_columns("stage_timings")}
     client = Client(name="Проверка ограничений")
     db_session.add(client)

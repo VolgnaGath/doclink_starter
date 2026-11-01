@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}<h1>Вызов {{ call.id }}</h1>
+<p>{{ call.snapshot.name }} · {{ call.status }} · {{ call.latency_ms }} мс · {{ call.cost_rub if call.cost_rub is not none else 'неизвестная стоимость' }} ₽</p>
+<p>Токены: {{ call.input_tokens }} / {{ call.output_tokens }}; резерв: {{ call.reserved_rub }} ₽; обрезан: {{ call.truncated }}; сверено: {{ call.reconciled }}.</p>
+<p>{{ call.error or '' }}</p><h2>Снимок конфигурации</h2><pre>{{ call.snapshot | tojson(indent=2) }}</pre>
+<h2>Сырой ответ</h2><pre>{{ call.response_raw or 'Ответ не получен' }}</pre>{% endblock %}

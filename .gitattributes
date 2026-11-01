@@ -1,0 +1,6 @@
+# Corpus fingerprints include bytes; preserve the supplied formats on every checkout.
+/corpus/**/*.txt text eol=lf
+/corpus/real/documents.csv text eol=lf
+/corpus/real/links.csv text eol=lf
+/corpus/real/manifest.csv text eol=crlf
+/corpus/synth/*.csv text eol=crlf

@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 
 from app.config import Settings
 from app.documents import database
-from app.models import Client, Document, DocumentText, StageTiming
+from app.models import Client, Document, DocumentText, Job, StageTiming
 from app.services.text_extraction import TextResult
 
 
@@ -87,10 +87,11 @@ def test_error_retains_original_and_retry_same_id(
     )
     retry = client.post(location + "/retry-text", follow_redirects=False)
     assert retry.headers["location"] == location
-    assert "Текст восстановлен" in client.get(location).text
+    assert "Текст восстановлен" not in client.get(location).text
+    assert db_session.scalar(select(Job)).status == "queued"
     assert db_session.scalar(select(func.count()).select_from(Document)) == 1
     timings = db_session.scalars(select(StageTiming).order_by(StageTiming.id)).all()
-    assert [t.ok for t in timings] == [False, True]
+    assert [t.ok for t in timings] == [False]
 
 
 def test_reject_multiple_files_bad_client_format_and_blank_name(

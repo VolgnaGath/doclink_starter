@@ -2,6 +2,7 @@
 
 import uuid
 from datetime import date, datetime
+from decimal import Decimal
 from typing import Any
 
 from sqlalchemy import (
@@ -12,6 +13,7 @@ from sqlalchemy import (
     Numeric,
     UniqueConstraint,
     func,
+    text,
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
@@ -93,6 +95,10 @@ class Document(Base):
     number: Mapped[str | None]
     date: Mapped[date | None]
     counterparty_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("counterparties.id"))
+    card_model_config_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("model_configs.id"))
+    card_extraction_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("extractions.id", use_alter=True, name="fk_document_card_extraction")
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -131,3 +137,157 @@ class StageTiming(Base):
     ok: Mapped[bool]
     error: Mapped[str | None]
     started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class ModelConfig(Base):
+    __tablename__ = "model_configs"
+    __table_args__ = (
+        CheckConstraint("provider IN ('yandex','gigachat','ollama','regex')"),
+        CheckConstraint("placement IN ('cloud','open-weights-cloud','local')"),
+        CheckConstraint("price_in_1k >= 0 AND price_out_1k >= 0"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    name: Mapped[str] = mapped_column(unique=True)
+    provider: Mapped[str]
+    model_uri: Mapped[str]
+    placement: Mapped[str]
+    params: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    price_in_1k: Mapped[Decimal | None] = mapped_column(Numeric(16, 8))
+    price_out_1k: Mapped[Decimal | None] = mapped_column(Numeric(16, 8))
+    v_prefill: Mapped[float | None]
+    v_decode: Mapped[float | None]
+    active: Mapped[bool] = mapped_column(default=False)
+    default_card: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class Prompt(Base):
+    __tablename__ = "prompts"
+    __table_args__ = (UniqueConstraint("name", "version"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    name: Mapped[str]
+    version: Mapped[str]
+    text: Mapped[str]
+    schema: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class LLMCall(Base):
+    __tablename__ = "llm_calls"
+    __table_args__ = (
+        CheckConstraint("status IN ('started','success','invalid','error','uncertain')"),
+        CheckConstraint("cost_rub >= 0 AND reserved_rub >= 0"),
+        CheckConstraint("input_tokens >= 0 AND output_tokens >= 0"),
+        Index(
+            "uq_llm_success",
+            "input_hash",
+            "model_config_id",
+            "prompt_id",
+            unique=True,
+            postgresql_where=text("status = 'success'"),
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    model_config_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("model_configs.id"))
+    prompt_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("prompts.id"))
+    document_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("documents.id"), index=True)
+    job_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("jobs.id"))
+    purpose: Mapped[str] = mapped_column(default="extract")
+    input_hash: Mapped[str]
+    root_input_hash: Mapped[str] = mapped_column(index=True)
+    snapshot: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    input_tokens: Mapped[int | None]
+    output_tokens: Mapped[int | None]
+    latency_ms: Mapped[int | None]
+    cost_rub: Mapped[Decimal | None] = mapped_column(Numeric(18, 8))
+    reserved_rub: Mapped[Decimal | None] = mapped_column(Numeric(18, 8))
+    paid: Mapped[bool]
+    status: Mapped[str] = mapped_column(default="started", index=True)
+    error: Mapped[str | None]
+    response_raw: Mapped[str | None]
+    truncated: Mapped[bool]
+    reconciled: Mapped[bool] = mapped_column(default=False)
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class Extraction(Base):
+    __tablename__ = "extractions"
+    __table_args__ = (
+        Index("ix_extractions_document_model", "document_id", "model_config_id"),
+        Index(
+            "uq_extraction_current",
+            "document_id",
+            "model_config_id",
+            unique=True,
+            postgresql_where=text("is_current"),
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    document_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"))
+    model_config_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("model_configs.id"))
+    llm_call_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("llm_calls.id"))
+    doc_kind: Mapped[str | None]
+    number: Mapped[str | None]
+    date: Mapped[date | None]
+    cp_name: Mapped[str | None]
+    cp_inn: Mapped[str | None]
+    amount: Mapped[Decimal | None] = mapped_column(Numeric(24, 4))
+    subject: Mapped[str | None]
+    contract_refs: Mapped[list[dict[str, Any]]] = mapped_column(JSONB, default=list)
+    supp_ref: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    invoice_ref: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    evidence: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    evidence_checks: Mapped[list[dict[str, Any]]] = mapped_column(JSONB, default=list)
+    snapshot: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    valid: Mapped[bool]
+    evidence_ok: Mapped[bool]
+    cache_hit: Mapped[bool] = mapped_column(default=False)
+    is_current: Mapped[bool] = mapped_column(default=True)
+    error: Mapped[str | None]
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class Job(Base):
+    __tablename__ = "jobs"
+    __table_args__ = (
+        CheckConstraint("status IN ('queued','running','done','error')"),
+        Index(
+            "uq_job_active",
+            "type",
+            "document_id",
+            "model_config_id",
+            unique=True,
+            postgresql_where=text("status IN ('queued','running')"),
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    type: Mapped[str]
+    document_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"))
+    model_config_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("model_configs.id"))
+    payload: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    status: Mapped[str] = mapped_column(default="queued", index=True)
+    attempts: Mapped[int] = mapped_column(default=0)
+    run_after: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    locked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    error: Mapped[str | None]
+
+
+class AnonIdentity(Base):
+    """Client-scoped dictionary; anon_maps retain document-specific reverse mappings."""
+
+    __tablename__ = "anon_identities"
+    __table_args__ = (
+        UniqueConstraint("client_id", "kind", "original"),
+        UniqueConstraint("client_id", "replacement"),
+    )
+    id: Mapped[int] = mapped_column(primary_key=True)
+    client_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("clients.id"))
+    kind: Mapped[str]
+    original: Mapped[str]
+    replacement: Mapped[str]

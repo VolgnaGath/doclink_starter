@@ -1,7 +1,8 @@
 import logging
+from decimal import Decimal
 from typing import Self
 
-from pydantic import Field, model_validator
+from pydantic import AliasChoices, Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 logger = logging.getLogger(__name__)
@@ -23,6 +24,25 @@ class Settings(BaseSettings):
     max_docx_uncompressed_bytes: int = Field(default=100 * 1024 * 1024, gt=0)
     mock1c_url: str = "http://mock1c:8001"
     worker_heartbeat_seconds: int = Field(default=30, gt=0)
+    llm_provider: str = "mock"
+    paid_calls_enabled: bool = False
+    budget_rub: Decimal = Field(default=Decimal("0"), ge=0)
+    yandex_api_key: str = Field(
+        default="", repr=False, validation_alias=AliasChoices("yandex_api_key", "YC_API_KEY")
+    )
+    yandex_folder_id: str = Field(
+        default="", validation_alias=AliasChoices("yandex_folder_id", "YC_FOLDER_ID")
+    )
+    gigachat_credentials: str = Field(
+        default="",
+        repr=False,
+        validation_alias=AliasChoices("gigachat_credentials", "GIGACHAT_AUTH_KEY"),
+    )
+    gigachat_scope: str = "GIGACHAT_API_PERS"
+    gigachat_api_url: str = "https://api.giga.chat/v1"
+    gigachat_ca_bundle: str = ""
+    ollama_url: str = "http://ollama:11434"
+    llm_timeout_seconds: int = Field(default=120, gt=0)
 
     @model_validator(mode="after")
     def validate_secrets(self) -> Self:

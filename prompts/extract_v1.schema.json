@@ -1,0 +1,29 @@
+{
+  "$defs": {
+    "Reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "number": {"type": ["string", "null"], "default": null},
+        "date": {"type": ["string", "null"], "pattern": "^\\d{2}\\.\\d{2}\\.\\d{4}$", "default": null},
+        "quote": {"type": "string"}
+      },
+      "required": ["quote"]
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "doc_kind": {"enum": ["договор", "допсоглашение", "счёт", "акт", "УПД", "другое", null], "default": null},
+    "number": {"type": ["string", "null"], "default": null},
+    "date": {"type": ["string", "null"], "pattern": "^\\d{2}\\.\\d{2}\\.\\d{4}$", "default": null},
+    "counterparty_name": {"type": ["string", "null"], "default": null},
+    "counterparty_inn": {"type": ["string", "null"], "default": null},
+    "amount": {"anyOf": [{"type": "number", "minimum": 0}, {"type": "string", "pattern": "^\\d+(\\.\\d+)?$"}, {"type": "null"}], "default": null},
+    "subject": {"type": ["string", "null"], "default": null},
+    "contract_refs": {"type": "array", "items": {"$ref": "#/$defs/Reference"}, "default": []},
+    "supp_ref": {"anyOf": [{"$ref": "#/$defs/Reference"}, {"type": "null"}], "default": null},
+    "invoice_ref": {"anyOf": [{"$ref": "#/$defs/Reference"}, {"type": "null"}], "default": null},
+    "evidence": {"type": "object", "properties": {"number": {"type": ["string", "null"]}, "date": {"type": ["string", "null"]}, "counterparty": {"type": ["string", "null"]}, "amount": {"type": ["string", "null"]}}, "additionalProperties": false, "default": {}}
+  }
+}

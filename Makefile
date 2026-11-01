@@ -9,6 +9,10 @@ VERIFY_COMPOSE = docker compose -p doclink-verify -f docker-compose.verify.yml
 .DEFAULT_GOAL := help
 .PHONY: help spec spec-check spec-lint lock up down logs ps build migrate revision seed import-corpus test test-fast lint format smoke-paid db-shell
 .PHONY: smoke-ocr verify-up verify-down verify-test verify-migrations verify-import
+.PHONY: extract freeze-extraction reconcile-call verify-extraction
+.PHONY: gigachat-ca gigachat-ca-install check-gigachat configure-yandex
+.PHONY: snapshot-corpus audit-corpus import-corpus-original
+CERT_DIR ?= $(HOME)/Downloads
 
 help: ## Показать список целей
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -58,8 +62,29 @@ revision: ## Новая миграция: make revision m="описание"
 seed: ## Загрузить конфигурации моделей и промпт v1
 	$(COMPOSE) run --rm api python -m app.seed
 
+gigachat-ca: ## Получить доверенную цепочку НУЦ по HTTPS в certs/ (без отключения TLS)
+	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace api python -m app.provider_admin download-ca
+
+gigachat-ca-install: ## Установить CA из Downloads (PEM/DER): ARGS='--certificate /incoming/имя.cer ...', CERT_DIR=папка
+	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -v "$(CERT_DIR):/incoming:ro" -w /workspace api python -m app.provider_admin install-ca $(ARGS)
+
+check-gigachat: ## Проверить OAuth, модели и баланс GigaChat без генераций и без вывода ключей
+	$(COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m app.provider_admin check-gigachat
+
+configure-yandex: ## Сохранить URI/тарифы двух моделей: ARGS='--qwen-uri ... --qwen-in ... --qwen-out ... --yandexgpt-uri ... --yandexgpt-in ... --yandexgpt-out ...'
+	$(COMPOSE) run --rm -v "$(CURDIR):/workspace" -w /workspace api python -m app.provider_admin configure-yandex $(ARGS)
+
 import-corpus: ## Импортировать корпус: split seed=2026, tune_share=0.3
 	$(COMPOSE) run --rm api python -m app.import_corpus --path /data/corpus --seed 2026 --tune-share 0.3
+
+snapshot-corpus: ## Сохранить исходный корпус v1 до редакции, без перезаписи существующего архива
+	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace api python -m app.corpus_revision snapshot
+
+audit-corpus: ## Проверить редакцию v2 против исходного архива и сохранить SHA-256/отчёт
+	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace api python -m app.corpus_revision audit --report corpus_history/v2-audit.json
+
+import-corpus-original: ## Импортировать сохранённый исходный корпус отдельной версией с его отчётом
+	$(COMPOSE) run --rm -v "$(CURDIR):/workspace" -w /workspace api python -m app.corpus_revision import-original
 
 test: ## Тесты без платных вызовов
 	$(COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q
@@ -75,8 +100,17 @@ format: ## Форматирование и автоисправления
 
 smoke-paid: ## Платный smoke: только при PAID_CALLS_ENABLED=true и BUDGET_RUB>0
 	@test "$${PAID_CALLS_ENABLED:-false}" = "true" || { echo "PAID_CALLS_ENABLED must be true"; exit 1; }
-	@test "$${BUDGET_RUB:-0}" -gt 0 2>/dev/null || { echo "BUDGET_RUB must be > 0"; exit 1; }
-	$(COMPOSE) run --rm api python -m app.smoke_paid
+	@test -n "$${BUDGET_RUB}" || { echo "BUDGET_RUB must be > 0"; exit 1; }
+	$(COMPOSE) run --rm -e PAID_CALLS_ENABLED -e BUDGET_RUB api python -m app.smoke_paid $(ARGS)
+
+extract: ## Очередь/продолжение/отчёт: ARGS='--document UUID --drain' (облачные вызовы — smoke-paid)
+	$(COMPOSE) run --rm api python -m app.extract_cli $(ARGS)
+
+freeze-extraction: ## Зафиксировать конфигурацию до test: ARGS='--corpus-version UUID'
+	$(COMPOSE) run --rm api python -m app.extract_cli --freeze $(ARGS)
+
+reconcile-call: ## Сверка неизвестного расхода: ARGS='--reconcile-call UUID --cost-rub N --note ...'
+	$(COMPOSE) run --rm api python -m app.extract_cli $(ARGS)
 
 db-shell: ## psql в контейнере базы
 	$(COMPOSE) exec db psql -U doclink doclink
@@ -84,7 +118,7 @@ db-shell: ## psql в контейнере базы
 smoke-ocr: ## Реальный локальный OCR смешанного PDF без внешних API
 	$(COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_text_extraction.py -k real_ocr_smoke
 
-verify-up: ## Подготовить отдельную PostgreSQL для приёмки этапа 2
+verify-up: ## Подготовить отдельную PostgreSQL для приёмки
 	$(VERIFY_COMPOSE) build api
 	$(VERIFY_COMPOSE) up -d --wait db
 	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
@@ -95,7 +129,9 @@ verify-down: ## Удалить только изолированные конт�
 verify-test: verify-up ## Интеграционные тесты на отдельной PostgreSQL, включая импорт и веб
 	$(MAKE) test COMPOSE='$(VERIFY_COMPOSE)'
 
-verify-migrations: verify-up ## Откат/повтор миграции 0002 и проверка metadata на изолированной БД
+verify-migrations: verify-up ## Откат/повтор миграций 0003 и 0002, проверка metadata на изолированной БД
+	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0002
+	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
 	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0001
 	$(VERIFY_COMPOSE) exec -T db psql -U doclink -d doclink -v ON_ERROR_STOP=1 -c "SELECT extversion FROM pg_extension WHERE extname = 'vector'"
 	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
@@ -104,3 +140,6 @@ verify-migrations: verify-up ## Откат/повтор миграции 0002 и
 verify-import: verify-up ## Два CLI-импорта исходного корпуса на изолированной БД
 	$(MAKE) import-corpus COMPOSE='$(VERIFY_COMPOSE)'
 	$(MAKE) import-corpus COMPOSE='$(VERIFY_COMPOSE)'
+
+verify-extraction: verify-up ## Офлайн-приёмка извлечения, очереди и HTTP-транспортов
+	$(VERIFY_COMPOSE) run --rm -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_models_extraction.py

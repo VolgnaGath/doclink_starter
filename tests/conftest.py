@@ -18,6 +18,13 @@ def settings() -> Settings:
         _env_file=None,
         app_password="test-password",
         secret_key="test-secret-key-with-at-least-32-characters",
+        yandex_api_key="",
+        yandex_folder_id="",
+        gigachat_credentials="",
+        gigachat_ca_bundle="",
+        llm_provider="mock",
+        paid_calls_enabled=False,
+        budget_rub=0,
     )
 
 
@@ -46,8 +53,9 @@ def db_session(tmp_path: Path, settings: Settings) -> Iterator[Session]:
         transaction = connection.begin()
         connection.execute(
             text(
-                "TRUNCATE stage_timings, anon_maps, document_texts, documents, "
-                "counterparties, corpus_versions, clients"
+                "TRUNCATE stage_timings, anon_maps, anon_identities, extractions, llm_calls, jobs, "
+                "model_configs, prompts, document_texts, documents, "
+                "counterparties, corpus_versions, clients CASCADE"
             )
         )
         with Session(bind=connection, join_transaction_mode="create_savepoint") as session:
