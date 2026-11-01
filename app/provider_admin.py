@@ -164,6 +164,8 @@ def configure_acceptance(settings: Settings) -> dict[str, Any]:
             if model.provider == "gigachat":
                 model.price_in_1k = model.price_out_1k = Decimal("0.065")
                 params["cost_basis"] = "reference_tariff_freemium"
+                params["price_cached_in_1k"] = "0"
+                params["json_mode"] = True
             else:
                 if model.price_in_1k is None or model.price_out_1k is None:
                     raise ProviderError("Сначала задайте согласованные тарифы Yandex")

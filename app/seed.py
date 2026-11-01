@@ -1,5 +1,6 @@
 """Idempotent initial configuration. Never overwrites an existing user's settings."""
 
+import argparse
 import json
 from pathlib import Path
 
@@ -13,15 +14,21 @@ from app.models import ModelConfig, Prompt
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def seed(session: Session) -> None:
+def seed(session: Session, prompt_version: str = "v1") -> None:
     session.execute(text("SELECT pg_advisory_xact_lock(310003)"))
-    if not session.scalar(select(Prompt).where(Prompt.name == "extract", Prompt.version == "v1")):
+    if prompt_version not in {"v1", "v2"}:
+        raise ValueError("Неизвестная версия инструкции")
+    if not session.scalar(
+        select(Prompt).where(Prompt.name == "extract", Prompt.version == prompt_version)
+    ):
         session.add(
             Prompt(
                 name="extract",
-                version="v1",
-                text=(ROOT / "prompts/extract_v1.txt").read_text(),
-                schema=json.loads((ROOT / "prompts/extract_v1.schema.json").read_text()),
+                version=prompt_version,
+                text=(ROOT / f"prompts/extract_{prompt_version}.txt").read_text(),
+                schema=json.loads(
+                    (ROOT / f"prompts/extract_{prompt_version}.schema.json").read_text()
+                ),
             )
         )
     configs = [
@@ -48,8 +55,13 @@ def seed(session: Session) -> None:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Идемпотентные начальные модели и версия инструкции"
+    )
+    parser.add_argument("--prompt-version", choices=["v1", "v2"], default="v1")
+    args = parser.parse_args()
     with get_session(Settings().database_url) as session:
-        seed(session)
+        seed(session, args.prompt_version)
         session.commit()
 
 

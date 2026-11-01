@@ -170,7 +170,12 @@ class ChatProvider:
         }
         if self.params.get("json_mode", False):
             if self.provider == "gigachat":
-                body["response_format"] = {"type": "json_schema", "schema": schema, "strict": True}
+                generation_schema = {**schema, "required": list(schema.get("properties", {}))}
+                body["response_format"] = {
+                    "type": "json_schema",
+                    "schema": generation_schema,
+                    "strict": True,
+                }
             else:
                 body["response_format"] = {"type": "json_object"}
         try:
@@ -206,11 +211,15 @@ class ChatProvider:
 
             details = usage.get("prompt_tokens_details") or {}
             cached = details.get("cached_tokens") if isinstance(details, dict) else None
+            prompt_tokens = token_count("prompt_tokens")
+            if self.provider == "gigachat":
+                # Native GigaChat prompt_tokens/total_tokens exclude the free cached part.
+                cached = token_count("precached_prompt_tokens")
+                if prompt_tokens is not None:
+                    prompt_tokens += cached or 0
             if type(cached) is not int or cached < 0:
                 cached = None
-            return Completion(
-                content, raw, token_count("prompt_tokens"), token_count("completion_tokens"), cached
-            )
+            return Completion(content, raw, prompt_tokens, token_count("completion_tokens"), cached)
         except (ValueError, KeyError, IndexError, TypeError) as exc:
             raise ProviderError(
                 "Невалидный конверт ответа провайдера", uncertain=True, raw=raw

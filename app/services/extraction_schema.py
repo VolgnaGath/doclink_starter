@@ -106,7 +106,7 @@ def match_quote(quote: str, parts: list[str]) -> dict[str, object]:
 
 
 def check_evidence(fields: ExtractedFields, parts: list[str]) -> list[dict[str, object]]:
-    quotes = dict(fields.evidence)
+    quotes = {name: quote for name, quote in fields.evidence.items() if quote is not None}
     for index, ref in enumerate(fields.contract_refs):
         quotes[f"contract_refs.{index}"] = ref.quote
     for name in ("supp_ref", "invoice_ref"):

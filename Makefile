@@ -67,8 +67,8 @@ revision: ## Новая миграция: make revision m="описание"
 	$(COMPOSE) build api
 	$(COMPOSE) run --rm --user "$$(id -u):$$(id -g)" -v "$(CURDIR)/migrations:/app/migrations" api alembic revision --autogenerate -m "$(m)"
 
-seed: ## Загрузить конфигурации моделей и промпт v1
-	$(COMPOSE) run --rm api python -m app.seed
+seed: ## Загрузить модели и промпт, ARGS='--prompt-version v2' для новой инструкции
+	$(COMPOSE) run --rm api python -m app.seed $(ARGS)
 
 gigachat-ca: ## Получить доверенную цепочку НУЦ по HTTPS в certs/ (без отключения TLS)
 	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace api python -m app.provider_admin download-ca

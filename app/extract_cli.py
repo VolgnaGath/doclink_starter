@@ -126,6 +126,26 @@ def execute(
         documents = list(session.scalars(query.order_by(Document.id)))
         if not documents:
             raise ProcessingError("Документы не найдены")
+        document_ids, model_ids = [d.id for d in documents], [m.id for m in models]
+        before_result_ids = set(
+            session.scalars(
+                select(Extraction.id).where(
+                    Extraction.document_id.in_(document_ids),
+                    Extraction.model_config_id.in_(model_ids),
+                    Extraction.is_current,
+                )
+            )
+        )
+        before_attempts = (
+            session.scalar(
+                select(func.count())
+                .select_from(LLMCall)
+                .where(
+                    LLMCall.document_id.in_(document_ids), LLMCall.model_config_id.in_(model_ids)
+                )
+            )
+            or 0
+        )
         includes_test = version and args.split != "tune"
         if includes_test and not args.report_only:
             protocols = version.report.get("extraction_protocols", {})
@@ -179,6 +199,7 @@ def execute(
                 "success": sum(r.valid for r in results),
                 "errors": sum(not r.valid for r in results),
                 "cache_hits": sum(r.cache_hit for r in results),
+                "reused_results": sum(r.valid and r.id in before_result_ids for r in results),
                 "blocking_errors": sum(
                     bool(r.error)
                     and any(
@@ -220,6 +241,7 @@ def execute(
                 for model in models
             },
             "physical_attempts": calls[0],
+            "new_physical_attempts": calls[0] - before_attempts,
             "known_cost_rub": str(calls[1]) if calls[1] is not None else None,
             "unknown_cost_attempts": calls[2],
             "protocol_hash": protocol_hash,

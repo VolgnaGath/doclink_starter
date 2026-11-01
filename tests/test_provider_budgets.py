@@ -1,6 +1,9 @@
+import json
+import time
 from concurrent.futures import ThreadPoolExecutor
 from decimal import Decimal
 
+import httpx
 import pytest
 import test_models_extraction
 from sqlalchemy import select
@@ -8,11 +11,62 @@ from sqlalchemy import select
 from app.config import Settings
 from app.db import get_session
 from app.models import LLMCall, ModelConfig
+from app.services.extraction_schema import ExtractedFields, check_evidence
 from app.services.model_calls import ProcessingError, reserve, tariff_cost
-from app.services.providers import Completion
+from app.services.providers import ChatProvider, Completion
 
 live = test_models_extraction.live
 setup = test_models_extraction.setup
+
+
+def test_absent_evidence_for_unknown_field_is_not_a_fabricated_quote() -> None:
+    unknown = ExtractedFields(evidence={"date": None, "amount": None})
+    assert check_evidence(unknown, ["Технический текст"]) == []
+    populated = ExtractedFields(number="1", evidence={"number": None})
+    checks = check_evidence(populated, ["Документ № 1"])
+    assert len(checks) == 1 and not checks[0]["ok"]
+
+
+def test_gigachat_native_cache_is_free_and_schema_is_sent(settings: Settings) -> None:
+    settings.llm_provider, settings.gigachat_credentials = "live", "test-auth"
+
+    def transport(request: httpx.Request) -> httpx.Response:
+        if request.url.path.endswith("oauth"):
+            return httpx.Response(
+                200,
+                json={
+                    "access_token": "test-access",
+                    "expires_at": int((time.time() + 1800) * 1000),
+                },
+            )
+        body = json.loads(request.content)
+        assert body["response_format"]["type"] == "json_schema"
+        assert body["response_format"]["schema"]["required"] == ["number"]
+        return httpx.Response(
+            200,
+            json={
+                "choices": [{"message": {"content": "{}"}}],
+                "usage": {
+                    "prompt_tokens": 100,
+                    "completion_tokens": 50,
+                    "precached_prompt_tokens": 900,
+                    "total_tokens": 150,
+                },
+            },
+        )
+
+    provider = ChatProvider(
+        settings,
+        "gigachat",
+        "GigaChat-2",
+        {"json_mode": True},
+        httpx.Client(transport=httpx.MockTransport(transport)),
+    )
+    reply = provider.complete([], {"properties": {"number": {"type": ["string", "null"]}}})
+    assert reply.input_tokens == 1000 and reply.cached_input_tokens == 900
+    assert tariff_cost(
+        {"price_in_1k": "0.065", "price_out_1k": "0.065", "price_cached_in_1k": "0"}, reply
+    ) == Decimal("0.00975")
 
 
 def test_tariff_equivalent_uses_measured_cache_tokens() -> None:

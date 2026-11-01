@@ -657,7 +657,10 @@ def test_cli_full_corpus_regex_freeze_and_resume(live: Settings) -> None:
     assert report["all"]["documents"] == report["all"]["success"] == 233
     assert report["in_scope"]["documents"] == report["in_scope"]["success"] == 231
     assert report["physical_attempts"] == 0
-    assert execute(args, live)["all"] == report["all"]
+    resumed = execute(args, live)
+    assert resumed["all"]["success"] == report["all"]["success"]
+    assert resumed["all"]["reused_results"] == 233
+    assert resumed["new_physical_attempts"] == 0
     with get_session(live.database_url) as session:
         model = session.scalar(select(ModelConfig).where(ModelConfig.provider == "regex"))
         model.params = {"temperature": 0.4}
@@ -681,6 +684,28 @@ def test_unexpected_transport_exception_is_uncertain(live: Settings) -> None:
         call = session.scalar(select(LLMCall))
         assert call.status == "uncertain" and call.cost_rub is None
         assert "sensitive" not in call.error
+
+
+def test_resume_queues_new_configuration_without_silently_reusing_old_results(
+    live: Settings,
+) -> None:
+    doc, model, _, _ = setup(live)
+    with get_session(live.database_url) as session:
+        old_ids = enqueue(session, session.get(Document, doc))
+        session.commit()
+    assert work_once(live)
+    with get_session(live.database_url) as session:
+        model_row = session.get(ModelConfig, model)
+        model_row.params = {**model_row.params, "temperature": 0.2}
+        session.commit()
+        new_ids = enqueue(session, session.get(Document, doc))
+        session.commit()
+        assert len(new_ids) == 1 and new_ids != old_ids
+    assert work_once(live)
+    with get_session(live.database_url) as session:
+        current = session.scalar(select(Extraction).where(Extraction.is_current))
+        assert current.snapshot["params"]["temperature"] == 0.2
+        assert enqueue(session, session.get(Document, doc)) == new_ids
 
 
 def test_tariff_snapshot_preserves_history_and_does_not_invalidate_cache(live: Settings) -> None:

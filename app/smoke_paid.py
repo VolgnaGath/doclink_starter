@@ -34,13 +34,15 @@ def main() -> None:
                 models = list(
                     session.scalars(
                         select(ModelConfig).where(
-                            ModelConfig.name.in_(["Qwen", "YandexGPT 5.1 Pro", "GigaChat 2 Lite"])
+                            ModelConfig.name.in_(
+                                args.model or ["Qwen", "YandexGPT 5.1 Pro", "GigaChat 2 Lite"]
+                            )
                         )
                     )
                 )
-                if len(models) != 3 or any(
-                    m.price_in_1k is None or m.price_out_1k is None for m in models
-                ):
+                if len(models) != len(
+                    set(args.model or ["Qwen", "YandexGPT 5.1 Pro", "GigaChat 2 Lite"])
+                ) or any(m.price_in_1k is None or m.price_out_1k is None for m in models):
                     raise ProcessingError("Настройте три облачные модели и тарифы на /models")
                 client = session.scalar(select(Client).where(Client.namespace == "technical-smoke"))
                 if client is None:

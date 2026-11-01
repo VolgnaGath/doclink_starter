@@ -107,6 +107,21 @@ def test_yandex_configuration_is_explicit_and_does_not_enable_payments(
     assert {m.model_uri for m in configs} == {args.qwen_uri, args.yandexgpt_uri}
 
 
+def test_prompt_versions_preserve_previous_instructions(db_session: Session) -> None:
+    from app.models import Prompt
+    from app.seed import seed
+
+    seed(db_session)
+    original = db_session.scalar(select(Prompt).where(Prompt.version == "v1"))
+    before = (original.id, original.text, original.schema)
+    seed(db_session, "v2")
+    revised = db_session.scalar(select(Prompt).where(Prompt.version == "v2"))
+    assert revised.id != original.id and revised.text != original.text
+    assert (original.id, original.text, original.schema) == before
+    seed(db_session, "v2")
+    assert len(list(db_session.scalars(select(Prompt)))) == 2
+
+
 @pytest.mark.parametrize("encoding", ["DER", "PEM"])
 def test_install_official_named_ca_files_and_reject_expired(tmp_path: Path, encoding: str) -> None:
     from datetime import UTC, datetime, timedelta

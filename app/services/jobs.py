@@ -87,6 +87,7 @@ def enqueue(
         document.card_model_config_id = defaults[0].id
     ids = []
     for model in models:
+        snapshot = configuration(model, prompt)
         # Resume does not automatically requeue terminal errors or successful results.
         previous = session.scalar(
             select(Job)
@@ -99,14 +100,16 @@ def enqueue(
             .limit(1)
         )
         current = session.scalar(
-            select(Extraction.id).where(
+            select(Extraction).where(
                 Extraction.document_id == document.id,
                 Extraction.model_config_id == model.id,
                 Extraction.is_current,
             )
         )
-        if not retry and (previous or current):
-            if previous:
+        matching_job = previous and previous.payload.get("snapshot") == snapshot
+        matching_result = current and current.snapshot == snapshot
+        if not retry and (matching_job or matching_result):
+            if matching_job:
                 ids.append(previous.id)
             continue
         statement = insert(Job).values(
@@ -115,7 +118,7 @@ def enqueue(
             model_config_id=model.id,
             payload={
                 "prompt_id": str(prompt.id),
-                "snapshot": configuration(model, prompt),
+                "snapshot": snapshot,
                 "protocol_hash": protocol_hash,
             },
         )
