@@ -4,6 +4,7 @@
 
 COMPOSE ?= docker compose
 UV_IMAGE ?= ghcr.io/astral-sh/uv:0.5.18-python3.12-bookworm-slim
+VERIFY_COMPOSE = docker compose -p doclink-verify -f docker-compose.verify.yml
 
 .DEFAULT_GOAL := help
 .PHONY: help spec spec-check spec-lint lock up down logs ps build migrate revision seed import-corpus test test-fast lint format smoke-paid db-shell
@@ -78,3 +79,14 @@ smoke-paid: ## Платный smoke: только при PAID_CALLS_ENABLED=true
 
 db-shell: ## psql в контейнере базы
 	$(COMPOSE) exec db psql -U doclink doclink
+
+smoke-ocr: ## Реальный локальный OCR смешанного PDF без внешних API
+	$(COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_text_extraction.py -k real_ocr_smoke
+
+verify-up: ## Подготовить отдельную PostgreSQL для приёмки этапа 2
+	$(VERIFY_COMPOSE) build api
+	$(VERIFY_COMPOSE) up -d --wait db
+	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
+
+verify-down: ## Удалить только изолированные контейнеры и volumes приёмки
+	$(VERIFY_COMPOSE) down -v

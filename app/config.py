@@ -15,6 +15,12 @@ class Settings(BaseSettings):
     app_password: str
     secret_key: str
     files_dir: str = "/data/files"
+    max_file_bytes: int = Field(default=25 * 1024 * 1024, gt=0)
+    max_pdf_pages: int = Field(default=100, gt=0)
+    ocr_dpi: int = Field(default=200, ge=72, le=300)
+    max_render_pixels: int = Field(default=20_000_000, gt=0)
+    ocr_timeout_seconds: int = Field(default=30, gt=0)
+    max_docx_uncompressed_bytes: int = Field(default=100 * 1024 * 1024, gt=0)
     mock1c_url: str = "http://mock1c:8001"
     worker_heartbeat_seconds: int = Field(default=30, gt=0)
 
