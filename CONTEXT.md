@@ -46,6 +46,7 @@
 ## Следующий шаг
 
 Этап 1: каркас `docker compose` (api, worker, db, mock1c), Dockerfile с Tesseract (rus), Alembic, вход, `/health`.
+План этапа — `docs/plans/01-karkas.md`; писать код по нему.
 Pydantic-модели и роуты писать под `contract/openapi/openapi.yaml`; drift-тест не вводится.
 Перед началом — `make help` и `IMPLEMENTATION_STATUS.md`.
 
