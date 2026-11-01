@@ -50,7 +50,8 @@ migrate: ## Применить миграции Alembic
 
 revision: ## Новая миграция: make revision m="описание"
 	@test -n "$(m)" || { echo 'usage: make revision m="описание"'; exit 1; }
-	$(COMPOSE) run --rm api alembic revision --autogenerate -m "$(m)"
+	$(COMPOSE) build api
+	$(COMPOSE) run --rm --user "$$(id -u):$$(id -g)" -v "$(CURDIR)/migrations:/app/migrations" api alembic revision --autogenerate -m "$(m)"
 
 seed: ## Загрузить конфигурации моделей и промпт v1
 	$(COMPOSE) run --rm api python -m app.seed
@@ -59,16 +60,16 @@ import-corpus: ## Импортировать корпус: split seed=2026, tune
 	$(COMPOSE) run --rm api python -m app.import_corpus --path /data/corpus --seed 2026 --tune-share 0.3
 
 test: ## Тесты без платных вызовов
-	$(COMPOSE) run --rm --no-deps api python -m pytest -q
+	$(COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q
 
 test-fast: ## Быстрые тесты без медленных маркеров
-	$(COMPOSE) run --rm --no-deps api python -m pytest -q -m "not slow"
+	$(COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q -m "not slow"
 
 lint: ## Проверка стиля без изменений
-	$(COMPOSE) run --rm --no-deps api sh -c "ruff check . && ruff format --check ."
+	$(COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api sh -c "ruff check . && ruff format --check ."
 
 format: ## Форматирование и автоисправления
-	$(COMPOSE) run --rm --no-deps api sh -c "ruff check --fix . && ruff format ."
+	$(COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api sh -c "ruff format . && ruff check --fix . && ruff format ."
 
 smoke-paid: ## Платный smoke: только при PAID_CALLS_ENABLED=true и BUDGET_RUB>0
 	@test "$${PAID_CALLS_ENABLED:-false}" = "true" || { echo "PAID_CALLS_ENABLED must be true"; exit 1; }

@@ -2,6 +2,7 @@ from logging.config import fileConfig
 
 from alembic import context
 
+from app import models  # noqa: F401 — register mappings for autogenerate
 from app.config import Settings
 from app.db import Base, get_engine
 

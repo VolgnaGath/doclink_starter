@@ -1,0 +1,32 @@
+# Isolated acceptance environment: no host ports, separate DB and blob volumes.
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: doclink
+      POSTGRES_PASSWORD: doclink
+      POSTGRES_DB: doclink
+    volumes:
+      - verify_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U doclink -d doclink"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+  api:
+    image: doclink:dev
+    build: .
+    environment:
+      DATABASE_URL: postgresql+psycopg://doclink:doclink@db:5432/doclink
+      APP_PASSWORD: verification-password
+      SECRET_KEY: verification-secret-key-at-least-32-characters
+      TEST_DATABASE_URL: postgresql+psycopg://doclink:doclink@db:5432/doclink
+    volumes:
+      - verify_files:/data/files
+      - ./corpus:/data/corpus:ro
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  verify_pgdata:
+  verify_files:
