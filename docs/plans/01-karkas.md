@@ -1,12 +1,25 @@
 # План этапа 1 — Каркас
 
-Составлен: 01.11.2026. Статус: план принят, реализация не начата.
+Составлен: 01.11.2026. Обновлён после согласования: 01.11.2026.
+Статус: план принят, реализация не начата.
 Основание: `docs/TZ.md` (этап 1), `docs/DECISIONS.md`, `IMPLEMENTATION_STATUS.md`, `CONTEXT.md`,
 `contract/openapi/openapi.yaml`.
 
-Принятые решения: зависимости — `uv` + `uv.lock`; в образе этапа 1 только минимальный набор;
-первая миграция Alembic включает только pgvector; mock1c на этапе 1 — каркас с `/health`
-и пустым OData-списком.
+## Принятые решения
+
+- Зависимости — `uv` + `uv.lock`; версия uv закреплена одинаково в Makefile и Dockerfile.
+- Один образ `doclink:dev` содержит runtime- и dev-зависимости; его используют `api`, `worker`,
+  `mock1c`, миграции и тесты. Multi-stage-сборка не вводится.
+- Проект не упаковывается: `[tool.uv] package = false`. Версия хранится в `app.__version__`,
+  тест сверяет её с `pyproject.toml`.
+- Первая миграция Alembic включает только pgvector; downgrade не удаляет расширение.
+- mock1c на этапе 1 — каркас с `/health` и пустым OData-списком. Профиль `ollama` не добавляется.
+- `/health` при недоступной БД возвращает 200 `degraded`. Docker healthcheck проверяет liveness:
+  HTTP 200 и валидный JSON; `degraded` не делает контейнер нездоровым.
+- Наружу публикуются только порты 8000 (`api`) и 8001 (`mock1c`); порт `db` не публикуется.
+- `mock1c/inbox` создаётся с `.gitkeep`, но не монтируется до появления коннектора на этапе 7.
+- CSRF-токен на этапе 1 не вводится; это фиксируется как открытый вопрос в `CONTEXT.md`,
+  без изменения `docs/DECISIONS.md`.
 
 ## Граница этапа
 
@@ -16,31 +29,39 @@ Dockerfile с Tesseract (rus), compose `api`/`worker`/`db`/`mock1c`, Alembic с 
 
 **Не входит:** доменные таблицы и модели (этап 2), загрузка/OCR/импорт корпуса (этап 2), `/api/v1`,
 провайдеры и `llm_calls` (этап 3), эмбеддинги и связывание (этап 4), обработка `jobs`, seed моделей,
-полный OData mock1c (этап 7).
+HTMX, полный OData mock1c и монтирование inbox (этап 7), профиль `ollama`.
+
+## Предпосылки
+
+- Docker Desktop запущен; `docker version` и `docker compose version` выполняются успешно.
+- Все проверки выполняются в контейнерах. Хостовый Python и uv не требуются.
+- `.env` создаётся из `.env.example`; до запуска заменяются `APP_PASSWORD` и `SECRET_KEY`.
+  Пустые значения и `change-me` запрещены.
+- Если Docker недоступен, проверки не имитируются: причина фиксируется в `CONTEXT.md`.
 
 ## Структура файлов
 
 ```text
 app/
-  __init__.py
-  main.py          # create_app(), middleware, роутеры
-  config.py        # Settings (pydantic-settings)
-  db.py            # engine, SessionLocal, Base, check_database()
-  auth.py          # проверка APP_USER/APP_PASSWORD, require_user, login/logout
-  health.py        # GET /health по контракту
-  web.py           # защищённая заглушка «Сводка»
-  worker.py        # цикл worker: проверка БД + heartbeat, без фейковой обработки
-  templates/       # base.html, login.html, index.html
-  static/          # app.css
+  __init__.py       # __version__
+  main.py           # create_app(), middleware, роутеры
+  config.py         # Settings (pydantic-settings)
+  db.py             # engine, SessionLocal, Base, check_database()
+  auth.py           # вход, выход, require_user
+  health.py         # GET /health по контракту
+  web.py            # защищённая заглушка «Сводка»
+  worker.py         # проверка БД и heartbeat без обработки jobs
+  templates/        # base.html, login.html, index.html
+  static/           # app.css
 mock1c/
   __init__.py
-  main.py          # /health + пустой OData-список
-  inbox/.gitkeep
+  main.py           # /health + пустой OData-список
+  inbox/.gitkeep    # без монтирования на этапе 1
 migrations/
   env.py, script.py.mako
   versions/0001_baseline_pgvector.py
 tests/
-  conftest.py, test_health.py, test_auth.py
+  conftest.py, test_health.py, test_auth.py, test_version.py
 alembic.ini
 Dockerfile
 .dockerignore
@@ -49,97 +70,154 @@ pyproject.toml
 uv.lock
 ```
 
+В том же этапе обновляются `Makefile`, `.env.example`, `.gitignore`, README, `CONTEXT.md` и
+`IMPLEMENTATION_STATUS.md`.
+
 ## Шаги реализации
 
 1. **Python-проект и инструменты**
-   - `pyproject.toml`: Python 3.12, зависимости каркаса (FastAPI, uvicorn, SQLAlchemy 2, Alembic,
-     psycopg 3, Jinja2, pydantic-settings, python-multipart, itsdangerous), dev-группа (pytest, httpx, ruff).
-   - `uv.lock` генерируется через uv и коммитится.
-   - Настройка ruff: `target-version=py312`, `line-length=100`, исключить `reference/`, `contract/`,
-     `corpus/`, `data/`.
-   - Настройка pytest: `testpaths=["tests"]`, маркер `slow` для будущих тестов.
+   - `pyproject.toml`: Python `>=3.12,<3.13`, `[tool.uv] package = false`, `name = "doclink"`,
+     `version = "0.1.0"`.
+   - Runtime-зависимости: FastAPI, `uvicorn[standard]`, SQLAlchemy 2, Alembic, `psycopg[binary]`,
+     Jinja2, pydantic-settings, itsdangerous, python-multipart.
+   - Dev-группа: pytest, httpx, ruff. Асинхронный pytest не добавляется.
+   - `uv.lock` генерируется целью `make lock` в закреплённом образе `ghcr.io/astral-sh/uv:<версия>`
+     и коммитится. Команда использует `--user $(id -u):$(id -g)`, чтобы не создавать root-owned файлы.
+   - Ruff: `target-version=py312`, `line-length=100`, правила `E,F,I,UP,B`; исключить `reference/`,
+     `contract/`, `corpus/`, `data/`.
+   - Pytest: `testpaths=["tests"]`, `addopts="-ra"`, маркер `slow`.
+   - Makefile: добавить `lock` с описанием для `make help`; для `test`, `test-fast`, `lint`, `format`
+     добавить `--no-deps`, чтобы эти команды не поднимали БД. Остальные цели не менять.
 
 2. **Конфигурация и БД**
-   - `Settings` читает `.env` и переменные окружения: `DATABASE_URL`, `APP_USER`, `APP_PASSWORD`,
-     `SECRET_KEY`, `FILES_DIR`, `MOCK1C_URL`.
-   - Валидация при старте: пустые `APP_PASSWORD`/`SECRET_KEY` не допускаются в рабочем режиме.
-   - `db.py`: синхронный engine с `pool_pre_ping=True` и `connect_timeout=2`, `SessionLocal`, `Base`;
-     `check_database()` выполняет `SELECT 1` и не роняет приложение.
+   - `Settings` объявляет только используемые поля: `DATABASE_URL`, `APP_USER=admin`, `APP_PASSWORD`,
+     `SECRET_KEY`, `FILES_DIR=/data/files`, `MOCK1C_URL=http://mock1c:8001`,
+     `WORKER_HEARTBEAT_SECONDS=30`; неизвестные переменные игнорируются (`extra="ignore"`).
+   - Пустые `APP_PASSWORD`/`SECRET_KEY` и значение `change-me` запрещены всегда. Тесты передают явные
+     `Settings(_env_file=None, ...)`. Если `SECRET_KEY` короче 32 символов — предупреждение в лог.
+   - Ключи провайдеров, `PAID_CALLS_ENABLED` и `BUDGET_RUB` остаются в `.env.example`, но не входят
+     в модель настроек до этапа 3.
+   - `.env.example` дополняется `POSTGRES_USER=doclink`, `POSTGRES_PASSWORD=doclink`,
+     `POSTGRES_DB=doclink` и `WORKER_HEARTBEAT_SECONDS=30`. `DATABASE_URL` остаётся явным;
+     README требует держать его в синхроне с `POSTGRES_*`.
+   - `db.py`: ленивый синхронный engine с `pool_pre_ping=True` и `connect_timeout=2`, `SessionLocal`,
+     `Base`. `check_database()` выполняет `SELECT 1`, перехватывает исключения, пишет warning и
+     возвращает `bool`; недоступная БД не роняет приложение.
 
-3. **Вход и веб-каркас**
-   - `SessionMiddleware` с cookie `session` (имя совпадает с security scheme контракта), подпись
-     `SECRET_KEY`, `same_site=lax`, `https_only=False` для локального прототипа.
-   - `GET /login` — форма; `POST /login` — сверка через `secrets.compare_digest`, при успехе запись
-     пользователя в сессию и редирект на безопасный локальный `next`; неверные данные — 401 и сообщение.
-   - `POST /logout` — очистка сессии.
-   - `require_user`: для HTML — редирект на `/login`; отдельный помощник для будущего JSON-401 в `/api/v1`.
-   - `GET /` — защищённая заглушка «Сводка» без фиктивных метрик. `/docs` остаётся публичным по ТЗ.
+3. **Фабрика приложения и веб-каркас**
+   - `create_app(settings: Settings | None = None)` сохраняет настройки и функцию проверки БД в
+     `app.state`; это позволяет подменять их в тестах без monkeypatch глобальных синглтонов.
+   - Роутеры `auth`, `health`, `web`; `/docs` и `/openapi.json` остаются публичными.
+   - `SessionMiddleware`: cookie `session`, подпись `SECRET_KEY`, `httponly=True`, `same_site=lax`,
+     `https_only=False`, `max_age=7 дней`.
+   - `GET /` — защищённая заглушка «Сводка» с текстом «раздел в разработке», без фиктивных метрик.
+   - Jinja2-шаблоны `base.html`, `login.html`, `index.html` и `app.css`; HTMX не подключается.
+     Пути к шаблонам и статике строятся от расположения модулей, а не от текущего каталога.
 
-4. **`/health`**
-   - Публичный, без авторизации; ответ строго по контракту:
+4. **Вход**
+   - `GET /login` — форма; при активной сессии — редирект на `/`.
+   - `POST /login` — сверка логина и пароля через `secrets.compare_digest`. Неверные данные — 401 и
+     повторный рендер формы с общим сообщением «Неверный логин или пароль», без создания сессии.
+   - При успехе в сессию записывается только имя пользователя; редирект на безопасный относительный
+     `next` или `/`. Внешние URL и значения вида `//...` игнорируются.
+   - `POST /logout` — очистка сессии и редирект на `/login`.
+   - `require_user` для HTML — редирект на `/login?next=...`. Помощник JSON-401 для будущего `/api/v1`
+     заранее не создаётся.
+
+5. **`/health`**
+   - Публичный `GET /health`; Pydantic-модель ответа строго соответствует `HealthStatus`:
      `{status: "ok"|"degraded", db: bool, version: str}`.
+   - `version` берётся из `app.__version__`. Проверка БД — `SELECT 1` на каждый запрос.
    - При недоступной БД — 200 с `status="degraded"`; 500 только при непредвиденной внутренней ошибке.
-   - Docker healthcheck проверяет не только HTTP-код, но и `status=="ok"`.
+     Тело 500 — `{"code": "internal_error", "message": "..."}` по `ErrorBody`, без стектрейса.
+   - Docker healthcheck через Python и `urllib` проверяет HTTP 200 и валидный JSON, но не требует
+     `status="ok"`. Доступность БД проверяется отдельно в приёмке.
 
-5. **Docker и compose**
-   - `Dockerfile`: `python:3.12-slim`, системные `tesseract-ocr` и `tesseract-ocr-rus`, установка
-     через uv с `--frozen`, непривилегированный пользователь, `CMD uvicorn app.main:app`.
-   - `db`: образ `pgvector/pgvector:pg16`, healthcheck `pg_isready`, именованный том `pgdata`.
-   - `api`: порт 8000, `env_file: .env`, зависимость от здоровой БД, тома `/data/files` и
+6. **Docker и compose**
+   - `Dockerfile`: `python:3.12-slim`, системные `tesseract-ocr` и `tesseract-ocr-rus`, uv из
+     закреплённого образа, `uv sync --frozen`, непривилегированный пользователь uid 10001,
+     `CMD uvicorn app.main:app`.
+   - В образ копируются приложение, mock1c, миграции, конфигурация и `tests/`; `/data/files`
+     создаётся с владельцем приложения. `PYTHONDONTWRITEBYTECODE=1`.
+   - Образ `doclink:dev` собирается только сервисом `api`; `worker` и `mock1c` ссылаются на него через
+     `image:`, чтобы `make build` не собирал одно и то же трижды.
+   - `db`: `pgvector/pgvector:pg16`, переменные `POSTGRES_*`, healthcheck `pg_isready`, том `pgdata`,
+     без публикации порта.
+   - `api`: порт 8000, `env_file: .env`, зависимость от здоровой БД, тома `files:/data/files` и
      `./corpus:/data/corpus:ro`.
-   - `worker`: тот же образ, `python -m app.worker`, те же тома и зависимости.
-   - `mock1c`: тот же образ или отдельная команда, порт 8001, `/health` и
-     `GET /odata/standard.odata/Catalog_Документы` → `{"value": []}`; inbox смонтирован, но логика — этап 7.
-   - Необязательный профиль `ollama` без влияния на базовый запуск.
-   - `.dockerignore` и дополнение `.gitignore` для `mock1c/inbox/*`.
+   - `worker`: тот же образ, `python -m app.worker`, те же тома и зависимость от здоровой БД.
+   - `mock1c`: тот же образ, порт 8001, `/health` и пустой OData-список; inbox не монтируется.
+   - Для всех сервисов — `restart: unless-stopped`. Для HTTP-healthcheck: `interval: 10s`,
+     `timeout: 3s`, `retries: 5`, `start_period: 10s`. Worker запускается без healthcheck.
+   - `.dockerignore`: `.git`, `.env*`, `data`, `corpus`, `contract/node_modules`, `tsp-output`,
+     `reference/results`, `.venv`, `__pycache__`.
+   - `.gitignore`: игнорировать содержимое `mock1c/inbox/`, кроме `.gitkeep`.
 
-6. **Alembic**
-   - `alembic.ini` + `migrations/env.py` берут URL из `Settings`, `target_metadata = Base.metadata`.
-   - Baseline-миграция: `CREATE EXTENSION IF NOT EXISTS vector`; доменные таблицы не создаются.
-   - Проверка существующих целей `make migrate` и `make revision` без изменений Makefile.
+7. **Alembic**
+   - `alembic.ini` и `migrations/env.py` берут URL из `Settings`, `target_metadata = Base.metadata`;
+     пароль в `alembic.ini` не записывается.
+   - Baseline `0001`: только `CREATE EXTENSION IF NOT EXISTS vector`; доменные таблицы не создаются.
+     Downgrade — no-op, чтобы не удалять расширение, которое могут использовать другие объекты.
+   - Миграции применяются отдельной командой `make migrate`, не автоматически при старте контейнера.
+   - `make revision` на этапе 1 не запускается: пустой `Base.metadata` создал бы пустую миграцию.
 
-7. **Worker и mock1c без имитации работы**
-   - Worker при старте и циклически проверяет БД, пишет heartbeat в лог, корректно завершается по
-     SIGTERM/SIGINT. Обработки заданий нет до появления таблицы `jobs`.
-   - mock1c не имитирует связи и не возвращает выдуманные документы: только liveness и пустой список.
+8. **Worker и mock1c без имитации работы**
+   - Worker циклически проверяет БД и пишет heartbeat в лог каждые `WORKER_HEARTBEAT_SECONDS`;
+     корректно завершается по SIGTERM/SIGINT. Обработки заданий нет до появления таблицы `jobs`.
+   - mock1c: `GET /health` → `{"status":"ok"}` и
+     `GET /odata/standard.odata/Catalog_Документы` → `{"value": []}`.
+     Выдуманные документы и связи не возвращаются.
 
-8. **Тесты**
-   - `test_health.py`: публичный доступ, форма ответа, `db=true → ok`, `db=false → degraded`.
-   - `test_auth.py`: редирект с `/` на `/login`; неверный пароль не создаёт сессию; верный пароль
+9. **Тесты**
+   - `test_health.py`: публичный доступ, форма ответа, `db=true → ok`, `db=false → degraded` при 200,
+     совпадение `version` с `app.__version__`.
+   - `test_auth.py`: редирект с `/` на `/login?next=/`; неверный пароль — 401 без cookie; верный пароль
      создаёт cookie `session`; защищённая страница доступна; logout очищает сессию; внешний `next`
-     игнорируется.
-   - Тесты не требуют живой PostgreSQL: проверка БД подменяется через `app.state`.
+     игнорируется; `GET /login` при активной сессии ведёт на `/`.
+   - `test_version.py`: `app.__version__` совпадает с версией в `pyproject.toml` (чтение через `tomllib`).
+   - Живая PostgreSQL не требуется: `app.state.check_database` подменяется. `.env` всё равно нужен для
+     compose, поскольку объявлен в `env_file`.
 
 ## Проверка и критерий приёмки
 
-Локально Docker CLI есть в `~/.docker/bin`, но не в `PATH`; проверки выполнять с
-`PATH="$HOME/.docker/bin:$PATH"`.
-
-1. `cp .env.example .env`, задать локальные `APP_PASSWORD` и `SECRET_KEY`.
+1. `docker version`, затем `cp .env.example .env` и замена локальных `APP_PASSWORD` и `SECRET_KEY`.
 2. `docker compose config -q`.
-3. `make build`, `make up`, `make ps` — все сервисы запущены, api/db/mock1c здоровы.
-4. `curl -fsS http://localhost:8000/health` → `status=ok`, `db=true`.
-5. Проверить вход: неверный пароль отклоняется, верный создаёт сессию, `/` открывается, logout работает.
-6. `make migrate`; в psql проверить `\dx` и наличие `vector`.
-7. `make test` и `make lint`.
-8. Перезапуск api восстанавливает здоровье; остановка db даёт `degraded`.
+3. `make build`, `make up`, `make ps` — сервисы запущены; `api`, `db`, `mock1c` здоровы, worker работает.
+4. `make test` и `make lint`.
+5. `curl -fsS http://localhost:8000/health` → `status=ok`, `db=true`.
+6. Вход: неверный пароль даёт 401, верный создаёт сессию, `/` открывается, logout работает.
+7. `make migrate`; в `make db-shell` проверить `\dx` и наличие `vector`.
+8. Перезапуск api восстанавливает здоровье. Остановка db даёт 200 `degraded` в теле `/health`;
+   контейнер api при этом остаётся живым — это ожидаемое поведение.
 9. `make down`, затем чистая проверка `docker compose down -v && make up && make migrate`.
+10. Фактические результаты записать в `IMPLEMENTATION_STATUS.md` и `CONTEXT.md`; незапущенные проверки —
+    с причиной, без предположения об успехе.
 
 Критерий этапа: `docker compose up` поднимает сервис, вход работает.
 
-## Документация и коммиты
+## Коммиты
 
-- README: актуальный запуск, `.env`, адреса `/`/`/health`/mock1c, миграции, остановка.
-- `CONTEXT.md` и `IMPLEMENTATION_STATUS.md`: этап 1 → «сделано», перечислить реально выполненные
-  проверки; следующий шаг — этап 2.
-- Коммиты небольшими смысловыми блоками с push в `origin/main`: инструменты → приложение и вход →
-  Docker/compose/Alembic → тесты → документация. Секреты и `.env` не коммитятся.
+Каждый коммит должен оставлять репозиторий запускаемым. Перед каждым — `make lint` и `make test`.
+
+1. `build: add project tooling, Docker image, compose (api/db), health and tests`
+   — инструменты, lock-файл, Docker/compose только с `api` и `db`, `/health`, Alembic, тесты;
+   этот же коммит приводит `docs/plans/01-karkas.md` к согласованной версии.
+2. `feat: add cookie login and protected summary page` — вход, выход, `/`, шаблоны и тесты входа.
+3. `feat: add worker heartbeat and mock1c skeleton` — модули и добавление сервисов в compose;
+   после него проверяется полная топология.
+4. `docs: record stage 1 verification results` — README, `CONTEXT.md`, `IMPLEMENTATION_STATUS.md`.
+
+В `docs/DECISIONS.md` изменения не вносятся. Секреты и `.env` не коммитятся.
 
 ## Риски и открытые вопросы
 
-- `uv.lock` и версия uv требуют сети при первой сборке; версию uv зафиксирую в Dockerfile.
-- `/health` при падении БД возвращает 200 `degraded`, поэтому healthcheck обязан разбирать тело ответа,
-  иначе контейнер будет ложно здоров.
-- Без `.env` compose не стартует; README явно требует скопировать шаблон.
-- Дрейф `/docs` с TypeSpec-контрактом пока ожидаем: на этапе 1 реализован только `/health`, остальные
-  операции появятся на следующих этапах.
+- Первая генерация lock-файла и сборка требуют сети; версия uv закрепляется.
+- Docker daemon должен быть запущен до проверок; без него результат не считается проверенным.
+- Без `.env` compose не стартует; README явно требует скопировать шаблон и заменить секреты.
+- `DATABASE_URL` и `POSTGRES_*` дублируют параметры подключения; их синхронность документируется.
+- CSRF-токена нет: для локального прототипа риск принят, смягчение — `SameSite=Lax` и POST для logout.
+  Открытый вопрос фиксируется в `CONTEXT.md`; решение пересматривается при выносе сервиса наружу.
+- `/docs` содержит только реализованный `/health` и расходится с полным TypeSpec-контрактом до появления
+  `/api/v1`; drift-тест по прежнему решению не вводится.
+- `CREATE EXTENSION` выполняется пользователем Postgres официального образа, который является
+  суперпользователем.
