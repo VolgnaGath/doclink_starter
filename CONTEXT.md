@@ -1,14 +1,14 @@
 # CONTEXT — DocLink
 
-Обновлено: 01.11.2026 · Этап: подготовка репозитория завершена, следующий — 0 (контракт)
+Обновлено: 01.11.2026 · Этап: 0 «Контракт» завершён, следующий — 1 (каркас)
 
 ## Состояние
 
 - Репозиторий размечен: `docs/TZ.md`, `docs/DECISIONS.md`, `AGENTS.md`, `CONTEXT.md`, `IMPLEMENTATION_STATUS.md`.
 - В репозитории лежат корпус, эталонные скрипты, промпт v1, `Makefile`, `.gitignore`, `.env.example`.
 - Оригинальный `ТЗ.docx` в репозиторий не входит; база — `docs/TZ.md`.
-- Добавлен этап 0 «Контракт»: TypeSpec → OpenAPI для REST `/api/v1`; старые этапы 0–7 стали 1–8.
-- TypeSpec — дизайн-артефакт: `.tsp` в `contract/`, артефакт `contract/openapi/openapi.yaml` коммитится; drift-теста с FastAPI нет.
+- Этап 0 «Контракт» завершён: TypeSpec 1.17 в `contract/`, артефакт `contract/openapi/openapi.yaml` (OpenAPI 3.0.0, 12 операций).
+- TypeSpec — дизайн-артефакт: Pydantic-модели FastAPI пишутся руками, drift-теста с `app.openapi()` нет.
 - Приложение, Docker, миграции и тесты ещё не созданы — это этап 1 (каркас).
 
 ## Что проверено (факты, а не намерения)
@@ -16,8 +16,8 @@
 - `docs/TZ.md` — конвертация `ТЗ.docx` от 31.10.2026: 197 абзацев и все ячейки 4 таблиц сверены с docx, содержание не менялось.
 - Корпус: 231 документ в оценке (real 16, synth 215) и 156 эталонных связей (real 9, synth 147).
 - `reference/linker.py`, `run_models.py`, `anonymize_pdf.py` и `prompts/extract_v1.txt` совпадают со стартовым архивом по SHA-256.
+- `make spec`, `make spec-check`, `make spec-lint` проходят; компилятор TypeSpec v1.17.0, артефакт актуален.
 - `make help` работает; цели `up`/`migrate`/`seed`/`test`/`lint` зависят от каркаса этапа 1.
-- `make spec` и `make spec-check` ещё не запускались: toolchain контракта появится на этапе 0.
 - `make lint` и `make test` не запускались: нет `pyproject.toml`, `tests/` и Docker-каркаса (этап 1).
 
 ## Доменные сущности
@@ -40,13 +40,15 @@
 - Корневой сертификат НУЦ Минцифры для GigaChat в образе.
 - Тарифы провайдеров (`price_in_1k`, `price_out_1k`).
 - В `corpus/real/documents.csv` нет `cp_inn`, `amount`, `subject` — метрики извлечения по real частичны.
-- JSON-схема `prompts/extract_v1.schema.json` отсутствует, создать на этапе 2.
+- JSON-схема `prompts/extract_v1.schema.json` отсутствует, создать на этапе 3.
+- `npm audit` в `contract/`: high в `undici` через `@scalar/json-magic` (только dev-toolchain TypeSpec, в runtime не входит).
 
 ## Следующий шаг
 
-Этап 0: TypeSpec-контракт REST `/api/v1` в `contract/`, компиляция в `contract/openapi/openapi.yaml`,
-цели `make spec`, `make spec-check`, `make spec-lint`. Перед началом — `make help` и `IMPLEMENTATION_STATUS.md`.
+Этап 1: каркас `docker compose` (api, worker, db, mock1c), Dockerfile с Tesseract (rus), Alembic, вход, `/health`.
+Pydantic-модели и роуты писать под `contract/openapi/openapi.yaml`; drift-тест не вводится.
+Перед началом — `make help` и `IMPLEMENTATION_STATUS.md`.
 
 ## Важные пути
 
-`AGENTS.md` · `docs/TZ.md` · `docs/DECISIONS.md` · `IMPLEMENTATION_STATUS.md` · `prompts/` · `corpus/` · `reference/`
+`AGENTS.md` · `docs/TZ.md` · `docs/DECISIONS.md` · `IMPLEMENTATION_STATUS.md` · `contract/` · `prompts/` · `corpus/` · `reference/`
