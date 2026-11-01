@@ -3,9 +3,10 @@
 # import-corpus — этапа 2. spec/spec-check/spec-lint работают на host Node 22+.
 
 COMPOSE ?= docker compose
+UV_IMAGE ?= ghcr.io/astral-sh/uv:0.5.18-python3.12-bookworm-slim
 
 .DEFAULT_GOAL := help
-.PHONY: help spec spec-check spec-lint up down logs ps build migrate revision seed import-corpus test test-fast lint format smoke-paid db-shell
+.PHONY: help spec spec-check spec-lint lock up down logs ps build migrate revision seed import-corpus test test-fast lint format smoke-paid db-shell
 
 help: ## Показать список целей
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -24,6 +25,10 @@ spec-check: ## Проверить, что OpenAPI-артефакт соотве�
 spec-lint: ## Проверить форматирование TypeSpec
 	npm --prefix contract ci
 	npm --prefix contract run check-format
+
+lock: ## Сгенерировать uv.lock закреплённой версией uv
+	docker run --rm --entrypoint uv --user "$$(id -u):$$(id -g)" \
+		-v "$(CURDIR):/workspace" -w /workspace $(UV_IMAGE) --no-cache lock
 
 up: ## Поднять сервисы: docker compose up -d --build
 	$(COMPOSE) up -d --build
@@ -54,16 +59,16 @@ import-corpus: ## Импортировать корпус: split seed=2026, tune
 	$(COMPOSE) run --rm api python -m app.import_corpus --path /data/corpus --seed 2026 --tune-share 0.3
 
 test: ## Тесты без платных вызовов
-	$(COMPOSE) run --rm api python -m pytest -q
+	$(COMPOSE) run --rm --no-deps api python -m pytest -q
 
 test-fast: ## Быстрые тесты без медленных маркеров
-	$(COMPOSE) run --rm api python -m pytest -q -m "not slow"
+	$(COMPOSE) run --rm --no-deps api python -m pytest -q -m "not slow"
 
 lint: ## Проверка стиля без изменений
-	$(COMPOSE) run --rm api sh -c "ruff check . && ruff format --check ."
+	$(COMPOSE) run --rm --no-deps api sh -c "ruff check . && ruff format --check ."
 
 format: ## Форматирование и автоисправления
-	$(COMPOSE) run --rm api sh -c "ruff check --fix . && ruff format ."
+	$(COMPOSE) run --rm --no-deps api sh -c "ruff check --fix . && ruff format ."
 
 smoke-paid: ## Платный smoke: только при PAID_CALLS_ENABLED=true и BUDGET_RUB>0
 	@test "$${PAID_CALLS_ENABLED:-false}" = "true" || { echo "PAID_CALLS_ENABLED must be true"; exit 1; }

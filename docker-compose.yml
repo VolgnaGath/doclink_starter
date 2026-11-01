@@ -1,0 +1,46 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-doclink}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-doclink}
+      POSTGRES_DB: ${POSTGRES_DB:-doclink}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  api:
+    image: doclink:dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - files:/data/files
+      - ./corpus:/data/corpus:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - 'import json, urllib.request; response = urllib.request.urlopen("http://localhost:8000/health", timeout=2); payload = json.load(response); assert response.status == 200 and payload.get("status") in ("ok", "degraded")'
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  pgdata:
+  files:

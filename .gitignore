@@ -19,5 +19,8 @@ reference/results/
 contract/node_modules/
 tsp-output/
 
+mock1c/inbox/*
+!mock1c/inbox/.gitkeep
+
 *.log
 .DS_Store
