@@ -1,0 +1,10 @@
+﻿source;target;type
+deal_001/doc_01;deal_001/doc_02;исполнение
+deal_002/doc_03;deal_002/doc_01;изменение
+deal_002/doc_02;deal_002/doc_01;исполнение
+deal_003/doc_02;deal_003/doc_01;изменение
+deal_004/doc_02;deal_004/doc_01;изменение
+deal_004/doc_03;deal_004/doc_01;изменение
+deal_005/doc_02;deal_005/doc_03;изменение
+deal_005/doc_01;deal_005/doc_03;исполнение
+deal_006/doc_03;deal_006/doc_02;исполнение
