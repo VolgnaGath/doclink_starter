@@ -1,24 +1,31 @@
 # CONTEXT — DocLink
 
-Обновлено: 01.11.2026 · Этап: 0 «Контракт» завершён, следующий — 1 (каркас)
+Обновлено: 01.11.2026 · Этап: 1 «Каркас» завершён, следующий — 2 (документы и корпус)
 
 ## Состояние
 
-- Репозиторий размечен: `docs/TZ.md`, `docs/DECISIONS.md`, `AGENTS.md`, `CONTEXT.md`, `IMPLEMENTATION_STATUS.md`.
-- В репозитории лежат корпус, эталонные скрипты, промпт v1, `Makefile`, `.gitignore`, `.env.example`.
-- Оригинальный `ТЗ.docx` в репозиторий не входит; база — `docs/TZ.md`.
-- Этап 0 «Контракт» завершён: TypeSpec 1.17 в `contract/`, артефакт `contract/openapi/openapi.yaml` (OpenAPI 3.0.0, 12 операций).
-- TypeSpec — дизайн-артефакт: Pydantic-модели FastAPI пишутся руками, drift-теста с `app.openapi()` нет.
-- Приложение, Docker, миграции и тесты ещё не созданы — это этап 1 (каркас).
+- Этап 0 «Контракт» завершён: TypeSpec 1.17 в `contract/`, артефакт `contract/openapi/openapi.yaml`.
+- Этап 1 завершён: Python 3.12 + `uv.lock`, FastAPI, cookie-вход, `/health`, Docker compose
+  `api`/`worker`/`db`/`mock1c`, Alembic baseline pgvector, heartbeat worker, пустой OData mock1c.
+- Образ `doclink:dev` содержит runtime/dev-зависимости и Tesseract (rus); запуск — через `make up`,
+  миграции — через `make migrate`. `.env` обязателен, `change-me` для пароля и секрета запрещён.
+- Доменных таблиц, загрузки документов, `/api/v1`, провайдеров и обработки `jobs` ещё нет.
+- TypeSpec — дизайн-артефакт: Pydantic-модели FastAPI пишутся руками, drift-теста нет.
 
 ## Что проверено (факты, а не намерения)
 
-- `docs/TZ.md` — конвертация `ТЗ.docx` от 31.10.2026: 197 абзацев и все ячейки 4 таблиц сверены с docx, содержание не менялось.
+- `make lock`, `docker compose config -q`, `make build`, `make up`, `make ps` проходят;
+  `api`/`db`/`mock1c` здоровы, worker работает.
+- `make test`: 13 passed, одно предупреждение Starlette о будущей замене httpx в TestClient.
+  `make lint`: ruff check/format проходят. Платных вызовов нет.
+- `/health`: `ok/db=true`; после остановки БД — HTTP 200 `degraded/db=false`, api остаётся живым;
+  после запуска БД и перезапуска api здоровье восстанавливается.
+- Вход проверен HTTP: неверный пароль 401, верный создаёт сессию, `/` открывается, logout работает.
+- `make migrate` устанавливает `vector` 0.8.7; чистый сценарий `down -v && make up && make migrate`
+  выполнен успешно. Worker по SIGTERM завершается с кодом 0.
 - Корпус: 231 документ в оценке (real 16, synth 215) и 156 эталонных связей (real 9, synth 147).
-- `reference/linker.py`, `run_models.py`, `anonymize_pdf.py` и `prompts/extract_v1.txt` совпадают со стартовым архивом по SHA-256.
-- `make spec`, `make spec-check`, `make spec-lint` проходят; компилятор TypeSpec v1.17.0, артефакт актуален.
-- `make help` работает; цели `up`/`migrate`/`seed`/`test`/`lint` зависят от каркаса этапа 1.
-- `make lint` и `make test` не запускались: нет `pyproject.toml`, `tests/` и Docker-каркаса (этап 1).
+- `reference/linker.py`, `run_models.py`, `anonymize_pdf.py` и `prompts/extract_v1.txt` совпадают
+  со стартовым архивом по SHA-256.
 
 ## Доменные сущности
 
@@ -36,19 +43,19 @@
 
 ## Открытые вопросы / ⚠ сверить
 
+- CSRF-токена нет: локальный прототип использует `SameSite=Lax` и POST logout; пересмотреть при выносе наружу.
 - Точные id моделей: Qwen и YandexGPT 5.1 Pro, GigaChat 2 Lite.
 - Корневой сертификат НУЦ Минцифры для GigaChat в образе.
 - Тарифы провайдеров (`price_in_1k`, `price_out_1k`).
 - В `corpus/real/documents.csv` нет `cp_inn`, `amount`, `subject` — метрики извлечения по real частичны.
 - JSON-схема `prompts/extract_v1.schema.json` отсутствует, создать на этапе 3.
-- `npm audit` в `contract/`: high в `undici` через `@scalar/json-magic` (только dev-toolchain TypeSpec, в runtime не входит).
+- `npm audit` в `contract/`: high в `undici` через `@scalar/json-magic` (только dev-toolchain TypeSpec).
 
 ## Следующий шаг
 
-Этап 1: каркас `docker compose` (api, worker, db, mock1c), Dockerfile с Tesseract (rus), Alembic, вход, `/health`.
-План этапа — `docs/plans/01-karkas.md`; писать код по нему.
-Pydantic-модели и роуты писать под `contract/openapi/openapi.yaml`; drift-тест не вводится.
-Перед началом — `make help` и `IMPLEMENTATION_STATUS.md`.
+Этап 2: доменные модели и миграции, загрузка документов, извлечение текста/OCR, импорт корпуса
+с эталоном и разбиением, список и карточка документа. Критерий — 231 документ и 156 эталонных связей.
+План этапа 1 с фактически реализованным каркасом — `docs/plans/01-karkas.md`.
 
 ## Важные пути
 

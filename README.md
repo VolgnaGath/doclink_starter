@@ -5,9 +5,10 @@
 
 ## Состояние
 
-Репозиторий подготовлен к реализации: документы, корпус, эталонные скрипты и промпт v1 на месте.
-Этап 0 завершён — TypeSpec-контракт REST `/api/v1` и OpenAPI в `contract/`. Приложение и Docker-каркас
-появятся на этапе 1; до этого команды `make up`, `make test` и `make lint` не выполняются.
+Этап 0 завершён: TypeSpec-контракт REST `/api/v1` и OpenAPI находятся в `contract/`.
+Этап 1 завершён: работают Docker-каркас `api`/`worker`/`db`/`mock1c`, вход по cookie-сессии,
+публичный `/health`, baseline-миграция pgvector, heartbeat worker и пустой OData-список mock1c.
+Следующий этап — документы и корпус; доменные таблицы, загрузка файлов и `/api/v1` ещё не реализованы.
 
 ## Документация
 
@@ -22,9 +23,29 @@
 | `AGENTS.md` | Правила работы над репозиторием |
 | `CLAUDE.md` | Указатель на `AGENTS.md` |
 
-## Команды
+## Запуск
 
-Все команды — через `Makefile`. Список целей и описаний: `make help`.
+Требуется Docker с Docker Compose. Все повторяемые команды выполняются через `Makefile`;
+актуальный список целей — `make help`.
+
+1. Создать локальную конфигурацию: `cp .env.example .env`.
+2. В `.env` обязательно заменить `APP_PASSWORD` и `SECRET_KEY`: пустые значения и `change-me`
+   не принимаются. `DATABASE_URL` должен соответствовать `POSTGRES_USER`, `POSTGRES_PASSWORD`
+   и `POSTGRES_DB`.
+3. Поднять сервисы: `make up`.
+4. Применить миграции: `make migrate`.
+
+Адреса:
+
+- `http://localhost:8000/` — защищённая страница «Сводка»;
+- `http://localhost:8000/login` — вход, пользователь и пароль из `.env`;
+- `http://localhost:8000/health` — состояние приложения и доступности БД;
+- `http://localhost:8000/docs` — OpenAPI-документация реализованных эндпоинтов;
+- `http://localhost:8001/health` — состояние mock1c;
+- `http://localhost:8001/odata/standard.odata/Catalog_Документы` — пустой OData-список на этапе 1.
+
+Проверки: `make test` и `make lint`; платных вызовов они не выполняют.
+Остановка сервисов: `make down`.
 
 ## Данные
 
@@ -34,8 +55,3 @@
 
 Корпус обезличен, таблица замен отсутствует. `reference/` — эталонные скрипты, только для сверки;
 движок связывания их не импортирует.
-
-## Запуск
-
-Требуется Docker с Docker Compose. После этапа 1: `make up`, затем `make migrate` и `make seed`;
-подробности — в `docs/TZ.md` и `IMPLEMENTATION_STATUS.md`. Для контракта нужен Node 22 LTS (см. `contract/`).
