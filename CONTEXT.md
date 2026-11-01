@@ -1,21 +1,24 @@
 # CONTEXT — DocLink
 
-Обновлено: 01.11.2026 · Этап: подготовка репозитория завершена, следующий — 0 (каркас)
+Обновлено: 01.11.2026 · Этап: подготовка репозитория завершена, следующий — 0 (контракт)
 
 ## Состояние
 
 - Репозиторий размечен: `docs/TZ.md`, `docs/DECISIONS.md`, `AGENTS.md`, `CONTEXT.md`, `IMPLEMENTATION_STATUS.md`.
 - В репозитории лежат корпус, эталонные скрипты, промпт v1, `Makefile`, `.gitignore`, `.env.example`.
 - Оригинальный `ТЗ.docx` в репозиторий не входит; база — `docs/TZ.md`.
-- Приложение, Docker, миграции и тесты ещё не созданы — это этап 0.
+- Добавлен этап 0 «Контракт»: TypeSpec → OpenAPI для REST `/api/v1`; старые этапы 0–7 стали 1–8.
+- TypeSpec — дизайн-артефакт: `.tsp` в `contract/`, артефакт `contract/openapi/openapi.yaml` коммитится; drift-теста с FastAPI нет.
+- Приложение, Docker, миграции и тесты ещё не созданы — это этап 1 (каркас).
 
 ## Что проверено (факты, а не намерения)
 
 - `docs/TZ.md` — конвертация `ТЗ.docx` от 31.10.2026: 197 абзацев и все ячейки 4 таблиц сверены с docx, содержание не менялось.
 - Корпус: 231 документ в оценке (real 16, synth 215) и 156 эталонных связей (real 9, synth 147).
 - `reference/linker.py`, `run_models.py`, `anonymize_pdf.py` и `prompts/extract_v1.txt` совпадают со стартовым архивом по SHA-256.
-- `make help` работает; остальные цели зависят от этапа 0–1.
-- `make lint` и `make test` не запускались: нет `pyproject.toml`, `tests/` и Docker-каркаса (этап 0).
+- `make help` работает; цели `up`/`migrate`/`seed`/`test`/`lint` зависят от каркаса этапа 1.
+- `make spec` и `make spec-check` ещё не запускались: toolchain контракта появится на этапе 0.
+- `make lint` и `make test` не запускались: нет `pyproject.toml`, `tests/` и Docker-каркаса (этап 1).
 
 ## Доменные сущности
 
@@ -41,8 +44,8 @@
 
 ## Следующий шаг
 
-Этап 0: каркас `docker compose` (api, worker, db, mock1c), Dockerfile с Tesseract (rus), Alembic, вход, `/health`.
-Перед началом — `make help` и `IMPLEMENTATION_STATUS.md`.
+Этап 0: TypeSpec-контракт REST `/api/v1` в `contract/`, компиляция в `contract/openapi/openapi.yaml`,
+цели `make spec`, `make spec-check`, `make spec-lint`. Перед началом — `make help` и `IMPLEMENTATION_STATUS.md`.
 
 ## Важные пути
 

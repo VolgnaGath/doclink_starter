@@ -6,8 +6,8 @@
 ## Состояние
 
 Репозиторий подготовлен к реализации: документы, корпус, эталонные скрипты и промпт v1 на месте.
-Приложение и Docker-каркас появятся на этапе 0 — до этого команды `make up`, `make test` и `make lint`
-не выполняются.
+Сначала этап 0 — TypeSpec-контракт REST `/api/v1`; приложение и Docker-каркас появятся на этапе 1.
+До этапа 1 команды `make up`, `make test` и `make lint` не выполняются.
 
 ## Документация
 
@@ -16,7 +16,8 @@
 | `docs/TZ.md` | ТЗ — база требований. Конвертация `ТЗ.docx` от 31.10.2026 без изменения содержания |
 | `docs/DECISIONS.md` | Датированные уточнения; не отменяют ТЗ |
 | `CONTEXT.md` | Состояние на текущую сессию, инварианты, открытые вопросы, следующий шаг |
-| `IMPLEMENTATION_STATUS.md` | Этапы 0–7: сделано / проверено / не запускалось |
+| `IMPLEMENTATION_STATUS.md` | Этапы 0–8: сделано / проверено / не запускалось |
+| `contract/` | TypeSpec-контракт REST `/api/v1` и скомпилированный OpenAPI |
 | `AGENTS.md` | Правила работы над репозиторием |
 | `CLAUDE.md` | Указатель на `AGENTS.md` |
 
@@ -35,5 +36,5 @@
 
 ## Запуск
 
-Требуется Docker с Docker Compose. После этапа 0: `make up`, затем `make migrate` и `make seed`;
-подробности — в `docs/TZ.md` и `IMPLEMENTATION_STATUS.md`.
+Требуется Docker с Docker Compose. После этапа 1: `make up`, затем `make migrate` и `make seed`;
+подробности — в `docs/TZ.md` и `IMPLEMENTATION_STATUS.md`. Для контракта нужен Node 22 LTS (см. `contract/`).
