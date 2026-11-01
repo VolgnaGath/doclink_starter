@@ -1,13 +1,29 @@
 # Все повторяемые команды проекта. Список целей: make help.
-# Цели up/build/migrate/revision/seed/import-corpus требуют каркаса этапа 0–1.
+# Цели up/build/migrate/revision/seed/test/lint требуют каркаса этапа 1;
+# import-corpus — этапа 2. spec/spec-check/spec-lint работают на host Node 22+.
 
 COMPOSE ?= docker compose
 
 .DEFAULT_GOAL := help
-.PHONY: help up down logs ps build migrate revision seed import-corpus test test-fast lint format smoke-paid db-shell
+.PHONY: help spec spec-check spec-lint up down logs ps build migrate revision seed import-corpus test test-fast lint format smoke-paid db-shell
 
 help: ## Показать список целей
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
+
+spec: ## Скомпилировать TypeSpec-контракт в OpenAPI
+	npm --prefix contract ci
+	npm --prefix contract run compile
+
+spec-check: ## Проверить, что OpenAPI-артефакт соответствует TypeSpec
+	npm --prefix contract ci
+	npm --prefix contract run compile
+	@test -z "$$(git status --porcelain -- contract/openapi)" || { \
+		echo "OpenAPI artifact is stale: run make spec and commit contract/openapi"; \
+		git status --porcelain -- contract/openapi; exit 1; }
+
+spec-lint: ## Проверить форматирование TypeSpec
+	npm --prefix contract ci
+	npm --prefix contract run check-format
 
 up: ## Поднять сервисы: docker compose up -d --build
 	$(COMPOSE) up -d --build

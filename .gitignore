@@ -16,5 +16,8 @@ venv/
 data/
 reference/results/
 
+contract/node_modules/
+tsp-output/
+
 *.log
 .DS_Store

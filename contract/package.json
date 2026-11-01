@@ -1,0 +1,20 @@
+{
+  "name": "doclink-contract",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TypeSpec contract for DocLink REST /api/v1",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "compile": "tsp compile . --warn-as-error",
+    "format": "tsp format .",
+    "check-format": "tsp format --check ."
+  },
+  "devDependencies": {
+    "@typespec/compiler": "1.17.0",
+    "@typespec/http": "1.17.0",
+    "@typespec/openapi3": "1.17.0"
+  }
+}
