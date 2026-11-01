@@ -28,8 +28,9 @@
 - Корпус: 231 документ в оценке (real 16, synth 215) и 156 эталонных связей (real 9, synth 147).
 - `reference/linker.py`, `run_models.py`, `anonymize_pdf.py` и `prompts/extract_v1.txt` совпадают
   со стартовым архивом по SHA-256.
-- При уточнении плана этапа 2 `git diff --check` проходит; `make lint` и `make test` не запустились:
-  в текущем окружении команда `docker` недоступна. Ранее выполненные проверки этапа 1 указаны выше.
+- После уточнения плана этапа 2 устранён недоступный Docker CLI: в пользовательском `~/.zshenv`
+  добавлен путь Docker Desktop для новых zsh-сессий. `docker version` и Compose доступны;
+  `make lint` проходит (17 файлов), `make test` — 13 passed с тем же предупреждением Starlette.
 
 ## Доменные сущности
 
