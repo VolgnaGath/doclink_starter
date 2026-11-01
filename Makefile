@@ -14,6 +14,7 @@ VERIFY_COMPOSE = docker compose -p doclink-verify -f docker-compose.verify.yml
 .PHONY: snapshot-corpus audit-corpus import-corpus-original
 .PHONY: configure-acceptance
 .PHONY: pause-worker resume-worker
+.PHONY: audit-extraction
 CERT_DIR ?= $(HOME)/Downloads
 
 help: ## Показать список целей
@@ -119,6 +120,9 @@ extract: ## Очередь/продолжение/отчёт: ARGS='--document U
 
 freeze-extraction: ## Зафиксировать конфигурацию до test: ARGS='--corpus-version UUID'
 	$(COMPOSE) run --rm api python -m app.extract_cli --freeze $(ARGS)
+
+audit-extraction: ## Сохранить read-only JSON приёмки: ARGS='--corpus-version UUID --protocol-hash HASH --output docs/reports/report.json'
+	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace api python -m app.extraction_audit $(ARGS)
 
 reconcile-call: ## Сверка неизвестного расхода: ARGS='--reconcile-call UUID --cost-rub N --note ...'
 	$(COMPOSE) run --rm api python -m app.extract_cli $(ARGS)

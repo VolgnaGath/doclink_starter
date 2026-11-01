@@ -1,0 +1,1053 @@
+{
+  "generated_at": "2026-11-01T20:02:02.437238+00:00",
+  "corpus_version": "1b53cd0c-6eea-4cc3-b5a6-9eebbb6209a4",
+  "corpus_fingerprint": "538864335f3b943a733a7242d0b3f3a6d3afd3d3c126ba5bbbf1acc2b3f5d8ab",
+  "protocol_hash": "84dcde38e8fb0c0863b065fbc817d9f6ea5aa854d671b5b57e761c5bcc157807",
+  "protocol": {
+    "models": [
+      {
+        "name": "GigaChat 2 Lite",
+        "params": {
+          "json_mode": true,
+          "max_tokens": 2000,
+          "temperature": 0
+        },
+        "prompt": "Ты — помощник бухгалтера. Извлеки только сведения, подтверждённые текстом документа.\nКлиент бухгалтерии: {client}. Контрагент — другая сторона, НЕ клиент.\nЕсли ИНН стороны совпадает с ИНН клиента, эта сторона не может быть контрагентом.\n\nВерни только JSON-объект. Не добавляй Markdown, пояснения или программный код.\nНеизвестное значение записывай JSON null (без кавычек). Не используй вместо null строки\n«нет», «неизвестно», «null», «не указан» и фиктивные даты 00.00.0000.\nОтсутствующая дата ссылки — null, даже если номер договора известен. Не выводи дату из номера.\ndoc_kind: договор, допсоглашение, счёт, акт, УПД, другое или null, если вид не установлен.\nnumber и date — номер и дата САМОГО документа. Даты — существующие ДД.ММ.ГГГГ.\nНомера сохраняй как в тексте, включая OCR-ошибки О/0, З/3. Не исправляй их.\namount — итоговая сумма с НДС, JSON-число или null. subject — предмет кратко, до 15 слов.\n\ncontract_refs содержит ссылки только на договоры-основания. Номер и дата в одном объекте\nдолжны относиться к одному договору. Ссылка на допсоглашение записывается в supp_ref,\nна счёт — в invoice_ref. Не подставляй номер договора в номер допсоглашения или наоборот.\nЕсли сам документ — договор, contract_refs пуст. Если ссылки нет, список пуст.\nОтсутствующая ссылка supp_ref/invoice_ref — null, а не объект с выдуманными реквизитами.\nquote и evidence — точные непустые цитаты, скопированные из текста, без пересказа.\nДля неизвестного поля evidence соответствующая цитата — null. Слова «нет» не являются цитатой.\n\nСтруктура ответа (null заменяй найденными значениями; объекты ссылок добавляй только при наличии):\n{{\n \"doc_kind\": null, \"number\": null, \"date\": null,\n \"counterparty_name\": null, \"counterparty_inn\": null,\n \"amount\": null, \"subject\": null,\n \"contract_refs\": [], \"supp_ref\": null, \"invoice_ref\": null,\n \"evidence\": {{\"number\": null, \"date\": null, \"counterparty\": null, \"amount\": null}}\n}}\nОбъект каждой найденной ссылки имеет поля number (строка или null), date (ДД.ММ.ГГГГ или null),\nquote (точная цитата из текста). Неизвестные значения не требуют догадок.\n\nТЕКСТ ДОКУМЕНТА:\n{text}\n",
+        "schema": {
+          "type": "object",
+          "$defs": {
+            "Reference": {
+              "type": "object",
+              "required": [
+                "quote"
+              ],
+              "properties": {
+                "date": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "default": null,
+                  "pattern": "^(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[0-2])\\.[0-9]{4}$"
+                },
+                "quote": {
+                  "type": "string"
+                },
+                "number": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "default": null
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "properties": {
+            "date": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null,
+              "pattern": "^(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[0-2])\\.[0-9]{4}$"
+            },
+            "amount": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^\\d+(\\.\\d+)?$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "number": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            },
+            "subject": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            },
+            "doc_kind": {
+              "enum": [
+                "договор",
+                "допсоглашение",
+                "счёт",
+                "акт",
+                "УПД",
+                "другое",
+                null
+              ],
+              "default": null
+            },
+            "evidence": {
+              "type": "object",
+              "default": {},
+              "properties": {
+                "date": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "amount": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "number": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "counterparty": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            },
+            "supp_ref": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Reference"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "invoice_ref": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Reference"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "contract_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Reference"
+              },
+              "default": []
+            },
+            "counterparty_inn": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            },
+            "counterparty_name": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            }
+          },
+          "additionalProperties": false
+        },
+        "provider": "gigachat",
+        "v_decode": null,
+        "model_uri": "GigaChat-2",
+        "placement": "cloud",
+        "v_prefill": null,
+        "cost_basis": "reference_tariff_freemium",
+        "price_in_1k": "0.06500000",
+        "price_out_1k": "0.06500000",
+        "prompt_version": "v2",
+        "price_cached_in_1k": "0",
+        "preparation_version": "extract-input-v1"
+      },
+      {
+        "name": "Qwen",
+        "params": {
+          "json_mode": true,
+          "max_tokens": 2000,
+          "temperature": 0,
+          "reasoning_effort": "none"
+        },
+        "prompt": "Ты — помощник бухгалтера. Извлеки только сведения, подтверждённые текстом документа.\nКлиент бухгалтерии: {client}. Контрагент — другая сторона, НЕ клиент.\nЕсли ИНН стороны совпадает с ИНН клиента, эта сторона не может быть контрагентом.\n\nВерни только JSON-объект. Не добавляй Markdown, пояснения или программный код.\nНеизвестное значение записывай JSON null (без кавычек). Не используй вместо null строки\n«нет», «неизвестно», «null», «не указан» и фиктивные даты 00.00.0000.\nОтсутствующая дата ссылки — null, даже если номер договора известен. Не выводи дату из номера.\ndoc_kind: договор, допсоглашение, счёт, акт, УПД, другое или null, если вид не установлен.\nnumber и date — номер и дата САМОГО документа. Даты — существующие ДД.ММ.ГГГГ.\nНомера сохраняй как в тексте, включая OCR-ошибки О/0, З/3. Не исправляй их.\namount — итоговая сумма с НДС, JSON-число или null. subject — предмет кратко, до 15 слов.\n\ncontract_refs содержит ссылки только на договоры-основания. Номер и дата в одном объекте\nдолжны относиться к одному договору. Ссылка на допсоглашение записывается в supp_ref,\nна счёт — в invoice_ref. Не подставляй номер договора в номер допсоглашения или наоборот.\nЕсли сам документ — договор, contract_refs пуст. Если ссылки нет, список пуст.\nОтсутствующая ссылка supp_ref/invoice_ref — null, а не объект с выдуманными реквизитами.\nquote и evidence — точные непустые цитаты, скопированные из текста, без пересказа.\nДля неизвестного поля evidence соответствующая цитата — null. Слова «нет» не являются цитатой.\n\nСтруктура ответа (null заменяй найденными значениями; объекты ссылок добавляй только при наличии):\n{{\n \"doc_kind\": null, \"number\": null, \"date\": null,\n \"counterparty_name\": null, \"counterparty_inn\": null,\n \"amount\": null, \"subject\": null,\n \"contract_refs\": [], \"supp_ref\": null, \"invoice_ref\": null,\n \"evidence\": {{\"number\": null, \"date\": null, \"counterparty\": null, \"amount\": null}}\n}}\nОбъект каждой найденной ссылки имеет поля number (строка или null), date (ДД.ММ.ГГГГ или null),\nquote (точная цитата из текста). Неизвестные значения не требуют догадок.\n\nТЕКСТ ДОКУМЕНТА:\n{text}\n",
+        "schema": {
+          "type": "object",
+          "$defs": {
+            "Reference": {
+              "type": "object",
+              "required": [
+                "quote"
+              ],
+              "properties": {
+                "date": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "default": null,
+                  "pattern": "^(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[0-2])\\.[0-9]{4}$"
+                },
+                "quote": {
+                  "type": "string"
+                },
+                "number": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "default": null
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "properties": {
+            "date": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null,
+              "pattern": "^(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[0-2])\\.[0-9]{4}$"
+            },
+            "amount": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^\\d+(\\.\\d+)?$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "number": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            },
+            "subject": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            },
+            "doc_kind": {
+              "enum": [
+                "договор",
+                "допсоглашение",
+                "счёт",
+                "акт",
+                "УПД",
+                "другое",
+                null
+              ],
+              "default": null
+            },
+            "evidence": {
+              "type": "object",
+              "default": {},
+              "properties": {
+                "date": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "amount": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "number": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "counterparty": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            },
+            "supp_ref": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Reference"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "invoice_ref": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Reference"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "contract_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Reference"
+              },
+              "default": []
+            },
+            "counterparty_inn": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            },
+            "counterparty_name": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            }
+          },
+          "additionalProperties": false
+        },
+        "provider": "yandex",
+        "v_decode": null,
+        "model_uri": "gpt://b1gso47d1d4v6o9qob7l/qwen3.6-35b-a3b/latest",
+        "placement": "open-weights-cloud",
+        "v_prefill": null,
+        "cost_basis": "token_tariff",
+        "price_in_1k": "0.20000000",
+        "price_out_1k": "0.30000000",
+        "prompt_version": "v2",
+        "price_cached_in_1k": "0.05",
+        "preparation_version": "extract-input-v1"
+      },
+      {
+        "name": "YandexGPT 5.1 Pro",
+        "params": {
+          "json_mode": true,
+          "max_tokens": 2000,
+          "temperature": 0
+        },
+        "prompt": "Ты — помощник бухгалтера. Извлеки только сведения, подтверждённые текстом документа.\nКлиент бухгалтерии: {client}. Контрагент — другая сторона, НЕ клиент.\nЕсли ИНН стороны совпадает с ИНН клиента, эта сторона не может быть контрагентом.\n\nВерни только JSON-объект. Не добавляй Markdown, пояснения или программный код.\nНеизвестное значение записывай JSON null (без кавычек). Не используй вместо null строки\n«нет», «неизвестно», «null», «не указан» и фиктивные даты 00.00.0000.\nОтсутствующая дата ссылки — null, даже если номер договора известен. Не выводи дату из номера.\ndoc_kind: договор, допсоглашение, счёт, акт, УПД, другое или null, если вид не установлен.\nnumber и date — номер и дата САМОГО документа. Даты — существующие ДД.ММ.ГГГГ.\nНомера сохраняй как в тексте, включая OCR-ошибки О/0, З/3. Не исправляй их.\namount — итоговая сумма с НДС, JSON-число или null. subject — предмет кратко, до 15 слов.\n\ncontract_refs содержит ссылки только на договоры-основания. Номер и дата в одном объекте\nдолжны относиться к одному договору. Ссылка на допсоглашение записывается в supp_ref,\nна счёт — в invoice_ref. Не подставляй номер договора в номер допсоглашения или наоборот.\nЕсли сам документ — договор, contract_refs пуст. Если ссылки нет, список пуст.\nОтсутствующая ссылка supp_ref/invoice_ref — null, а не объект с выдуманными реквизитами.\nquote и evidence — точные непустые цитаты, скопированные из текста, без пересказа.\nДля неизвестного поля evidence соответствующая цитата — null. Слова «нет» не являются цитатой.\n\nСтруктура ответа (null заменяй найденными значениями; объекты ссылок добавляй только при наличии):\n{{\n \"doc_kind\": null, \"number\": null, \"date\": null,\n \"counterparty_name\": null, \"counterparty_inn\": null,\n \"amount\": null, \"subject\": null,\n \"contract_refs\": [], \"supp_ref\": null, \"invoice_ref\": null,\n \"evidence\": {{\"number\": null, \"date\": null, \"counterparty\": null, \"amount\": null}}\n}}\nОбъект каждой найденной ссылки имеет поля number (строка или null), date (ДД.ММ.ГГГГ или null),\nquote (точная цитата из текста). Неизвестные значения не требуют догадок.\n\nТЕКСТ ДОКУМЕНТА:\n{text}\n",
+        "schema": {
+          "type": "object",
+          "$defs": {
+            "Reference": {
+              "type": "object",
+              "required": [
+                "quote"
+              ],
+              "properties": {
+                "date": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "default": null,
+                  "pattern": "^(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[0-2])\\.[0-9]{4}$"
+                },
+                "quote": {
+                  "type": "string"
+                },
+                "number": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "default": null
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "properties": {
+            "date": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null,
+              "pattern": "^(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[0-2])\\.[0-9]{4}$"
+            },
+            "amount": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^\\d+(\\.\\d+)?$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "number": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            },
+            "subject": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            },
+            "doc_kind": {
+              "enum": [
+                "договор",
+                "допсоглашение",
+                "счёт",
+                "акт",
+                "УПД",
+                "другое",
+                null
+              ],
+              "default": null
+            },
+            "evidence": {
+              "type": "object",
+              "default": {},
+              "properties": {
+                "date": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "amount": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "number": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "counterparty": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            },
+            "supp_ref": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Reference"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "invoice_ref": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Reference"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "contract_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Reference"
+              },
+              "default": []
+            },
+            "counterparty_inn": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            },
+            "counterparty_name": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            }
+          },
+          "additionalProperties": false
+        },
+        "provider": "yandex",
+        "v_decode": null,
+        "model_uri": "gpt://b1gso47d1d4v6o9qob7l/yandexgpt-5.1/latest",
+        "placement": "cloud",
+        "v_prefill": null,
+        "cost_basis": "token_tariff",
+        "price_in_1k": "0.80000000",
+        "price_out_1k": "0.80000000",
+        "prompt_version": "v2",
+        "price_cached_in_1k": "0.8",
+        "preparation_version": "extract-input-v1"
+      }
+    ],
+    "preparation": "extract-input-v1",
+    "reused_test": false,
+    "test_started": true
+  },
+  "results": {
+    "GigaChat 2 Lite": {
+      "all": {
+        "expected": 233,
+        "results": 233,
+        "valid": 233,
+        "errors": 0,
+        "in_scope_results": 231,
+        "in_scope_valid": 231,
+        "snapshot_mismatches": 0,
+        "evidence_ok": 0,
+        "supplied_quotes": 669,
+        "found_quotes": 605,
+        "missing_evidence": 444
+      },
+      "tune": {
+        "expected": 56,
+        "results": 56,
+        "valid": 56,
+        "errors": 0,
+        "in_scope_results": 55,
+        "in_scope_valid": 55,
+        "snapshot_mismatches": 0,
+        "evidence_ok": 0,
+        "supplied_quotes": 160,
+        "found_quotes": 145,
+        "missing_evidence": 109
+      },
+      "test": {
+        "expected": 177,
+        "results": 177,
+        "valid": 177,
+        "errors": 0,
+        "in_scope_results": 176,
+        "in_scope_valid": 176,
+        "snapshot_mismatches": 0,
+        "evidence_ok": 0,
+        "supplied_quotes": 509,
+        "found_quotes": 460,
+        "missing_evidence": 335
+      }
+    },
+    "Qwen": {
+      "all": {
+        "expected": 233,
+        "results": 233,
+        "valid": 233,
+        "errors": 0,
+        "in_scope_results": 231,
+        "in_scope_valid": 231,
+        "snapshot_mismatches": 0,
+        "evidence_ok": 219,
+        "supplied_quotes": 1057,
+        "found_quotes": 1043,
+        "missing_evidence": 0
+      },
+      "tune": {
+        "expected": 56,
+        "results": 56,
+        "valid": 56,
+        "errors": 0,
+        "in_scope_results": 55,
+        "in_scope_valid": 55,
+        "snapshot_mismatches": 0,
+        "evidence_ok": 53,
+        "supplied_quotes": 255,
+        "found_quotes": 252,
+        "missing_evidence": 0
+      },
+      "test": {
+        "expected": 177,
+        "results": 177,
+        "valid": 177,
+        "errors": 0,
+        "in_scope_results": 176,
+        "in_scope_valid": 176,
+        "snapshot_mismatches": 0,
+        "evidence_ok": 166,
+        "supplied_quotes": 802,
+        "found_quotes": 791,
+        "missing_evidence": 0
+      }
+    },
+    "YandexGPT 5.1 Pro": {
+      "all": {
+        "expected": 233,
+        "results": 233,
+        "valid": 231,
+        "errors": 2,
+        "in_scope_results": 231,
+        "in_scope_valid": 229,
+        "snapshot_mismatches": 0,
+        "evidence_ok": 69,
+        "supplied_quotes": 996,
+        "found_quotes": 748,
+        "missing_evidence": 52
+      },
+      "tune": {
+        "expected": 56,
+        "results": 56,
+        "valid": 55,
+        "errors": 1,
+        "in_scope_results": 55,
+        "in_scope_valid": 54,
+        "snapshot_mismatches": 0,
+        "evidence_ok": 18,
+        "supplied_quotes": 241,
+        "found_quotes": 183,
+        "missing_evidence": 8
+      },
+      "test": {
+        "expected": 177,
+        "results": 177,
+        "valid": 176,
+        "errors": 1,
+        "in_scope_results": 176,
+        "in_scope_valid": 175,
+        "snapshot_mismatches": 0,
+        "evidence_ok": 51,
+        "supplied_quotes": 755,
+        "found_quotes": 565,
+        "missing_evidence": 44
+      }
+    }
+  },
+  "errors": [
+    {
+      "document_id": "c10be8c9-2432-45b4-98ab-af3849e0ce69",
+      "model": "YandexGPT 5.1 Pro",
+      "split": "tune",
+      "error": "Невалидное извлечение после проверки схемы",
+      "validation": [
+        {
+          "type": "string_type",
+          "loc": [
+            "evidence",
+            "amount"
+          ],
+          "msg": "Input should be a valid string",
+          "url": "https://errors.pydantic.dev/2.14/v/string_type"
+        }
+      ]
+    },
+    {
+      "document_id": "9f9b0698-23bf-45cc-8073-4dbb6db4aa67",
+      "model": "YandexGPT 5.1 Pro",
+      "split": "test",
+      "error": "Невалидное извлечение после проверки схемы",
+      "validation": [
+        {
+          "type": "string_type",
+          "loc": [
+            "evidence",
+            "amount"
+          ],
+          "msg": "Input should be a valid string",
+          "url": "https://errors.pydantic.dev/2.14/v/string_type"
+        }
+      ]
+    }
+  ],
+  "active_jobs": 0,
+  "consumption_all_history": [
+    {
+      "model": "GigaChat 2 Lite",
+      "prompt": "v1",
+      "phase": "other",
+      "status": "invalid",
+      "attempts": 2,
+      "input_tokens": 1307,
+      "output_tokens": 345,
+      "missing_usage_attempts": 0,
+      "cached_input_tokens": 650,
+      "known_cost_rub": "0.06513000",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 0,
+      "response_models": {
+        "GigaChat-2:2.0.30.01": 2
+      }
+    },
+    {
+      "model": "GigaChat 2 Lite",
+      "prompt": "v1",
+      "phase": "other",
+      "status": "success",
+      "attempts": 1,
+      "input_tokens": 520,
+      "output_tokens": 288,
+      "missing_usage_attempts": 0,
+      "cached_input_tokens": 0,
+      "known_cost_rub": "0.05252000",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 0,
+      "response_models": {
+        "GigaChat-2:2.0.30.01": 1
+      }
+    },
+    {
+      "model": "GigaChat 2 Lite",
+      "prompt": "v1",
+      "phase": "tune",
+      "status": "invalid",
+      "attempts": 7,
+      "input_tokens": 5453,
+      "output_tokens": 1821,
+      "missing_usage_attempts": 0,
+      "cached_input_tokens": 2723,
+      "known_cost_rub": "0.29581500",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 0,
+      "response_models": {
+        "GigaChat-2:2.0.30.01": 7
+      }
+    },
+    {
+      "model": "GigaChat 2 Lite",
+      "prompt": "v1",
+      "phase": "tune",
+      "status": "success",
+      "attempts": 54,
+      "input_tokens": 48900,
+      "output_tokens": 11502,
+      "missing_usage_attempts": 0,
+      "cached_input_tokens": 12292,
+      "known_cost_rub": "3.12715000",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 2,
+      "response_models": {
+        "GigaChat-2:2.0.30.01": 54
+      }
+    },
+    {
+      "model": "GigaChat 2 Lite",
+      "prompt": "v2",
+      "phase": "other",
+      "status": "success",
+      "attempts": 1,
+      "input_tokens": 675,
+      "output_tokens": 261,
+      "missing_usage_attempts": 0,
+      "cached_input_tokens": 5,
+      "known_cost_rub": "0.06051500",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 0,
+      "response_models": {
+        "GigaChat-2:2.0.30.01": 1
+      }
+    },
+    {
+      "model": "GigaChat 2 Lite",
+      "prompt": "v2",
+      "phase": "test",
+      "status": "success",
+      "attempts": 177,
+      "input_tokens": 175250,
+      "output_tokens": 44851,
+      "missing_usage_attempts": 0,
+      "cached_input_tokens": 74613,
+      "known_cost_rub": "9.45672000",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 5,
+      "response_models": {
+        "GigaChat-2:2.0.30.01": 177
+      }
+    },
+    {
+      "model": "GigaChat 2 Lite",
+      "prompt": "v2",
+      "phase": "tune",
+      "status": "success",
+      "attempts": 56,
+      "input_tokens": 57705,
+      "output_tokens": 14200,
+      "missing_usage_attempts": 0,
+      "cached_input_tokens": 16137,
+      "known_cost_rub": "3.62492000",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 2,
+      "response_models": {
+        "GigaChat-2:2.0.30.01": 56
+      }
+    },
+    {
+      "model": "Qwen",
+      "prompt": "v1",
+      "phase": "other",
+      "status": "error",
+      "attempts": 4,
+      "input_tokens": null,
+      "output_tokens": null,
+      "missing_usage_attempts": 4,
+      "cached_input_tokens": null,
+      "known_cost_rub": "0",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 0,
+      "response_models": {}
+    },
+    {
+      "model": "Qwen",
+      "prompt": "v2",
+      "phase": "other",
+      "status": "success",
+      "attempts": 1,
+      "input_tokens": 736,
+      "output_tokens": 207,
+      "missing_usage_attempts": 0,
+      "cached_input_tokens": 0,
+      "known_cost_rub": "0.20930000",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 0,
+      "response_models": {
+        "gpt://qwen3.6-35b-a3b/latest": 1
+      }
+    },
+    {
+      "model": "Qwen",
+      "prompt": "v2",
+      "phase": "test",
+      "status": "invalid",
+      "attempts": 2,
+      "input_tokens": 2843,
+      "output_tokens": 506,
+      "missing_usage_attempts": 0,
+      "cached_input_tokens": 0,
+      "known_cost_rub": "0.72040000",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 0,
+      "response_models": {
+        "gpt://qwen3.6-35b-a3b/latest": 2
+      }
+    },
+    {
+      "model": "Qwen",
+      "prompt": "v2",
+      "phase": "test",
+      "status": "success",
+      "attempts": 177,
+      "input_tokens": 193572,
+      "output_tokens": 40720,
+      "missing_usage_attempts": 0,
+      "cached_input_tokens": 88320,
+      "known_cost_rub": "37.68240000",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 5,
+      "response_models": {
+        "gpt://qwen3.6-35b-a3b/latest": 177
+      }
+    },
+    {
+      "model": "Qwen",
+      "prompt": "v2",
+      "phase": "tune",
+      "status": "success",
+      "attempts": 56,
+      "input_tokens": 63655,
+      "output_tokens": 12776,
+      "missing_usage_attempts": 0,
+      "cached_input_tokens": 3840,
+      "known_cost_rub": "15.98780000",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 2,
+      "response_models": {
+        "gpt://qwen3.6-35b-a3b/latest": 56
+      }
+    },
+    {
+      "model": "YandexGPT 5.1 Pro",
+      "prompt": "v1",
+      "phase": "other",
+      "status": "error",
+      "attempts": 4,
+      "input_tokens": null,
+      "output_tokens": null,
+      "missing_usage_attempts": 4,
+      "cached_input_tokens": null,
+      "known_cost_rub": "0",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 0,
+      "response_models": {}
+    },
+    {
+      "model": "YandexGPT 5.1 Pro",
+      "prompt": "v2",
+      "phase": "other",
+      "status": "invalid",
+      "attempts": 1,
+      "input_tokens": 658,
+      "output_tokens": 181,
+      "missing_usage_attempts": 0,
+      "cached_input_tokens": 0,
+      "known_cost_rub": "0.67120000",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 0,
+      "response_models": {
+        "gpt://b1gso47d1d4v6o9qob7l/yandexgpt-5.1/latest": 1
+      }
+    },
+    {
+      "model": "YandexGPT 5.1 Pro",
+      "prompt": "v2",
+      "phase": "other",
+      "status": "success",
+      "attempts": 1,
+      "input_tokens": 908,
+      "output_tokens": 181,
+      "missing_usage_attempts": 0,
+      "cached_input_tokens": 0,
+      "known_cost_rub": "0.87120000",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 0,
+      "response_models": {
+        "gpt://b1gso47d1d4v6o9qob7l/yandexgpt-5.1/latest": 1
+      }
+    },
+    {
+      "model": "YandexGPT 5.1 Pro",
+      "prompt": "v2",
+      "phase": "test",
+      "status": "invalid",
+      "attempts": 119,
+      "input_tokens": 108311,
+      "output_tokens": 23919,
+      "missing_usage_attempts": 0,
+      "cached_input_tokens": 64496,
+      "known_cost_rub": "105.78400000",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 3,
+      "response_models": {
+        "gpt://b1gso47d1d4v6o9qob7l/yandexgpt-5.1/latest": 119
+      }
+    },
+    {
+      "model": "YandexGPT 5.1 Pro",
+      "prompt": "v2",
+      "phase": "test",
+      "status": "success",
+      "attempts": 176,
+      "input_tokens": 200388,
+      "output_tokens": 34668,
+      "missing_usage_attempts": 0,
+      "cached_input_tokens": 107280,
+      "known_cost_rub": "188.04480000",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 5,
+      "response_models": {
+        "gpt://b1gso47d1d4v6o9qob7l/yandexgpt-5.1/latest": 176
+      }
+    },
+    {
+      "model": "YandexGPT 5.1 Pro",
+      "prompt": "v2",
+      "phase": "tune",
+      "status": "invalid",
+      "attempts": 36,
+      "input_tokens": 33849,
+      "output_tokens": 7193,
+      "missing_usage_attempts": 0,
+      "cached_input_tokens": 10720,
+      "known_cost_rub": "32.83360000",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 1,
+      "response_models": {
+        "gpt://b1gso47d1d4v6o9qob7l/yandexgpt-5.1/latest": 36
+      }
+    },
+    {
+      "model": "YandexGPT 5.1 Pro",
+      "prompt": "v2",
+      "phase": "tune",
+      "status": "success",
+      "attempts": 55,
+      "input_tokens": 64242,
+      "output_tokens": 10828,
+      "missing_usage_attempts": 0,
+      "cached_input_tokens": 21040,
+      "known_cost_rub": "60.05600000",
+      "unknown_cost_attempts": 0,
+      "truncated_attempts": 2,
+      "response_models": {
+        "gpt://b1gso47d1d4v6o9qob7l/yandexgpt-5.1/latest": 55
+      }
+    }
+  ],
+  "provider_totals_all_history": {
+    "yandex": {
+      "known_cost_rub": "442.86070000",
+      "unknown_cost_attempts": 0,
+      "started_attempts": 0,
+      "limit_rub": "500"
+    },
+    "gigachat": {
+      "known_cost_rub": "16.68277000",
+      "unknown_cost_attempts": 0,
+      "started_attempts": 0,
+      "limit_rub": "500"
+    }
+  },
+  "notes": [
+    "other includes technical smoke and other corpus versions; usage sums exclude nulls",
+    "valid means schema-valid, not extraction accuracy; no gold metrics computed",
+    "cost_rub is tariff equivalent; cash debit has not been reconciled"
+  ]
+}
