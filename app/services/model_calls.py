@@ -15,7 +15,7 @@ from sqlalchemy.orm import Session
 from app.config import Settings
 from app.models import LLMCall
 from app.services.extraction_schema import PREPARATION_VERSION, ExtractedFields
-from app.services.providers import LLMProvider, ProviderError, response_text
+from app.services.providers import Completion, LLMProvider, ProviderError, response_text
 
 
 class ProcessingError(Exception):
@@ -92,8 +92,42 @@ def reserve(
         ) / 1000
         if used + call.reserved_rub > settings.budget_rub:
             raise ProcessingError("Недостаточно бюджета для резервирования запроса")
+        limits = {"yandex": settings.yandex_budget_rub, "gigachat": settings.gigachat_budget_rub}
+        if any(limit is not None for limit in limits.values()):
+            provider = snapshot["provider"]
+            limit = limits.get(provider)
+            if limit is None or limit <= 0:
+                raise ProcessingError(f"Не задан положительный бюджет провайдера {provider}")
+            provider_used = session.scalar(
+                select(
+                    func.coalesce(
+                        func.sum(func.coalesce(LLMCall.cost_rub, LLMCall.reserved_rub)), 0
+                    )
+                ).where(LLMCall.paid, LLMCall.snapshot["provider"].astext == provider)
+            )
+            if provider_used + call.reserved_rub > limit:
+                raise ProcessingError(f"Недостаточно бюджета провайдера {provider}")
     session.add(call)
     session.commit()  # Attempt is durable BEFORE any network activity.
+
+
+def tariff_cost(snapshot: dict[str, Any], reply: Completion) -> Decimal | None:
+    if reply.input_tokens is None or reply.output_tokens is None:
+        return None
+    cached = reply.cached_input_tokens or 0
+    if cached > reply.input_tokens:
+        return None
+    regular_rate = Decimal(snapshot["price_in_1k"])
+    cached_rate = (
+        Decimal(str(snapshot["price_cached_in_1k"]))
+        if snapshot.get("price_cached_in_1k") is not None
+        else regular_rate
+    )
+    return (
+        (reply.input_tokens - cached) * regular_rate
+        + cached * cached_rate
+        + reply.output_tokens * Decimal(snapshot["price_out_1k"])
+    ) / 1000
 
 
 def complete_fields(
@@ -202,13 +236,18 @@ def complete_fields(
             call.response_raw = reply.raw
             call.input_tokens, call.output_tokens = reply.input_tokens, reply.output_tokens
             call.finished_at = datetime.now(UTC)
+            call.snapshot = {
+                **call.snapshot,
+                "usage_details": {
+                    "cached_input_tokens": reply.cached_input_tokens,
+                    "cash_debit_rub": None,
+                    "cash_debit_note": "Списание не сверено; cost_rub — тарифный эквивалент",
+                },
+            }
             if not call.paid:
                 call.cost_rub = Decimal(0)
             elif reply.input_tokens is not None and reply.output_tokens is not None:
-                call.cost_rub = (
-                    Decimal(reply.input_tokens) * Decimal(snapshot["price_in_1k"])
-                    + Decimal(reply.output_tokens) * Decimal(snapshot["price_out_1k"])
-                ) / 1000
+                call.cost_rub = tariff_cost(snapshot, reply)
             try:
                 fields = ExtractedFields.model_validate_json(reply.text)
             except ValidationError as exc:

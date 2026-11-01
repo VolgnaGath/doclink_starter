@@ -38,7 +38,16 @@ def configuration(model: ModelConfig, prompt: Prompt) -> dict[str, Any]:
         "provider": model.provider,
         "model_uri": model.model_uri,
         "placement": model.placement,
-        "params": {"max_tokens": 2000, **model.params},
+        "params": {
+            "max_tokens": 2000,
+            **{
+                key: value
+                for key, value in model.params.items()
+                if key not in {"price_cached_in_1k", "cost_basis"}
+            },
+        },
+        "price_cached_in_1k": model.params.get("price_cached_in_1k"),
+        "cost_basis": model.params.get("cost_basis", "token_tariff"),
         "price_in_1k": str(model.price_in_1k) if model.price_in_1k is not None else None,
         "price_out_1k": str(model.price_out_1k) if model.price_out_1k is not None else None,
         "v_prefill": model.v_prefill,
@@ -187,7 +196,13 @@ def extract_document(
     with get_engine(settings.database_url).connect() as guard:
         guard.execute(text("SELECT pg_advisory_lock(:key)"), {"key": lock_number(key)})
         guard.commit()
+        provider_lock = None
         try:
+            if snapshot["provider"] == "gigachat":
+                # The Freemium account supports a single generation stream.
+                provider_lock = lock_number("generation-stream:gigachat")
+                guard.execute(text("SELECT pg_advisory_lock(:key)"), {"key": provider_lock})
+                guard.commit()
             with get_session(settings.database_url) as session:
                 call, cache_hit, error, checks, fields = None, False, None, [], None
                 try:
@@ -257,5 +272,7 @@ def extract_document(
         finally:
             if owned_provider:
                 owned_provider.close()
+            if provider_lock is not None:
+                guard.execute(text("SELECT pg_advisory_unlock(:key)"), {"key": provider_lock})
             guard.execute(text("SELECT pg_advisory_unlock(:key)"), {"key": lock_number(key)})
             guard.commit()

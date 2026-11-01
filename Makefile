@@ -12,6 +12,8 @@ VERIFY_COMPOSE = docker compose -p doclink-verify -f docker-compose.verify.yml
 .PHONY: extract freeze-extraction reconcile-call verify-extraction
 .PHONY: gigachat-ca gigachat-ca-install check-gigachat configure-yandex
 .PHONY: snapshot-corpus audit-corpus import-corpus-original
+.PHONY: configure-acceptance
+.PHONY: pause-worker resume-worker
 CERT_DIR ?= $(HOME)/Downloads
 
 help: ## Показать список целей
@@ -48,6 +50,12 @@ logs: ## Смотреть логи всех сервисов
 ps: ## Статус контейнеров
 	$(COMPOSE) ps
 
+pause-worker: ## Приостановить обычный worker на время управляемой CLI-приёмки
+	$(COMPOSE) stop worker
+
+resume-worker: ## Вернуть обычный worker после CLI-приёмки
+	$(COMPOSE) up -d worker
+
 build: ## Собрать образы без запуска
 	$(COMPOSE) build
 
@@ -73,6 +81,9 @@ check-gigachat: ## Проверить OAuth, модели и баланс GigaCh
 
 configure-yandex: ## Сохранить URI/тарифы двух моделей: ARGS='--qwen-uri ... --qwen-in ... --qwen-out ... --yandexgpt-uri ... --yandexgpt-in ... --yandexgpt-out ...'
 	$(COMPOSE) run --rm -v "$(CURDIR):/workspace" -w /workspace api python -m app.provider_admin configure-yandex $(ARGS)
+
+configure-acceptance: ## Настроить три облачные модели, тарифный эквивалент Freemium и источник карточки Qwen
+	$(COMPOSE) run --rm -v "$(CURDIR):/workspace" -w /workspace api python -m app.provider_admin configure-acceptance
 
 import-corpus: ## Импортировать корпус: split seed=2026, tune_share=0.3
 	$(COMPOSE) run --rm api python -m app.import_corpus --path /data/corpus --seed 2026 --tune-share 0.3

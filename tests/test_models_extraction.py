@@ -650,7 +650,9 @@ def test_cli_full_corpus_regex_freeze_and_resume(live: Settings) -> None:
         version = report["version_id"]
     base = ["--corpus-version", str(version)]
     frozen = execute(parser().parse_args([*base, "--freeze"]), live)
-    args = parser().parse_args([*base, "--protocol-hash", frozen["protocol_hash"], "--drain"])
+    args = parser().parse_args(
+        [*base, "--protocol-hash", frozen["protocol_hash"], "--drain", "--workers", "3"]
+    )
     report = execute(args, live)
     assert report["all"]["documents"] == report["all"]["success"] == 233
     assert report["in_scope"]["documents"] == report["in_scope"]["success"] == 231

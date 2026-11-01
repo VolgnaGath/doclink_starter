@@ -18,6 +18,7 @@ class Completion:
     raw: str
     input_tokens: int | None
     output_tokens: int | None
+    cached_input_tokens: int | None = None
 
 
 class ProviderError(Exception):
@@ -164,7 +165,7 @@ class ChatProvider:
             **{
                 k: v
                 for k, v in self.params.items()
-                if k in {"temperature", "max_tokens", "top_p", "seed"}
+                if k in {"temperature", "max_tokens", "top_p", "seed", "reasoning_effort"}
             },
         }
         if self.params.get("json_mode", False):
@@ -196,13 +197,19 @@ class ChatProvider:
             if not isinstance(content, str):
                 raise ValueError("content is not text")
             usage = payload.get("usage") or {}
+            if not isinstance(usage, dict):
+                usage = {}
 
             def token_count(key: str) -> int | None:
                 value = usage.get(key)
                 return value if type(value) is int and value >= 0 else None
 
+            details = usage.get("prompt_tokens_details") or {}
+            cached = details.get("cached_tokens") if isinstance(details, dict) else None
+            if type(cached) is not int or cached < 0:
+                cached = None
             return Completion(
-                content, raw, token_count("prompt_tokens"), token_count("completion_tokens")
+                content, raw, token_count("prompt_tokens"), token_count("completion_tokens"), cached
             )
         except (ValueError, KeyError, IndexError, TypeError) as exc:
             raise ProviderError(

@@ -2,6 +2,7 @@
 
 import argparse
 import json
+from concurrent.futures import ThreadPoolExecutor
 from decimal import Decimal
 from typing import Any
 from uuid import UUID
@@ -28,6 +29,7 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--split", choices=["tune", "test"])
     result.add_argument("--retry", action="store_true", help="Явно повторить завершённые задания")
     result.add_argument("--drain", action="store_true", help="Обработать очередь до опустошения")
+    result.add_argument("--workers", type=int, choices=[1, 2, 3], default=1)
     result.add_argument("--freeze", action="store_true")
     result.add_argument("--protocol-hash", default="")
     result.add_argument("--report-only", action="store_true")
@@ -146,8 +148,13 @@ def execute(
         document_ids, model_ids = [d.id for d in documents], [m.id for m in models]
         scope_ids = [d.id for d in documents if d.in_scope]
     if args.drain and not args.report_only:
-        while work_once(settings, document_ids, model_ids):
-            pass
+
+        def drain() -> None:
+            while work_once(settings, document_ids, model_ids):
+                pass
+
+        with ThreadPoolExecutor(max_workers=args.workers) as pool:
+            list(pool.map(lambda _: drain(), range(args.workers)))
     with get_session(settings.database_url) as session:
 
         def counts(ids: list[UUID], selected_models: list[UUID] | None = None) -> dict[str, Any]:

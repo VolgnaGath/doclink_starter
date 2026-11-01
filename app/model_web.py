@@ -48,11 +48,25 @@ def edit_model(
             "top_p",
             "seed",
             "json_mode",
+            "reasoning_effort",
+            "price_cached_in_1k",
+            "cost_basis",
         }:
             raise ValueError("Недопустимые параметры")
         if not 1 <= int(parsed.get("max_tokens", 2000)) <= 32768:
             raise ValueError("Недопустимый max_tokens")
         prices = [Decimal(value) if value.strip() else None for value in (price_in, price_out)]
+        if parsed.get("price_cached_in_1k") is not None:
+            cached_price = Decimal(str(parsed["price_cached_in_1k"]))
+            if not cached_price.is_finite() or cached_price < 0:
+                raise ValueError("Недопустимый тариф кэша")
+        if parsed.get("cost_basis", "token_tariff") not in {
+            "token_tariff",
+            "reference_tariff_freemium",
+        }:
+            raise ValueError("Недопустимое основание стоимости")
+        if parsed.get("reasoning_effort", "none") not in {"none", "low", "medium", "high"}:
+            raise ValueError("Недопустимый режим рассуждений")
         if any(p is not None and (not p.is_finite() or p < 0) for p in prices):
             raise ValueError("Недопустимый тариф")
         if (

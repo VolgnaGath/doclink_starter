@@ -150,10 +150,59 @@ def configure_yandex(settings: Settings, args: argparse.Namespace) -> dict[str, 
     return {"configured": result, "generation_calls": 0}
 
 
+def configure_acceptance(settings: Settings) -> dict[str, Any]:
+    """Apply the agreed providers and published reference rates before any test results."""
+    with get_session(settings.database_url) as session:
+        seed(session)
+        result = []
+        for model in session.scalars(select(ModelConfig).with_for_update()):
+            if model.name not in {"Qwen", "YandexGPT 5.1 Pro", "GigaChat 2 Lite"}:
+                model.active, model.default_card = False, False
+                continue
+            model.active, model.default_card = True, model.name == "Qwen"
+            params: dict[str, Any] = {"temperature": 0, "max_tokens": 2000}
+            if model.provider == "gigachat":
+                model.price_in_1k = model.price_out_1k = Decimal("0.065")
+                params["cost_basis"] = "reference_tariff_freemium"
+            else:
+                if model.price_in_1k is None or model.price_out_1k is None:
+                    raise ProviderError("Сначала задайте согласованные тарифы Yandex")
+                params["json_mode"] = True
+                params["price_cached_in_1k"] = "0.05" if model.name == "Qwen" else "0.8"
+                if model.name == "Qwen":
+                    params["reasoning_effort"] = "none"
+            model.params = params
+            result.append(
+                {
+                    "name": model.name,
+                    "model_uri": model.model_uri,
+                    "params": params,
+                    "price_in_1k": str(model.price_in_1k),
+                    "price_out_1k": str(model.price_out_1k),
+                }
+            )
+        if len(result) != 3:
+            raise ProviderError("Не найдены три конфигурации моделей")
+        session.commit()
+        return {
+            "models": result,
+            "generation_calls": 0,
+            "cash_debit_rub": None,
+            "default_card_source": "Qwen",
+        }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Настройка и диагностика без генераций")
     parser.add_argument(
-        "action", choices=["download-ca", "install-ca", "check-gigachat", "configure-yandex"]
+        "action",
+        choices=[
+            "download-ca",
+            "install-ca",
+            "check-gigachat",
+            "configure-yandex",
+            "configure-acceptance",
+        ],
     )
     parser.add_argument("--certs-dir", type=Path, default=Path("certs"))
     parser.add_argument("--certificate", type=Path, action="append", default=[])
@@ -169,6 +218,8 @@ def main() -> None:
             result = install_ca(args.certs_dir, args.certificate)
         elif args.action == "check-gigachat":
             result = check_gigachat(Settings())
+        elif args.action == "configure-acceptance":
+            result = configure_acceptance(Settings())
         else:
             result = configure_yandex(Settings(), args)
         print(json.dumps(result, ensure_ascii=False, indent=2))

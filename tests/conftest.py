@@ -25,6 +25,8 @@ def settings() -> Settings:
         llm_provider="mock",
         paid_calls_enabled=False,
         budget_rub=0,
+        yandex_budget_rub=None,
+        gigachat_budget_rub=None,
     )
 
 

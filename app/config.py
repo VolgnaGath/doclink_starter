@@ -27,6 +27,8 @@ class Settings(BaseSettings):
     llm_provider: str = "mock"
     paid_calls_enabled: bool = False
     budget_rub: Decimal = Field(default=Decimal("0"), ge=0)
+    yandex_budget_rub: Decimal | None = Field(default=None, ge=0)
+    gigachat_budget_rub: Decimal | None = Field(default=None, ge=0)
     yandex_api_key: str = Field(
         default="", repr=False, validation_alias=AliasChoices("yandex_api_key", "YC_API_KEY")
     )
