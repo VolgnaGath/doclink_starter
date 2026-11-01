@@ -1,8 +1,12 @@
+import os
 from collections.abc import Iterator
+from pathlib import Path
 
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import Session
 
 from app.config import Settings
 from app.main import create_app
@@ -28,3 +32,25 @@ def app(settings: Settings) -> FastAPI:
 def client(app: FastAPI) -> Iterator[TestClient]:
     with TestClient(app) as test_client:
         yield test_client
+
+
+@pytest.fixture
+def db_session(tmp_path: Path, settings: Settings) -> Iterator[Session]:
+    url = os.environ.get("TEST_DATABASE_URL")
+    if not url:
+        pytest.skip("Изолированная PostgreSQL: make verify-test")
+    settings.database_url = url
+    settings.files_dir = str(tmp_path / "blobs")
+    engine = create_engine(url)
+    with engine.connect() as connection:
+        transaction = connection.begin()
+        connection.execute(
+            text(
+                "TRUNCATE stage_timings, anon_maps, document_texts, documents, "
+                "counterparties, corpus_versions, clients"
+            )
+        )
+        with Session(bind=connection, join_transaction_mode="create_savepoint") as session:
+            yield session
+        transaction.rollback()
+    engine.dispose()

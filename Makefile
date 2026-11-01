@@ -90,3 +90,6 @@ verify-up: ## Подготовить отдельную PostgreSQL для при
 
 verify-down: ## Удалить только изолированные контейнеры и volumes приёмки
 	$(VERIFY_COMPOSE) down -v
+
+verify-test: verify-up ## Интеграционные тесты на отдельной PostgreSQL, включая импорт и веб
+	$(MAKE) test COMPOSE='$(VERIFY_COMPOSE)'
