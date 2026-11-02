@@ -140,9 +140,9 @@ def recover(session: Session, guard: Connection) -> None:
         if not guard.scalar(text("SELECT pg_try_advisory_lock(:key)"), {"key": key}):
             continue
         try:
-            if job.type == "embed":
-                # Local CPU work can always resume. The content-addressed vector
-                # cache covers a crash after result commit but before job completion.
+            if job.type in {"embed", "link"}:
+                # Local work can resume. Durable vectors/link outcomes cover a
+                # crash after result commit but before job completion.
                 job.status, job.locked_at = "queued", None
                 continue
             pending = list(
@@ -254,6 +254,10 @@ def work_once(
                     EncodingConfig.model_validate_json(job.payload["config"]),
                     expected_payload=job.payload,
                 )
+            elif job.type == "link":
+                from app.services.linking_store import link_document
+
+                link_document(settings, job.document_id, job.payload, job_id=job.id)
             else:
                 extract_document(
                     settings,

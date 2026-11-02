@@ -338,3 +338,59 @@ class DocumentEmbedding(Base):
     prepared_chars: Mapped[int]
     cache_hit: Mapped[bool]
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class LinkingResult(Base):
+    """Document outcome, including empty pools and errors; never a confirmed link."""
+
+    __tablename__ = "linking_results"
+    __table_args__ = (
+        CheckConstraint("outcome IN ('recommendation','review','none','error')"),
+        CheckConstraint("method IN ('rules','semantic','combined')"),
+        Index(
+            "uq_linking_success",
+            "input_hash",
+            unique=True,
+            postgresql_where=text("outcome <> 'error'"),
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    source_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"), index=True)
+    model_config_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("model_configs.id"))
+    job_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("jobs.id"), unique=True)
+    input_hash: Mapped[str] = mapped_column(index=True)
+    method: Mapped[str]
+    method_version: Mapped[str]
+    config: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    input_snapshot: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    provenance: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    outcome: Mapped[str]
+    reasons: Mapped[list[str]] = mapped_column(JSONB)
+    recommendations: Mapped[list[str]] = mapped_column(JSONB)
+    error: Mapped[str | None]
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class LinkSuggestion(Base):
+    __tablename__ = "link_suggestions"
+    __table_args__ = (
+        UniqueConstraint("result_id", "target_id"),
+        UniqueConstraint("result_id", "rank"),
+        CheckConstraint("rank > 0"),
+        CheckConstraint("decision IN ('recommendation','review','none')"),
+        CheckConstraint("link_type IN ('изменение','основание','исполнение')"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    result_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("linking_results.id"), index=True)
+    source_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"))
+    target_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"))
+    link_type: Mapped[str]
+    features: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    penalties: Mapped[list[dict[str, Any]]] = mapped_column(JSONB)
+    score: Mapped[float]
+    rank: Mapped[int]
+    decision: Mapped[str]
+    source_evidence: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    target_evidence: Mapped[dict[str, Any]] = mapped_column(JSONB)

@@ -17,6 +17,7 @@ VERIFY_COMPOSE = docker compose -p doclink-verify -f docker-compose.verify.yml
 .PHONY: audit-extraction
 .PHONY: install-addendum audit-addendum import-corpus-base
 .PHONY: embedding-download smoke-embedding embed verify-embedding
+.PHONY: link verify-linking
 CERT_DIR ?= $(HOME)/Downloads
 
 help: ## Показать список целей
@@ -131,6 +132,12 @@ smoke-embedding: ## Реальный BGE-M3 CPU smoke без сети; снач�
 embed: ## Локальная очередь векторов: ARGS='--document UUID --drain' или '--corpus-version UUID --drain'
 	$(COMPOSE) run --rm --no-deps worker python -m app.embed_cli $(ARGS)
 
+link: ## Техническая очередь связывания: ARGS='--document UUID --model UUID --config /workspace/config.json --drain'
+	$(COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace worker python -m app.link_cli $(ARGS)
+
+verify-linking: verify-up ## Хранение, адаптер и worker link на отдельной PostgreSQL без внешних вызовов
+	$(VERIFY_COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_linking_store.py
+
 verify-embedding: verify-up ## Реальная проверка BGE-M3/pgvector/повтора на отдельной DB; сначала embedding-download
 	$(VERIFY_COMPOSE) -f docker-compose.embedding-verify.yml run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_embedding_store.py -k real_embedding_cache
 
@@ -168,7 +175,9 @@ verify-down: ## Удалить только изолированные конт�
 verify-test: verify-up ## Интеграционные тесты на отдельной PostgreSQL, включая импорт и веб
 	$(MAKE) test COMPOSE='$(VERIFY_COMPOSE)'
 
-verify-migrations: verify-up ## Откат/повтор миграций 0004–0002, проверка metadata на изолированной БД
+verify-migrations: verify-up ## Откат/повтор миграций 0005–0002, проверка metadata на изолированной БД
+	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0004
+	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
 	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0003
 	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
 	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0002
