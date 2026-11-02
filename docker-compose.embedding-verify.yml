@@ -1,0 +1,16 @@
+# Shares only downloaded weights with the main environment; DB/files remain isolated.
+services:
+  api:
+    environment:
+      HF_HOME: /data/models/hf-home
+      HF_HUB_OFFLINE: "1"
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TOKENIZERS_PARALLELISM: "false"
+      EMBEDDING_CACHE_DIR: /data/models
+      EMBEDDING_SMOKE_ENABLED: "1"
+    volumes:
+      - embedding_model_cache:/data/models:ro
+volumes:
+  embedding_model_cache:
+    external: true
+    name: ${EMBEDDING_MODEL_VOLUME:-doclink_starter_models}

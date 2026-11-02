@@ -1,0 +1,6 @@
+# Smoke can read the model volume but cannot access a network, API or database.
+services:
+  worker:
+    network_mode: none
+    environment:
+      HF_HUB_OFFLINE: "1"

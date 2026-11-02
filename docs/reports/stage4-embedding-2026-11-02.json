@@ -1,0 +1,64 @@
+{
+  "model": "BAAI/bge-m3",
+  "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+  "snapshot": {
+    "config": {
+      "attention": "sdpa",
+      "batch_size": 1,
+      "chunk_tokens": 512,
+      "cpu_threads": 2,
+      "device": "cpu",
+      "dimensions": 1024,
+      "dtype": "float32",
+      "encoding": "dense-cls-token-weighted-v1",
+      "max_chunks": 256,
+      "max_input_chars": 1000000,
+      "model": "BAAI/bge-m3",
+      "normalize": true,
+      "preparation": "semantic-text-v1",
+      "revision": "5617a9f61b028005a4858fdac845db406aefb181"
+    },
+    "machine": "aarch64",
+    "packages": {
+      "numpy": "2.5.4",
+      "sentence-transformers": "5.7.0",
+      "torch": "2.15.0+cpu",
+      "transformers": "4.57.6"
+    }
+  },
+  "device": "cpu",
+  "local_files_only": true,
+  "dimensions": 1024,
+  "related_cosine": 0.8284057522119631,
+  "unrelated_cosine": 0.5088189271900029,
+  "documents": [
+    {
+      "input_hash": "7f6cec73210482af8d7d5f58a949ec1ea8e45f1cb1ae36a65acc1356d7c19a66",
+      "tokens": 17,
+      "chunks": 1,
+      "truncated": false,
+      "duration_ms": 11534
+    },
+    {
+      "input_hash": "fca9638cb6aaca9853d81ae7c180328c6d1026c30659e80e0caf1dd79e91997d",
+      "tokens": 19,
+      "chunks": 1,
+      "truncated": false,
+      "duration_ms": 767
+    },
+    {
+      "input_hash": "49a0969f75ca52c44428c8460fdb0066f7b70b82a4347af9d0ee90747ce3d452",
+      "tokens": 14,
+      "chunks": 1,
+      "truncated": false,
+      "duration_ms": 287
+    },
+    {
+      "input_hash": "dbc4da6ff34ad92ad92cd9e77b2022b3cb9c852b543bde94fe13a565da5a0ceb",
+      "tokens": 1280,
+      "chunks": 3,
+      "truncated": false,
+      "duration_ms": 7331
+    }
+  ]
+}

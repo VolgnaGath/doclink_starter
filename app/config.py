@@ -24,6 +24,9 @@ class Settings(BaseSettings):
     max_docx_uncompressed_bytes: int = Field(default=100 * 1024 * 1024, gt=0)
     mock1c_url: str = "http://mock1c:8001"
     worker_heartbeat_seconds: int = Field(default=30, gt=0)
+    embedding_cache_dir: str = "/data/models"
+    embedding_local_files_only: bool = True
+    embedding_cpu_threads: int = Field(default=2, ge=1, le=32)
     llm_provider: str = "mock"
     paid_calls_enabled: bool = False
     budget_rub: Decimal = Field(default=Decimal("0"), ge=0)

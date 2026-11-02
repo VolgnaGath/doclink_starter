@@ -16,6 +16,7 @@ VERIFY_COMPOSE = docker compose -p doclink-verify -f docker-compose.verify.yml
 .PHONY: pause-worker resume-worker
 .PHONY: audit-extraction
 .PHONY: install-addendum audit-addendum import-corpus-base
+.PHONY: embedding-download smoke-embedding embed verify-embedding
 CERT_DIR ?= $(HOME)/Downloads
 
 help: ## Показать список целей
@@ -121,6 +122,18 @@ lint: ## Проверка стиля без изменений
 format: ## Форматирование и автоисправления
 	$(COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api sh -c "ruff format . && ruff check --fix . && ruff format ."
 
+embedding-download: ## Скачать закреплённый BGE-M3 в volume worker (без передачи документов)
+	$(COMPOSE) run --rm --no-deps worker python -m app.embedding_smoke --download
+
+smoke-embedding: ## Реальный BGE-M3 CPU smoke без сети; сначала embedding-download
+	$(COMPOSE) -f docker-compose.yml -f docker-compose.embedding-smoke.yml run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace worker python -m app.embedding_smoke $(ARGS)
+
+embed: ## Локальная очередь векторов: ARGS='--document UUID --drain' или '--corpus-version UUID --drain'
+	$(COMPOSE) run --rm --no-deps worker python -m app.embed_cli $(ARGS)
+
+verify-embedding: verify-up ## Реальная проверка BGE-M3/pgvector/повтора на отдельной DB; сначала embedding-download
+	$(VERIFY_COMPOSE) -f docker-compose.embedding-verify.yml run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_embedding_store.py -k real_embedding_cache
+
 smoke-paid: ## Платный smoke: только при PAID_CALLS_ENABLED=true и BUDGET_RUB>0
 	@test "$${PAID_CALLS_ENABLED:-false}" = "true" || { echo "PAID_CALLS_ENABLED must be true"; exit 1; }
 	@test -n "$${BUDGET_RUB}" || { echo "BUDGET_RUB must be > 0"; exit 1; }
@@ -155,7 +168,9 @@ verify-down: ## Удалить только изолированные конт�
 verify-test: verify-up ## Интеграционные тесты на отдельной PostgreSQL, включая импорт и веб
 	$(MAKE) test COMPOSE='$(VERIFY_COMPOSE)'
 
-verify-migrations: verify-up ## Откат/повтор миграций 0003 и 0002, проверка metadata на изолированной БД
+verify-migrations: verify-up ## Откат/повтор миграций 0004–0002, проверка metadata на изолированной БД
+	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0003
+	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
 	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0002
 	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
 	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0001

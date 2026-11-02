@@ -27,8 +27,8 @@ COPY tests ./tests
 
 RUN groupadd --gid 10001 app \
     && useradd --uid 10001 --gid app --no-create-home --shell /usr/sbin/nologin app \
-    && mkdir -p /data/files \
-    && chown -R app:app /app /data/files
+    && mkdir -p /data/files /data/models \
+    && chown -R app:app /data/files /data/models
 
 USER app
 

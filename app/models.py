@@ -5,6 +5,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from typing import Any
 
+from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
     CheckConstraint,
     DateTime,
@@ -291,3 +292,49 @@ class AnonIdentity(Base):
     kind: Mapped[str]
     original: Mapped[str]
     replacement: Mapped[str]
+
+
+class Embedding(Base):
+    """Successful physical encodings, shared only by identical prepared content/config."""
+
+    __tablename__ = "embeddings"
+    __table_args__ = (
+        CheckConstraint("tokens > 0 AND chunks > 0 AND duration_ms >= 0"),
+        CheckConstraint("NOT truncated"),
+        CheckConstraint("abs(vector_norm(vector) - 1) < 0.0001"),
+        Index(
+            "ix_embeddings_vector_hnsw",
+            "vector",
+            postgresql_using="hnsw",
+            postgresql_ops={"vector": "vector_cosine_ops"},
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    input_hash: Mapped[str] = mapped_column(unique=True)
+    text_hash: Mapped[str]
+    model: Mapped[str]
+    revision: Mapped[str]
+    snapshot: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    vector: Mapped[list[float]] = mapped_column(Vector(1024))
+    tokens: Mapped[int]
+    chunks: Mapped[int]
+    truncated: Mapped[bool] = mapped_column(default=False)
+    duration_ms: Mapped[int]
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class DocumentEmbedding(Base):
+    """Append-only provenance; identical texts in new corpus versions reuse a vector."""
+
+    __tablename__ = "document_embeddings"
+    __table_args__ = (UniqueConstraint("document_id", "embedding_id", "original_text_hash"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    document_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"), index=True)
+    embedding_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("embeddings.id"), index=True)
+    original_text_hash: Mapped[str]
+    original_chars: Mapped[int]
+    prepared_chars: Mapped[int]
+    cache_hit: Mapped[bool]
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

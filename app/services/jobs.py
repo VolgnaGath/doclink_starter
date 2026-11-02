@@ -140,6 +140,11 @@ def recover(session: Session, guard: Connection) -> None:
         if not guard.scalar(text("SELECT pg_try_advisory_lock(:key)"), {"key": key}):
             continue
         try:
+            if job.type == "embed":
+                # Local CPU work can always resume. The content-addressed vector
+                # cache covers a crash after result commit but before job completion.
+                job.status, job.locked_at = "queued", None
+                continue
             pending = list(
                 session.scalars(
                     select(LLMCall).where(LLMCall.job_id == job.id, LLMCall.status == "started")
@@ -194,7 +199,10 @@ def recover(session: Session, guard: Connection) -> None:
 
 
 def work_once(
-    settings: Settings, document_ids: list[UUID] | None = None, model_ids: list[UUID] | None = None
+    settings: Settings,
+    document_ids: list[UUID] | None = None,
+    model_ids: list[UUID] | None = None,
+    job_types: list[str] | None = None,
 ) -> bool:
     with (
         get_engine(settings.database_url).connect() as guard,
@@ -206,6 +214,8 @@ def work_once(
             filters.append(Job.document_id.in_(document_ids))
         if model_ids is not None:
             filters.append(Job.model_config_id.in_(model_ids))
+        if job_types is not None:
+            filters.append(Job.type.in_(job_types))
         job = session.scalar(
             select(Job)
             .where(*filters)
@@ -234,6 +244,16 @@ def work_once(
                     raise ProcessingError("Ошибка получения текста")
                 enqueue(session, doc, retry=True)
                 session.commit()
+            elif job.type == "embed":
+                from app.services.embedding_store import embed_document
+                from app.services.embeddings import EncodingConfig
+
+                embed_document(
+                    settings,
+                    job.document_id,
+                    EncodingConfig.model_validate_json(job.payload["config"]),
+                    expected_payload=job.payload,
+                )
             else:
                 extract_document(
                     settings,

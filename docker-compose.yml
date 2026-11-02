@@ -49,6 +49,11 @@ services:
     volumes:
       - files:/data/files
       - ./corpus:/data/corpus:ro
+      - models:/data/models
+    environment:
+      HF_HOME: /data/models/hf-home
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TOKENIZERS_PARALLELISM: "false"
     depends_on:
       db:
         condition: service_healthy
@@ -74,3 +79,4 @@ services:
 volumes:
   pgdata:
   files:
+  models:
