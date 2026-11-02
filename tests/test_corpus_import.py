@@ -15,9 +15,9 @@ def test_import_full_gold_idempotency_and_new_seed(db_session: Session, settings
     first = import_corpus(db_session, CORPUS, settings)
     second = import_corpus(db_session, CORPUS, settings)
     assert first["version_id"] == second["version_id"] and second["reused"]
-    assert db_session.scalar(select(func.count()).select_from(Document)) == 233
-    assert db_session.scalar(select(func.count()).select_from(DocumentText)) == 233
-    assert db_session.scalar(select(func.count()).select_from(StageTiming)) == 233
+    assert db_session.scalar(select(func.count()).select_from(Document)) == 252
+    assert db_session.scalar(select(func.count()).select_from(DocumentText)) == 252
+    assert db_session.scalar(select(func.count()).select_from(StageTiming)) == 252
     assert db_session.scalar(select(func.count()).select_from(Counterparty)) == 0
     count = db_session.scalar(
         text(
@@ -26,7 +26,7 @@ def test_import_full_gold_idempotency_and_new_seed(db_session: Session, settings
         ),
         {"version": first["version_id"]},
     )
-    assert count == 156
+    assert count == 171
     prepared = prepare_corpus(CORPUS, 2026, 0.3, settings)
     expected = {d.key: d.gold for d in prepared.documents}
     for document in db_session.scalars(select(Document)):
@@ -41,8 +41,8 @@ def test_import_full_gold_idempotency_and_new_seed(db_session: Session, settings
     db_session.commit()
     changed = import_corpus(db_session, CORPUS, settings, seed=2027)
     assert changed["version_id"] != first["version_id"]
-    assert db_session.scalar(select(func.count()).select_from(Document)) == 466
-    assert len(list(Path(settings.files_dir).glob("*/*"))) <= 233
+    assert db_session.scalar(select(func.count()).select_from(Document)) == 504
+    assert len(list(Path(settings.files_dir).glob("*/*"))) <= 252
 
 
 def test_import_rolls_back_all_rows(

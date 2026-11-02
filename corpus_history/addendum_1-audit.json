@@ -1,0 +1,78 @@
+{
+  "revision": "addendum-1-2026-11-02",
+  "archive_sha256": "648d23c479e3aaa49e24da15a21c1700c1ba76ba22197c9909bb12bb4c82b102",
+  "base_fingerprint": "538864335f3b943a733a7242d0b3f3a6d3afd3d3c126ba5bbbf1acc2b3f5d8ab",
+  "fingerprint": "fe98fa1d6fdf24237c357b8761ec0e1bf35e8f44fbe9bb8eeb5491c1f9390103",
+  "report": {
+    "parameters": {
+      "algorithm": "corpus-v2-extra/split-v1",
+      "seed": 2026,
+      "tune_share": 0.3
+    },
+    "total": 252,
+    "in_scope": 250,
+    "links": 171,
+    "link_sources": 147,
+    "distribution": {
+      "real": {
+        "tune": {
+          "deals": 2,
+          "documents": 6
+        },
+        "test": {
+          "deals": 5,
+          "documents": 12
+        }
+      },
+      "synth": {
+        "tune": {
+          "deals": 23,
+          "documents": 50
+        },
+        "test": {
+          "deals": 55,
+          "documents": 165
+        }
+      },
+      "synth_extra": {
+        "tune": {
+          "deals": 4,
+          "documents": 5
+        },
+        "test": {
+          "deals": 10,
+          "documents": 14
+        }
+      }
+    },
+    "warnings": []
+  },
+  "files": {
+    "synth_extra/documents.csv": "b2f23cfa78df56bcd9e1c2f63c4f6dce7663a4a5d1c6721376f20a44da6220da",
+    "synth_extra/extra_001/doc_01.txt": "31882c20015c18769044bf29dd4ad0777349a1df8cc6a0084252e7488b29b64d",
+    "synth_extra/extra_002/doc_01.txt": "4e15785ad7286447d5082f1d50a845877aa8aef3c32a91ff814f036fe11f0157",
+    "synth_extra/extra_003/doc_01.txt": "12fd65b67ee50e42c9afd7ab49786480597fc362db0f9792042e54f54d8ea5f3",
+    "synth_extra/extra_004/doc_01.txt": "283b3b4e602b97a9f9ee5d8b68ebe6a1f7c07e67bb6a9bf247276aa3fac878ff",
+    "synth_extra/extra_005/doc_01.txt": "4a7f9a22c5dbb0d1e3adfcc101e31d98a0eae89d597a3fde7cd14cedc32d288f",
+    "synth_extra/extra_006/doc_01.txt": "91add7e31b3caf4227ef225ee21a8fbb0fea6c69af8eca711fa25fe4081c8672",
+    "synth_extra/extra_007/doc_01.txt": "8c551a5962fff08e9b57f76b3ed91e840ce62d89783bb00f4c12ac4143572f54",
+    "synth_extra/extra_008/doc_01.txt": "a90bf71520f7fd4ecf1d97cdfee4092396672c8ab768eaafbc8daf0cf771c9f8",
+    "synth_extra/extra_009/doc_01.txt": "cab70d1817f0b7bf4fb377308e685c4a7900d130cafe56b97d7f1ac2a9be662e",
+    "synth_extra/extra_010/doc_01.txt": "ab4f53fbdb653edb1b2f9b4548ae860de282999ce34309f396a8316f1c0eb9fd",
+    "synth_extra/extra_011/doc_01.txt": "03e338af5fb6f66d7eb6861bdc9796bb0ce4fc5323d7ca307940a1d8bbc66deb",
+    "synth_extra/extra_012/doc_01.txt": "d350641b1043ee168ac402074a1d29c2fccf9c067bcc51f51c34b7c39d308dd2",
+    "synth_extra/extra_013/doc_01.txt": "0fc7469405ae354fd88b0b4af4ffac7f08a33c50ee7b7dd083a527105fac160d",
+    "synth_extra/extra_014/doc_01.txt": "6cd337e7107bbf51249149d0f0af4c4c338067de089367d808b93a2cace404a2",
+    "synth_extra/extra_015/doc_01.txt": "a32c8265459182f78d8efc52421c96d251891856f166d27b8f7707b6530f2732",
+    "synth_extra/extra_016/doc_01.txt": "02a55f21f9b706d98b592b0cc5b3ebc52e66db91478f5ad2a442d639c8d02d40",
+    "synth_extra/extra_017/doc_01.txt": "f3b6c1761a814faabf46baeaa70e87560c97027e6a824e8a16cb2781e57350a1",
+    "synth_extra/extra_018/doc_01.txt": "48dff825daa623828b878cc5b04329f07fedc063e27841fc86f6a895d35bfd31",
+    "synth_extra/extra_019/doc_01.txt": "7eaeaf3b85d9efc21007d302c9f61ab7b2c994eda0e2c6f1bce8c858c7fc2766",
+    "synth_extra/links.csv": "b99b869372087166113007bb64476956008f5a9c401923e8e3870cf282d22353"
+  },
+  "approved_edits": [
+    "extra_008 reference matches v2",
+    "extra_016 reference without date",
+    "deal groups: 011/013, 014/015/016, 017/018/019"
+  ]
+}

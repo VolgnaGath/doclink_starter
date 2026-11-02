@@ -22,10 +22,10 @@ def test_full_corpus_gold_and_report(settings: Settings) -> None:
     corpus = prepare_corpus(CORPUS, 2026, 0.3, settings)
     report = corpus.report
     assert (report["total"], report["in_scope"], report["links"], report["link_sources"]) == (
-        233,
-        231,
-        156,
-        138,
+        252,
+        250,
+        171,
+        147,
     )
     assert report["distribution"]["real"]["tune"]["deals"] == 2
     assert report["distribution"]["synth"]["tune"]["deals"] == 23

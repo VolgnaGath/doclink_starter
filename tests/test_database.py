@@ -86,7 +86,7 @@ def test_concurrent_import_same_snapshot(settings: Settings, tmp_path: Path) -> 
         assert sorted(report["reused"] for report in reports) == [False, True]
         with Session(engine) as session:
             for model in (Document, DocumentText, StageTiming):
-                assert session.scalar(select(func.count()).select_from(model)) == 233
+                assert session.scalar(select(func.count()).select_from(model)) == 252
     finally:
         engine.dispose()
         with admin.begin() as connection:

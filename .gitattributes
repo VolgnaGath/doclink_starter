@@ -4,3 +4,4 @@
 /corpus/real/links.csv text eol=lf
 /corpus/real/manifest.csv text eol=crlf
 /corpus/synth/*.csv text eol=crlf
+/corpus/synth_extra/*.csv text eol=crlf

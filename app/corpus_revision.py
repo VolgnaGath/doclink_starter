@@ -116,7 +116,7 @@ def russian_date(value: str) -> str:
 
 
 def audit(root: Path, archive: Path, settings: Settings) -> dict[str, Any]:
-    current = prepare_corpus(root, 2026, 0.3, settings)
+    current = prepare_corpus(root, 2026, 0.3, settings, include_extra=False)
     after = corpus_files(root)
     with archived_corpus(archive) as original_root:
         original = prepare_corpus(original_root, 2026, 0.3, settings)

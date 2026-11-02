@@ -78,7 +78,9 @@ def safe_id(value: str) -> str:
     return value
 
 
-def prepare_corpus(root: Path, seed: int, tune_share: float, settings: Settings) -> PreparedCorpus:
+def prepare_corpus(
+    root: Path, seed: int, tune_share: float, settings: Settings, *, include_extra: bool = True
+) -> PreparedCorpus:
     # Snapshot bytes used both for fingerprinting and importing, avoiding mutable-input races.
     inputs: dict[str, bytes] = {}
 
@@ -97,14 +99,19 @@ def prepare_corpus(root: Path, seed: int, tune_share: float, settings: Settings)
     documents: dict[str, CorpusDocument] = {}
     warnings: list[dict[str, str]] = []
     distributions: dict[str, Any] = {}
+    parts = ["real", "synth"]
+    if include_extra and (root / "synth_extra").exists():
+        parts.append("synth_extra")
     try:
-        for part in ("real", "synth"):
+        for part in parts:
             required = {"doc_id", "deal_id", "source", "kind", "number", "date", "hard_types"}
             required |= (
                 {"client", "in_scope", "note"}
                 if part == "real"
                 else {"client_inn", "cp_inn", "cp_name", "amount", "subject"}
             )
+            if part == "synth_extra":
+                required |= {"case", "expected"}
             path = f"{part}/documents.csv"
             rows = csv_rows(read(path), required, path)
             if not rows:
@@ -138,7 +145,7 @@ def prepare_corpus(root: Path, seed: int, tune_share: float, settings: Settings)
                     raise CorpusError(f"Некорректный трудный тип: {key}")
                 client_key = row["client"] if part == "real" else row["client_inn"]
                 if not client_key.strip() or (
-                    part == "synth" and not re.fullmatch(r"\d{10}|\d{12}", client_key)
+                    part != "real" and not re.fullmatch(r"\d{10}|\d{12}", client_key)
                 ):
                     raise CorpusError(f"Некорректный клиент: {key}")
                 if fields["cp_inn"] and not re.fullmatch(r"\d{10}|\d{12}", fields["cp_inn"]):
@@ -163,6 +170,19 @@ def prepare_corpus(root: Path, seed: int, tune_share: float, settings: Settings)
                         "provenance": {"part": part, "row": row},
                     },
                 )
+                if part == "synth_extra":
+                    allowed = {
+                        "no_target": "не рекомендация",
+                        "multi3": "разбор",
+                        "conflict": "разбор",
+                        "same_number": "разбор",
+                        "same_number_contract": "—",
+                    }
+                    if row["case"] not in allowed or row["expected"] != allowed[row["case"]]:
+                        raise CorpusError(f"Некорректный контрольный случай: {key}")
+                    if (row["case"] == "same_number_contract") != (row["kind"] == "договор"):
+                        raise CorpusError(f"Некорректный вид контрольного случая: {key}")
+                    documents[key].gold.update(case=row["case"], expected=row["expected"])
             distributions[part] = {
                 subset: {
                     "deals": sum(s == subset for s in split.values()),
@@ -193,10 +213,16 @@ def prepare_corpus(root: Path, seed: int, tune_share: float, settings: Settings)
             raise CorpusError("Manifest не покрывает real-документы")
 
         seen_links: set[tuple[str, str, str]] = set()
-        for part in ("real", "synth"):
+        for part in parts:
             path = f"{part}/links.csv"
             for row in csv_rows(read(path), {"source", "target", "type"}, path):
-                source, target = (f"{part}/{safe_id(row[field])}" for field in ("source", "target"))
+                source = f"{part}/{safe_id(row['source'])}"
+                target_part = (
+                    "synth"
+                    if part == "synth_extra" and row["target"].startswith("synth_")
+                    else part
+                )
+                target = f"{target_part}/{safe_id(row['target'])}"
                 link_type = row["type"]
                 if source not in documents or target not in documents or source == target:
                     raise CorpusError(f"Битая эталонная ссылка: {source} → {target}")
@@ -220,12 +246,25 @@ def prepare_corpus(root: Path, seed: int, tune_share: float, settings: Settings)
                             "target_date": target_date,
                         }
                     )
+        for doc in documents.values():
+            if doc.part == "synth_extra":
+                expected_links = {
+                    "no_target": 0,
+                    "multi3": 3,
+                    "conflict": 1,
+                    "same_number": 1,
+                    "same_number_contract": 0,
+                }
+                if len(doc.gold["links"]) != expected_links[doc.gold["case"]]:
+                    raise CorpusError(f"Некорректное число эталонных связей: {doc.key}")
     except (OSError, UnicodeError, ValueError, InvalidOperation, csv.Error) as exc:
         if isinstance(exc, CorpusError):
             raise
         raise CorpusError(f"Ошибка входных данных корпуса ({type(exc).__name__})") from exc
 
     parameters = {"algorithm": ALGORITHM, "seed": seed, "tune_share": tune_share}
+    if "synth_extra" in parts:
+        parameters["algorithm"] = "corpus-v2-extra/split-v1"
     fingerprint_input = {
         "parameters": parameters,
         "files": [(p, hashlib.sha256(data).hexdigest()) for p, data in sorted(inputs.items())],
@@ -245,9 +284,15 @@ def prepare_corpus(root: Path, seed: int, tune_share: float, settings: Settings)
 
 
 def import_corpus(
-    session: Session, root: Path, settings: Settings, seed: int = 2026, tune_share: float = 0.3
+    session: Session,
+    root: Path,
+    settings: Settings,
+    seed: int = 2026,
+    tune_share: float = 0.3,
+    *,
+    include_extra: bool = True,
 ) -> dict[str, Any]:
-    prepared = prepare_corpus(root, seed, tune_share, settings)
+    prepared = prepare_corpus(root, seed, tune_share, settings, include_extra=include_extra)
     with session.begin():
         # Serialize matching snapshots; DB uniqueness remains the final invariant.
         lock_key = int(prepared.fingerprint[:16], 16)
@@ -270,9 +315,10 @@ def import_corpus(
             session.flush()
             clients: dict[tuple[str, str], Client] = {}
             for item in prepared.documents:
-                client_identity = item.part, item.client_key
+                client_part = "synth" if item.part == "synth_extra" else item.part
+                client_identity = client_part, item.client_key
                 if client_identity not in clients:
-                    namespace = f"corpus:{item.part}"
+                    namespace = f"corpus:{client_part}"
                     # Different versions can import concurrently and share namespace clients.
                     session.execute(
                         insert(Client)
@@ -282,7 +328,7 @@ def import_corpus(
                             name=item.client_key
                             if item.part == "real"
                             else f"Клиент {item.client_key}",
-                            inn=item.client_key if item.part == "synth" else None,
+                            inn=item.client_key if client_part == "synth" else None,
                         )
                         .on_conflict_do_nothing(index_elements=["namespace", "external_key"])
                     )

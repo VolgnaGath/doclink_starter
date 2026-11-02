@@ -52,7 +52,7 @@ def test_import_revision_creates_distinct_version_without_rewriting_original(
 ) -> None:
     with archived_corpus(ARCHIVE) as original:
         before = import_corpus(db_session, original, settings)
-    after = import_corpus(db_session, CORPUS, settings)
+    after = import_corpus(db_session, CORPUS, settings, include_extra=False)
     assert before["version_id"] != after["version_id"]
     assert before["links"] == after["links"] == 156
     assert len(before["warnings"]) == 10 and after["warnings"] == []
@@ -73,5 +73,5 @@ def test_import_revision_creates_distinct_version_without_rewriting_original(
         text = db_session.get(DocumentText, doc.id).text
         assert doc.gold["fields"]["number"] in text
     db_session.commit()
-    repeat = import_corpus(db_session, CORPUS, settings)
+    repeat = import_corpus(db_session, CORPUS, settings, include_extra=False)
     assert repeat["version_id"] == after["version_id"] and repeat["reused"]

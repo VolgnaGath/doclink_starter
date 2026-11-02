@@ -109,7 +109,12 @@ def setup(
             status="text",
             is_anonymized=anonymized,
             card_model_config_id=model.id,
-            gold={"deal_id": "GOLD_SECRET", "number": "GOLD_NUMBER"},
+            gold={
+                "deal_id": "GOLD_SECRET",
+                "number": "GOLD_NUMBER",
+                "case": "GOLD_CASE_SECRET",
+                "expected": "GOLD_EXPECTED_SECRET",
+            },
             deal_id="SECRET_DEAL",
         )
         session.add(doc)
@@ -304,7 +309,14 @@ def test_pipeline_correction_cache_history_and_gold_isolation(live: Settings) ->
     assert provider.count == 2
     assert all(
         value not in json.dumps(provider.messages)
-        for value in ["GOLD_SECRET", "GOLD_NUMBER", "SECRET_GOLD_PATH", "SECRET_DEAL"]
+        for value in [
+            "GOLD_SECRET",
+            "GOLD_NUMBER",
+            "SECRET_GOLD_PATH",
+            "SECRET_DEAL",
+            "GOLD_CASE_SECRET",
+            "GOLD_EXPECTED_SECRET",
+        ]
     )
     with get_session(live.database_url) as session:
         assert not session.get(Extraction, first).is_current
@@ -654,12 +666,12 @@ def test_cli_full_corpus_regex_freeze_and_resume(live: Settings) -> None:
         [*base, "--protocol-hash", frozen["protocol_hash"], "--drain", "--workers", "3"]
     )
     report = execute(args, live)
-    assert report["all"]["documents"] == report["all"]["success"] == 233
-    assert report["in_scope"]["documents"] == report["in_scope"]["success"] == 231
+    assert report["all"]["documents"] == report["all"]["success"] == 252
+    assert report["in_scope"]["documents"] == report["in_scope"]["success"] == 250
     assert report["physical_attempts"] == 0
     resumed = execute(args, live)
     assert resumed["all"]["success"] == report["all"]["success"]
-    assert resumed["all"]["reused_results"] == 233
+    assert resumed["all"]["reused_results"] == 252
     assert resumed["new_physical_attempts"] == 0
     with get_session(live.database_url) as session:
         model = session.scalar(select(ModelConfig).where(ModelConfig.provider == "regex"))

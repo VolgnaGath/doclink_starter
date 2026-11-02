@@ -15,6 +15,7 @@ VERIFY_COMPOSE = docker compose -p doclink-verify -f docker-compose.verify.yml
 .PHONY: configure-acceptance
 .PHONY: pause-worker resume-worker
 .PHONY: audit-extraction
+.PHONY: install-addendum audit-addendum import-corpus-base
 CERT_DIR ?= $(HOME)/Downloads
 
 help: ## Показать список целей
@@ -88,6 +89,16 @@ configure-acceptance: ## Настроить три облачные модели
 
 import-corpus: ## Импортировать корпус: split seed=2026, tune_share=0.3
 	$(COMPOSE) run --rm api python -m app.import_corpus --path /data/corpus --seed 2026 --tune-share 0.3
+
+import-corpus-base: ## Воспроизвести импорт v2 без synth_extra
+	$(COMPOSE) run --rm api python -m app.import_corpus --path /data/corpus --base-only
+
+install-addendum: ## Сохранить и установить согласованное дополнение: SOURCE=/абсолютный/путь.zip
+	@test -n "$(SOURCE)"
+	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -v "$(SOURCE):/incoming/addendum.zip:ro" -w /workspace api python -m app.corpus_addendum install --source /incoming/addendum.zip
+
+audit-addendum: ## Проверить точные правки и хеши дополнения без вызовов моделей
+	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace api python -m app.corpus_addendum audit
 
 snapshot-corpus: ## Сохранить исходный корпус v1 до редакции, без перезаписи существующего архива
 	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace api python -m app.corpus_revision snapshot
