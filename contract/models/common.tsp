@@ -64,6 +64,10 @@ enum ReviewActionType {
   choose_other: "choose_other",
   reject: "reject",
   manual: "manual",
+  complete: "complete",
+  without_links: "without_links",
+  reopen: "reopen",
+  remove: "remove",
 }
 
 enum ExperimentMethod {
@@ -130,7 +134,7 @@ model Page<T> {
 model ErrorBody {
   code: string;
   message: string;
-  details?: Record<unknown>;
+  details: Record<unknown>[];
 }
 
 @error
@@ -170,16 +174,25 @@ model HealthStatus {
 }
 
 model JobRef {
-  job_id: int64;
+  job_id: uuid;
   status: JobStatus;
 }
 
 model StageTiming {
   id: int64;
-  document_id: uuid;
-  run_id?: int64;
-  stage: ProcessingStage;
+  stage: string;
   duration_ms: int64;
   ok: boolean;
-  error?: string;
+  error: string | null;
+  started_at: utcDateTime;
+}
+
+model Created<T> {
+  @statusCode statusCode: 201;
+  @bodyRoot body: T;
+}
+
+model Accepted<T> {
+  @statusCode statusCode: 202;
+  @bodyRoot body: T;
 }

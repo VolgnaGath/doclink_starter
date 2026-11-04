@@ -166,7 +166,30 @@ def complete_fields(
             root_cached,
             True,
         )
-    for correction in range(2):
+    correction_start = 0
+    if job_id is not None:
+        prior = list(
+            session.scalars(
+                select(LLMCall)
+                .where(LLMCall.job_id == job_id, LLMCall.root_input_hash == root_key)
+                .order_by(LLMCall.started_at)
+            )
+        )
+        retries = sum(call.status == "error" for call in prior)
+        invalid = [call for call in prior if call.status == "invalid"]
+        if invalid:
+            if any(call.input_hash != root_key for call in invalid):
+                raise ProcessingError("Невалидное извлечение после проверки схемы")
+            # A budget refusal happens before journaling/sending the correction.
+            # Resume the same job from its durable initial answer, never resend it.
+            initial = invalid[-1]
+            messages = [
+                *messages,
+                {"role": "assistant", "content": response_text(initial.response_raw)},
+                {"role": "user", "content": "Исправь JSON по схеме. Ошибки: " + initial.error},
+            ]
+            correction_start = 1
+    for correction in range(correction_start, 2):
         key = request_hash(snapshot, messages, client_id)
         cached = session.scalar(
             select(LLMCall).where(

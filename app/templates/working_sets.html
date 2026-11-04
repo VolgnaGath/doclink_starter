@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Рабочие наборы — DocLink{% endblock %}
+{% block content %}
+<h1>Рабочие наборы</h1>
+<p>Выберите входящие документы. Все договоры их клиентов выбранной версии добавятся автоматически. Оригинальный корпус и его результаты сохранятся.</p>
+<form method="get"><label>Версия корпуса <select name="corpus_version_id">{% for version in versions %}<option value="{{ version.id }}" {% if chosen == version.id %}selected{% endif %}>{{ version.name }} · {{ version.imported_at.strftime('%d.%m.%Y %H:%M') }}</option>{% endfor %}</select></label><button>Показать документы</button></form>
+{% if chosen %}
+<form method="post" class="stack">
+<input type="hidden" name="corpus_version_id" value="{{ chosen }}"><input type="hidden" name="idempotency_key" value="{{ key }}">
+<label>Название <input name="name" value="Проверка корпуса" maxlength="200" required></label>
+{% for doc in documents %}<label><input type="checkbox" name="document_ids" value="{{ doc.id }}"> {{ doc.doc_kind or 'Вид неизвестен' }} № {{ doc.number or '—' }} от {{ doc.date.strftime('%d.%m.%Y') if doc.date else '—' }} · {{ doc.filename }}</label>{% endfor %}
+<button>Создать рабочие копии и выполнить поиск</button></form>
+{% endif %}
+<h2>Созданные наборы</h2><ul>{% for work in sets %}<li><a href="/working-sets/{{ work.id }}">{{ work.name }}</a> · {{ work.created_at.strftime('%d.%m.%Y %H:%M') }}</li>{% endfor %}</ul>
+{% endblock %}

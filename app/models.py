@@ -232,6 +232,9 @@ class Extraction(Base):
     document_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"))
     model_config_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("model_configs.id"))
     llm_call_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("llm_calls.id"))
+    source_extraction_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("extractions.id"))
+    input_hash: Mapped[str | None]
+    preserved_error: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
     doc_kind: Mapped[str | None]
     number: Mapped[str | None]
     date: Mapped[date | None]
@@ -277,6 +280,26 @@ class Job(Base):
     run_after: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     locked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     error: Mapped[str | None]
+
+
+class OperationalConfig(Base):
+    __tablename__ = "operational_config"
+    __table_args__ = (CheckConstraint("id = 1"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True, default=1)
+    snapshot: Mapped[dict[str, Any]] = mapped_column(JSONB)
+
+
+class ProcessingPipeline(Base):
+    __tablename__ = "processing_pipelines"
+
+    document_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"), primary_key=True)
+    batch_id: Mapped[uuid.UUID] = mapped_column(index=True)
+    snapshot: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    stage: Mapped[str] = mapped_column(default="text")
+    job_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("jobs.id"))
+    error: Mapped[str | None]
+    result_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("linking_results.id"))
 
 
 class AnonIdentity(Base):
@@ -394,3 +417,126 @@ class LinkSuggestion(Base):
     decision: Mapped[str]
     source_evidence: Mapped[dict[str, Any]] = mapped_column(JSONB)
     target_evidence: Mapped[dict[str, Any]] = mapped_column(JSONB)
+
+
+class WorkingSet(Base):
+    __tablename__ = "working_sets"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    corpus_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("corpus_versions.id"))
+    name: Mapped[str]
+    idempotency_key: Mapped[uuid.UUID] = mapped_column(unique=True)
+    request_hash: Mapped[str]
+    baseline: Mapped[dict[str, str]] = mapped_column(JSONB, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class WorkingCopy(Base):
+    __tablename__ = "working_copies"
+    __table_args__ = (UniqueConstraint("working_set_id", "source_document_id"),)
+
+    document_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"), primary_key=True)
+    working_set_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("working_sets.id"), index=True)
+    source_document_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"))
+    source_result_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("linking_results.id"))
+    source_result_current: Mapped[bool] = mapped_column(default=False)
+
+
+class ReviewState(Base):
+    """Mutable workflow state, separate from immutable algorithm outcomes."""
+
+    __tablename__ = "review_states"
+    __table_args__ = (
+        CheckConstraint("status IN ('open','completed')"),
+        CheckConstraint("version >= 0"),
+    )
+
+    document_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"), primary_key=True)
+    version: Mapped[int] = mapped_column(default=0)
+    status: Mapped[str] = mapped_column(default="open")
+    overrides: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    needs_review: Mapped[bool] = mapped_column(default=False)
+
+
+class CardEdit(Base):
+    __tablename__ = "card_edits"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    document_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"), index=True)
+    review_action_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey(
+            "review_actions.id",
+            use_alter=True,
+            name="fk_card_edit_action",
+        )
+    )
+    before: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    after: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class ReviewSession(Base):
+    __tablename__ = "review_sessions"
+    __table_args__ = (CheckConstraint("duration_ms IS NULL OR duration_ms >= 0"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    document_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"), index=True)
+    result_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("linking_results.id"))
+    context: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    opened_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    duration_ms: Mapped[int | None]
+
+
+class ReviewAction(Base):
+    __tablename__ = "review_actions"
+    __table_args__ = (
+        UniqueConstraint("document_id", "idempotency_key"),
+        CheckConstraint(
+            "action IN ('confirm','choose_other','reject','manual','complete','without_links',"
+            "'reopen','remove','edit')"
+        ),
+        CheckConstraint("duration_ms >= 0"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    document_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"), index=True)
+    session_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("review_sessions.id"))
+    result_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("linking_results.id"))
+    suggestion_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("link_suggestions.id"))
+    chosen_target_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("documents.id"))
+    action: Mapped[str]
+    reason: Mapped[str | None]
+    idempotency_key: Mapped[uuid.UUID]
+    request_hash: Mapped[str]
+    opened_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    decided_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    duration_ms: Mapped[int]
+    state_version: Mapped[int]
+
+
+class Link(Base):
+    __tablename__ = "links"
+    __table_args__ = (
+        CheckConstraint("origin IN ('confirmed','manual')"),
+        CheckConstraint("link_type IN ('изменение','основание','исполнение')"),
+        CheckConstraint("source_id <> target_id"),
+        Index(
+            "uq_link_active",
+            "source_id",
+            "target_id",
+            unique=True,
+            postgresql_where=text("removed_at IS NULL"),
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    source_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"), index=True)
+    target_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"), index=True)
+    link_type: Mapped[str]
+    origin: Mapped[str]
+    review_action_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("review_actions.id"))
+    suggestion_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("link_suggestions.id"))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    removed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    removal_action_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("review_actions.id"))

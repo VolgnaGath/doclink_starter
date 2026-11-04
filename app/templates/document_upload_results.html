@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Результат загрузки — DocLink{% endblock %}
+{% block content %}
+<h1>Результат загрузки</h1>
+<ul>{% for result in results %}
+  <li>{{ result.filename }} — {% if result.document_id %}<a href="/documents/{{ result.document_id }}">Принят, обработка в фоне</a>{% else %}Отказ: {{ result.error }}{% endif %}</li>
+{% endfor %}</ul>
+<p>Повторно загрузите только файлы с отказом. Принятые документы уже зарегистрированы.</p>
+<a href="/documents/upload">Загрузить ещё</a>
+{% endblock %}

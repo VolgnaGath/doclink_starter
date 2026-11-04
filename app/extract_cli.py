@@ -14,6 +14,7 @@ from app.db import get_session
 from app.models import CorpusVersion, Document, Extraction, Job, LLMCall, ModelConfig, Prompt
 from app.seed import seed
 from app.services.extraction import configuration
+from app.services.extraction_protocols import reused_test, test_history
 from app.services.extraction_schema import PREPARATION_VERSION
 from app.services.jobs import enqueue, work_once
 from app.services.model_calls import ProcessingError, fingerprint
@@ -28,6 +29,11 @@ def parser() -> argparse.ArgumentParser:
     )
     result.add_argument("--split", choices=["tune", "test"])
     result.add_argument("--retry", action="store_true", help="Явно повторить завершённые задания")
+    result.add_argument(
+        "--resume-budget-errors",
+        action="store_true",
+        help="Продолжить только остановки до отправки из-за бюджета",
+    )
     result.add_argument("--drain", action="store_true", help="Обработать очередь до опустошения")
     result.add_argument("--workers", type=int, choices=[1, 2, 3], default=1)
     result.add_argument("--freeze", action="store_true")
@@ -102,15 +108,26 @@ def execute(
                 raise ProcessingError("Для фиксации выберите версию корпуса")
             report = dict(version.report)
             protocols = dict(report.get("extraction_protocols", {}))
+            history = test_history(session, version)
             protocols.setdefault(
                 protocol_hash,
                 {
                     "test_started": False,
-                    "reused_test": any(p.get("test_started") for p in protocols.values()),
+                    "reused_test": reused_test(history, protocol_hash),
+                    "test_history": history,
+                    "corpus_fingerprint": version.fingerprint,
+                    "source_versions": report.get("extraction_source_versions", []),
                     "models": [configuration(m, prompt) for m in models],
                     "preparation": PREPARATION_VERSION,
                 },
             )
+            protocols[protocol_hash] = {
+                **protocols[protocol_hash],
+                "test_history": history,
+                "reused_test": protocols[protocol_hash].get("reused_test", False)
+                or reused_test(history, protocol_hash),
+                "source_versions": report.get("extraction_source_versions", []),
+            }
             report["extraction_protocols"] = protocols
             version.report = report
             session.commit()
@@ -155,15 +172,27 @@ def execute(
                 )
             protocols = {key: dict(value) for key, value in protocols.items()}
             protocols[protocol_hash]["test_started"] = True
-            protocols[protocol_hash]["reused_test"] = any(
-                value.get("test_started")
-                for key, value in protocols.items()
-                if key != protocol_hash
-            ) or protocols[protocol_hash].get("reused_test", False)
+            history = test_history(session, version)
+            protocols[protocol_hash]["test_history"] = history
+            protocols[protocol_hash]["reused_test"] = (
+                any(
+                    value.get("test_started")
+                    for key, value in protocols.items()
+                    if key != protocol_hash
+                )
+                or protocols[protocol_hash].get("reused_test", False)
+                or reused_test(history, protocol_hash)
+            )
             version.report = {**version.report, "extraction_protocols": protocols}
         if not args.report_only:
             for document in documents:
-                enqueue(session, document, models, retry=args.retry)
+                enqueue(
+                    session,
+                    document,
+                    models,
+                    retry=args.retry,
+                    resume_budget_errors=args.resume_budget_errors,
+                )
             session.commit()
         document_ids, model_ids = [d.id for d in documents], [m.id for m in models]
         scope_ids = [d.id for d in documents if d.in_scope]

@@ -12,6 +12,7 @@ from app.config import Settings
 from app.db import get_engine, get_session
 from app.models import CorpusVersion, Document, Extraction, Job, LLMCall, ModelConfig, Prompt
 from app.services.extraction import configuration, extract_document, lock_number, save_result
+from app.services.extraction_protocols import reused_test, test_history
 from app.services.model_calls import ProcessingError, fingerprint
 
 
@@ -36,8 +37,12 @@ def frozen_protocol(
             "До обработки test зафиксируйте конфигурацию через make freeze-extraction"
         )
     key = matches[0]
-    protocols[key]["reused_test"] = protocols[key].get("reused_test", False) or any(
-        p.get("test_started") for other, p in protocols.items() if other != key
+    history = test_history(session, version)
+    protocols[key]["test_history"] = history
+    protocols[key]["reused_test"] = (
+        protocols[key].get("reused_test", False)
+        or any(p.get("test_started") for other, p in protocols.items() if other != key)
+        or reused_test(history, key)
     )
     protocols[key]["test_started"] = True
     version.report = {**version.report, "extraction_protocols": protocols}
@@ -51,6 +56,7 @@ def enqueue(
     *,
     retry: bool = False,
     text_only: bool = False,
+    resume_budget_errors: bool = False,
 ) -> list[UUID]:
     session.flush()
     if document.corpus_version_id is not None and document.split == "test":
@@ -108,6 +114,19 @@ def enqueue(
         )
         matching_job = previous and previous.payload.get("snapshot") == snapshot
         matching_result = current and current.snapshot == snapshot
+        if matching_result and current.preserved_error:
+            continue
+        if (
+            resume_budget_errors
+            and matching_job
+            and matching_result
+            and previous.status == "error"
+            and not current.valid
+            and "бюджет" in (current.error or "").lower()
+        ):
+            previous.status, previous.error, previous.locked_at = "queued", None, None
+            ids.append(previous.id)
+            continue
         if not retry and (matching_job or matching_result):
             if matching_job:
                 ids.append(previous.id)
@@ -209,6 +228,11 @@ def work_once(
         get_session(settings.database_url) as session,
     ):
         recover(session, guard)
+        if document_ids is None and model_ids is None and job_types is None:
+            from app.services.pipeline import reconcile
+
+            reconcile(session)
+            session.commit()
         filters = [Job.status == "queued", Job.run_after <= datetime.now(UTC)]
         if document_ids is not None:
             filters.append(Job.document_id.in_(document_ids))
@@ -242,7 +266,10 @@ def work_once(
                 process_text(session, doc, settings)
                 if doc.status == "error":
                     raise ProcessingError("Ошибка получения текста")
-                enqueue(session, doc, retry=True)
+                from app.models import ProcessingPipeline
+
+                if session.get(ProcessingPipeline, doc.id) is None:
+                    enqueue(session, doc, retry=True)
                 session.commit()
             elif job.type == "embed":
                 from app.services.embedding_store import embed_document

@@ -1,13 +1,14 @@
 namespace DocLink;
 
 model Link {
-  id: int64;
+  id: uuid;
   source_id: uuid;
   target_id: uuid;
   link_type: LinkType;
   origin: LinkOrigin;
-  review_action_id?: int64;
-  suggestion_id?: int64;
+  review_action_id: uuid;
+  suggestion_id: uuid | null;
   created_at: utcDateTime;
-  removed_at?: utcDateTime;
+  removed_at: utcDateTime | null;
+  removal_action_id: uuid | null;
 }

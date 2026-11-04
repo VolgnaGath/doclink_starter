@@ -15,7 +15,11 @@
   <dt>Источник карточки</dt><dd>{{ document.card_extraction_id or 'Ещё не выбран' }}</dd>
 </dl>
 <p><a href="/documents/{{ document.id }}/original">Скачать оригинал</a></p>
-{% if document.status == 'error' %}
+{% if document.source != 'corpus' %}<p><a href="/review/{{ document.id }}">Открыть проверку и исправление карточки</a></p>{% endif %}
+{% if pipeline %}
+<p>Конвейер: {{ pipeline.stage }}. {{ pipeline.error or '' }} Пакет: {{ pipeline.batch_id }}.</p>
+<form method="post" action="/documents/{{ document.id }}/process"><button name="mode" value="failed">Повторить неудачный этап</button> <button name="mode" value="search">Повторить поиск</button> <button name="mode" value="extract">Повторить оперативное извлечение</button></form>
+{% elif document.status == 'error' %}
 <form method="post" action="/documents/{{ document.id }}/retry-text"><button type="submit">Повторить получение текста</button></form>
 {% endif %}
 <h2>Текст</h2>
@@ -39,7 +43,7 @@
 <dt>Допсоглашение / счёт</dt><dd>{{ extraction.supp_ref or '—' }} / {{ extraction.invoice_ref or '—' }}</dd></dl>
 {% if extraction.llm_call_id %}<a href="/calls/{{ extraction.llm_call_id }}">Физический вызов</a>{% endif %}
 <ul>{% for check in extraction.evidence_checks %}<li>{{ check.field }}: <q>{{ check.original_quote or check.quote or 'цитата отсутствует' }}</q> — {{ check.method }}{% if check.ok %}, диапазон {{ check.start }}–{{ check.end }} отправленного текста{% endif %}</li>{% endfor %}</ul>
-{% if extraction.valid %}<form method="post" action="/documents/{{ document.id }}/card"><input type="hidden" name="extraction_id" value="{{ extraction.id }}"><button>Использовать для рабочей карточки</button></form>{% endif %}
+{% if extraction.valid and document.source != 'corpus' %}<form method="post" action="/documents/{{ document.id }}/card"><input type="hidden" name="extraction_id" value="{{ extraction.id }}"><button>Использовать для рабочей карточки</button></form>{% endif %}
 </section>{% endfor %}
 <h2>Фоновые задания</h2><ul>{% for job in jobs %}<li>{{ job.type }}: {{ job.status }}; попыток {{ job.attempts }}; {{ job.error or '' }}</li>{% endfor %}</ul>
 <h2>Журнал обработки</h2>

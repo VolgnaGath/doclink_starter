@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 from app.config import Settings
 from app.db import get_engine, get_session
 from app.models import (
+    Client,
     Counterparty,
     Document,
     Extraction,
@@ -64,9 +65,22 @@ def lock_number(key: str) -> int:
     return int.from_bytes(hashlib.sha256(key.encode()).digest()[:8], "big", signed=True)
 
 
+def prepared_request(
+    session: Session, document: Document, snapshot: dict[str, Any]
+) -> tuple[list[dict[str, str]], list[str], bool, list[tuple[str, str]]]:
+    prepared, context, reverse = prepare(session, document)
+    sent, parts, truncated = truncate(prepared)
+    messages = [{"role": "user", "content": snapshot["prompt"].format(client=context, text=sent)}]
+    return messages, parts, truncated, reverse
+
+
 def select_card(session: Session, extraction: Extraction) -> None:
     if not extraction.valid:
         raise ProcessingError("Нельзя выбрать невалидное извлечение")
+    client_id = session.scalar(
+        select(Document.client_id).where(Document.id == extraction.document_id)
+    )
+    session.execute(select(Client.id).where(Client.id == client_id).with_for_update())
     doc = session.scalar(
         select(Document).where(Document.id == extraction.document_id).with_for_update()
     )
@@ -84,6 +98,12 @@ def select_card(session: Session, extraction: Extraction) -> None:
         session.flush()
         doc.counterparty_id = cp.id
     doc.status = "extracted" if doc.doc_kind and doc.date else "review"
+    from app.services.card_edits import apply_card_values, extraction_values, overrides_for
+
+    overrides = overrides_for(session, doc.id)
+    if overrides:
+        apply_card_values(session, doc, {**extraction_values(extraction), **overrides})
+        doc.status = "extracted" if doc.doc_kind and doc.date else "review"
 
 
 def save_result(
@@ -97,7 +117,10 @@ def save_result(
     cache_hit: bool,
     error: str | None,
 ) -> Extraction:
+    client_id = session.scalar(select(Document.client_id).where(Document.id == document_id))
+    session.execute(select(Client.id).where(Client.id == client_id).with_for_update())
     doc = session.scalar(select(Document).where(Document.id == document_id).with_for_update())
+    previous_kind = doc.doc_kind if doc else None
     session.execute(
         update(Extraction)
         .where(
@@ -137,6 +160,23 @@ def save_result(
             select_card(session, result)
         else:
             doc.status = "error"
+    if doc and doc.source != "corpus":
+        from app.models import ReviewState
+
+        # A completed human check remains history; fresh model inputs require rechecking.
+        affected = (
+            select(Document.id).where(
+                Document.client_id == doc.client_id,
+                Document.corpus_version_id == doc.corpus_version_id,
+            )
+            if "договор" in {previous_kind, doc.doc_kind}
+            else select(Document.id).where(Document.id == doc.id)
+        )
+        session.execute(
+            update(ReviewState)
+            .where(ReviewState.document_id.in_(affected))
+            .values(needs_review=True)
+        )
     return result
 
 
@@ -155,7 +195,9 @@ def extract_document(
         doc = session.get(Document, document_id)
         if doc is None:
             raise ProcessingError("Документ не найден")
-        client_id = doc.client_id
+        from app.services.working_identity import cache_client_id
+
+        client_id = cache_client_id(session, doc)
         try:
             prepared, context, reverse = prepare(session, doc)
             session.add(
@@ -205,6 +247,20 @@ def extract_document(
                 guard.commit()
             with get_session(settings.database_url) as session:
                 call, cache_hit, error, checks, fields = None, False, None, [], None
+                preserved = session.scalar(
+                    select(Extraction)
+                    .where(
+                        Extraction.document_id == document_id,
+                        Extraction.model_config_id == model_id,
+                        Extraction.input_hash == key,
+                        Extraction.preserved_error,
+                    )
+                    .limit(1)
+                )
+                if preserved:
+                    raise ProcessingError(
+                        preserved.error or "Сохранённая ошибка исходного извлечения"
+                    )
                 try:
                     if snapshot["provider"] == "regex":
                         fields = regex_extract(sent)
@@ -255,6 +311,7 @@ def extract_document(
                     cache_hit,
                     error,
                 )
+                result.input_hash = key
                 session.add(
                     StageTiming(
                         document_id=document_id,

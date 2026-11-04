@@ -9,6 +9,7 @@ import "./models/suggestions.tsp";
 import "./models/links.tsp";
 import "./models/experiments.tsp";
 import "./models/corpus.tsp";
+import "./models/review.tsp";
 import "./routes/v1.tsp";
 
 using TypeSpec.Http;

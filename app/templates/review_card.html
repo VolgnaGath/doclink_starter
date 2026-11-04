@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% macro decision(action, label, suggestion_id='', target_id='', link_id='') %}
+<form method="post" action="/review/{{ document.id }}/decision">
+<input type="hidden" name="session_id" value="{{ review.id }}"><input type="hidden" name="version" value="{{ state.version }}">
+<input type="hidden" name="idempotency_key" value="{{ uuid4() }}"><input type="hidden" name="action" value="{{ action }}">
+{% if suggestion_id %}<input type="hidden" name="suggestion_id" value="{{ suggestion_id }}">{% endif %}
+{% if target_id %}<input type="hidden" name="target_id" value="{{ target_id }}">{% endif %}
+{% if link_id %}<input type="hidden" name="link_id" value="{{ link_id }}">{% endif %}
+<button>{{ label }}</button></form>
+{% endmacro %}
+{% block title %}Проверка {{ document.filename }} — DocLink{% endblock %}
+{% block content %}
+<p><a href="/review">← Очередь</a> · <a href="/documents/{{ document.id }}">Все извлечения и журнал этапов</a></p>
+<h1>{{ document.filename }}</h1>
+<p>Исход: {{ outcomes[result.outcome] if result else 'Поиск ещё не выполнен' }}. Проверка: {{ 'завершена' if state.status == 'completed' else 'открыта' }}; версия {{ state.version }}.</p>
+<p>Открыто: {{ review.opened_at.strftime('%d.%m.%Y %H:%M:%S') }}. Время включает паузы.</p>
+{% if state.needs_review %}<p><strong>Требуется повторная проверка: рабочие входы изменились.</strong></p>{% endif %}
+{% if result %}<p>Причины: {{ result.reasons|join(', ') }}. {{ result.error or '' }}</p>{% endif %}
+<form method="post" action="/review/{{ document.id }}/search"><button>Повторить поиск</button></form>
+<h2>Текст с найденными цитатами</h2><pre class="document-text">{{ highlighted_text }}</pre>
+<h2>Рабочая карточка</h2>
+<p>Ручные значения имеют отдельное происхождение и не объявляются проверенными цитатами. Даты: ДД.ММ.ГГГГ. Пустое поле очищает значение; сброс возвращает значение модели.</p>
+{% for key, label in [('doc_kind','Вид'),('number','Номер'),('date','Дата'),('counterparty_name','Контрагент'),('counterparty_inn','ИНН'),('amount','Сумма'),('subject','Предмет'),('contract_refs','Ссылки на договоры (JSON)'),('supp_ref','Допсоглашение (JSON)'),('invoice_ref','Счёт (JSON)')] %}
+<form method="post" action="/review/{{ document.id }}/edit">
+<input type="hidden" name="version" value="{{ state.version }}"><input type="hidden" name="field" value="{{ key }}">
+<input type="hidden" name="session_id" value="{{ review.id }}"><input type="hidden" name="idempotency_key" value="{{ uuid4() }}">
+<label>{{ label }} {% if key in state.overrides %}(ручное){% else %}(модель){% endif %}
+{% if key in ['contract_refs','supp_ref','invoice_ref'] %}<textarea name="value">{{ values.get(key)|tojson if values.get(key) is not none else '' }}</textarea>
+{% else %}<input name="value" value="{{ values.get(key) if values.get(key) is not none else '' }}">{% endif %}</label>
+<button>Сохранить</button><button name="reset" value="true">Сбросить к модели</button></form>
+{% endfor %}
+<h2>Кандидаты</h2>
+{% for candidate in suggestions %}
+{% if loop.index == 4 %}<details><summary>Остальной рейтинг ({{ suggestions|length - 3 }})</summary>{% endif %}
+<section><h3>{{ candidate.rank }}. <a href="/documents/{{ candidate.target_id }}">{{ candidate.target_id }}</a></h3>
+<p>{{ candidate.link_type }} · S={{ '%.4f'|format(candidate.score) }} · {{ candidate.decision }}</p>
+<p>Признаки: {{ candidate.features }}; штрафы: {{ candidate.penalties }}.</p>
+{% if state.status == 'open' %}
+{% if candidate.decision == 'recommendation' %}{{ decision('confirm', 'Подтвердить рекомендацию', candidate.id) }}{% endif %}
+{{ decision('choose_other', 'Выбрать этого кандидата', candidate.id, candidate.target_id) }}
+{{ decision('reject', 'Отклонить кандидата', candidate.id) }}
+{% endif %}</section>
+{% if loop.last and loop.index >= 4 %}</details>{% endif %}
+{% endfor %}
+{% if state.status == 'open' %}
+<h2>Указать договор вручную</h2>
+<form method="post" action="/review/{{ document.id }}/decision">
+<input type="hidden" name="session_id" value="{{ review.id }}"><input type="hidden" name="version" value="{{ state.version }}"><input type="hidden" name="idempotency_key" value="{{ uuid4() }}"><input type="hidden" name="action" value="manual">
+<select name="target_id" required>{% for target in targets %}<option value="{{ target.id }}">{{ target.number or 'Без номера' }} от {{ target.date.strftime('%d.%m.%Y') }} · {{ target.filename }}</option>{% endfor %}</select><button>Установить ручную связь</button></form>
+{{ decision('complete', 'Завершить проверку') }}
+<form method="post" action="/review/{{ document.id }}/decision">
+<input type="hidden" name="session_id" value="{{ review.id }}"><input type="hidden" name="version" value="{{ state.version }}"><input type="hidden" name="idempotency_key" value="{{ uuid4() }}"><input type="hidden" name="action" value="without_links">
+<label>Причина <input name="reason" list="reasons" required></label><datalist id="reasons"><option value="Договор не требуется"><option value="Подходящий договор отсутствует"></datalist><button>Завершить без связей</button></form>
+{% else %}{{ decision('reopen', 'Открыть проверку повторно') }}{% endif %}
+<h2>Окончательные связи</h2>
+{% for link in links %}<p>{{ link.link_type }} → <a href="/documents/{{ link.target_id }}">{{ link.target_id }}</a> · {{ link.origin }} · {{ 'Отменена' if link.removed_at else 'Активна' }}</p>{% if not link.removed_at and state.status == 'open' %}{{ decision('remove', 'Отменить связь', link_id=link.id) }}{% endif %}{% endfor %}
+<h2>История действий</h2><ul>{% for action in actions %}<li>{{ action.decided_at.strftime('%d.%m.%Y %H:%M:%S') }} · {{ action.action }} · {{ action.chosen_target_id or '' }} · {{ action.duration_ms }} мс · {{ action.reason or '' }}</li>{% endfor %}</ul>
+<h2>История исправлений</h2><ul>{% for edit in edits %}<li>{{ edit.created_at.strftime('%d.%m.%Y %H:%M:%S') }}: {{ edit.before }} → {{ edit.after }}</li>{% endfor %}</ul>
+{% endblock %}

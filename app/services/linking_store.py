@@ -23,11 +23,13 @@ from app.models import (
     Extraction,
     Job,
     LinkSuggestion,
+    ProcessingPipeline,
     StageTiming,
 )
 from app.models import (
     LinkingResult as StoredResult,
 )
+from app.services.card_edits import overrides_for
 from app.services.embeddings import EmbeddingError, EncodingConfig, cosine, prepare_text
 from app.services.extraction import lock_number
 from app.services.linking import link
@@ -109,7 +111,7 @@ def linking_payload(
     if source is None:
         raise ProcessingError("Документ не найден")
     pool = []
-    if source.date is not None:
+    if source.date is not None and source.doc_kind is not None:
         pool = list(
             session.execute(
                 select(*CARD_COLUMNS)
@@ -126,7 +128,19 @@ def linking_payload(
     provenance: dict[str, Any] = {}
     vectors: dict[str, tuple[float, ...]] = {}
     semantic_errors: list[str] = []
+    preparation_error = None
+    pipeline = session.get(ProcessingPipeline, document_id)
+    dependency_origins = None
+    if pipeline and source.doc_kind is not None and source.date is not None:
+        from app.services.pipeline import dependencies
+
+        pending, errors, dependency_origins = dependencies(session, document_id, model_id)
+        if pending:
+            errors.append("Подготовка карточек клиента ещё выполняется")
+        semantic_errors.extend(errors)
+        preparation_error = "; ".join(errors) or None
     need_vectors = config.method in {"semantic", "combined"} and config.use_semantic and bool(pool)
+    need_vectors = need_vectors and not semantic_errors
 
     def adapt(row: Any) -> EngineDocument:
         id = str(row.id)
@@ -153,12 +167,47 @@ def linking_payload(
                 {
                     "id": str(extraction.id),
                     "llm_call_id": str(extraction.llm_call_id) if extraction.llm_call_id else None,
+                    "source_extraction_id": str(extraction.source_extraction_id)
+                    if extraction.source_extraction_id
+                    else None,
+                    "input_hash": extraction.input_hash,
+                    "preserved_error": extraction.preserved_error,
                     "snapshot": extraction.snapshot,
                     "valid": extraction.valid,
                 }
                 if extraction
                 else None
             )
+            overrides = overrides_for(session, row.id)
+            if overrides:
+                origin["manual_overrides"] = overrides
+                updates: dict[str, Any] = {}
+                for field, engine_field in {
+                    "number": "number",
+                    "counterparty_inn": "inn",
+                    "counterparty_name": "name",
+                    "amount": "amount",
+                }.items():
+                    if field in overrides:
+                        updates[engine_field] = overrides[field]
+                if "number" in overrides:
+                    updates["number_verified"] = False
+                if {"counterparty_name", "counterparty_inn"} & overrides.keys():
+                    updates["counterparty_verified"] = False
+                if "amount" in overrides:
+                    updates["amount_verified"] = False
+                if "contract_refs" in overrides:
+                    updates["references"] = tuple(
+                        ContractReference(
+                            number=ref.get("number"),
+                            date=datetime.strptime(ref["date"], "%d.%m.%Y").date()
+                            if ref.get("date")
+                            else None,
+                            verified=False,
+                        )
+                        for ref in (overrides["contract_refs"] or [])
+                    )
+                fields = Fields.model_validate({**fields.model_dump(), **updates})
         raw = session.scalar(select(DocumentText.text).where(DocumentText.document_id == row.id))
         origin["text_hash"] = hashlib.sha256(raw.encode()).hexdigest() if raw is not None else None
         if config.method == "rules" and not raw:
@@ -205,6 +254,10 @@ def linking_payload(
         )
 
     source_input = adapt(source)
+    if preparation_error:
+        source_input = source_input.model_copy(
+            update={"card": source_input.card.model_copy(update={"error": preparation_error})}
+        )
     candidates = tuple(adapt(row) for row in pool)
     similarities = []
     if need_vectors and not semantic_errors:
@@ -236,6 +289,14 @@ def linking_payload(
             "documents": provenance,
         },
     }
+    if pipeline:
+        payload["provenance"]["operational_configuration"] = pipeline.snapshot
+        payload["provenance"]["dependencies"] = dependency_origins
+    from app.services.working_identity import copy_origin
+
+    origin = copy_origin(session, document_id)
+    if origin:
+        payload["provenance"]["working_copy"] = origin
     return {**payload, "input_hash": fingerprint(payload)}
 
 
@@ -355,7 +416,15 @@ def link_document(
                         error = stored.error
                     else:
                         result = link(LinkingInput.model_validate(payload["data"]), config)
-                        error = "; ".join(result.reasons) if result.outcome == "error" else None
+                        error = (
+                            (
+                                payload["data"]["source"]["card"].get("error")
+                                or payload["data"].get("semantic_error")
+                                or "; ".join(result.reasons)
+                            )
+                            if result.outcome == "error"
+                            else None
+                        )
                         stored = _save(session, document_id, payload, result, job_id, error)
                     result_id = stored.id
                 except Exception as exc:

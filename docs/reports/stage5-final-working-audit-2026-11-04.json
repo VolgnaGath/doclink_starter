@@ -1,0 +1,28 @@
+{
+  "working_set_id": "1e9f3dd4-6087-4b74-9765-30f778a8fe42",
+  "source_document_id": "b93bb86d-e76b-4f9a-9413-11faa74ca9b2",
+  "document_id": "ee27698f-a1db-42a3-bf01-96d74a5dfa82",
+  "copied_documents": 16,
+  "result_id": "b171d84e-bad8-4ded-b40d-58cb7a7d0637",
+  "outcome": "recommendation",
+  "candidates": 7,
+  "origin": {
+    "initial_inputs": false,
+    "working_set_id": "1e9f3dd4-6087-4b74-9765-30f778a8fe42",
+    "source_result_id": "5ce3ae73-e34a-4e37-b49e-a4a928959304",
+    "source_document_id": "b93bb86d-e76b-4f9a-9413-11faa74ca9b2"
+  },
+  "before": {
+    "source_hash": "3442d3fff96ec5a6a08aa90d4e09ba9d2b4ad92b80724e20281cdf9b45bb96d7",
+    "llm_calls": 1006,
+    "cost_rub": "501.48244000"
+  },
+  "after": {
+    "source_hash": "3442d3fff96ec5a6a08aa90d4e09ba9d2b4ad92b80724e20281cdf9b45bb96d7",
+    "llm_calls": 1006,
+    "cost_rub": "501.48244000"
+  },
+  "new_llm_calls": 0,
+  "paid_calls_enabled": false,
+  "extraction_jobs": 0
+}

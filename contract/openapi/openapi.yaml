@@ -4,6 +4,223 @@ info:
   version: 1.0.0
 tags: []
 paths:
+  /api/v1/clients:
+    get:
+      operationId: V1_listClients
+      parameters:
+        - name: working_only
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: true
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 100
+            default: 50
+          explode: false
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            default: 0
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - total
+                  - limit
+                  - offset
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Client'
+                  total:
+                    type: integer
+                    format: int64
+                  limit:
+                    type: integer
+                    format: int32
+                  offset:
+                    type: integer
+                    format: int32
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - ApiKeyAuth: []
+    post:
+      operationId: V1_createClient
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientCreate'
+      security:
+        - ApiKeyAuth: []
+  /api/v1/corpus:
+    get:
+      operationId: V1_listCorpus
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 100
+            default: 50
+          explode: false
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            default: 0
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - total
+                  - limit
+                  - offset
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CorpusVersion'
+                  total:
+                    type: integer
+                    format: int64
+                  limit:
+                    type: integer
+                    format: int32
+                  offset:
+                    type: integer
+                    format: int32
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - ApiKeyAuth: []
   /api/v1/corpus/import:
     post:
       operationId: V1_importCorpus
@@ -15,18 +232,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CorpusImportResult'
-        '400':
-          description: The server could not understand the request due to invalid syntax.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
         '401':
           description: Access is unauthorized.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
         '500':
           description: Server error
           content:
@@ -51,8 +280,6 @@ paths:
                   format: double
               required:
                 - archive
-                - seed
-                - tune_share
             encoding:
               archive:
                 contentType: '*/*'
@@ -71,18 +298,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DocumentUploadResult'
-        '400':
-          description: The server could not understand the request due to invalid syntax.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
         '401':
           description: Access is unauthorized.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
         '500':
           description: Server error
           content:
@@ -150,12 +389,20 @@ paths:
           schema:
             $ref: '#/components/schemas/DocumentSource'
           explode: false
+        - name: corpus_version_id
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/uuid'
+          explode: false
         - name: limit
           in: query
           required: false
           schema:
             type: integer
             format: int32
+            minimum: 1
+            maximum: 100
             default: 50
           explode: false
         - name: offset
@@ -164,6 +411,7 @@ paths:
           schema:
             type: integer
             format: int32
+            minimum: 0
             default: 0
           explode: false
       responses:
@@ -198,6 +446,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
         '500':
           description: Server error
           content:
@@ -234,6 +500,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
         '500':
           description: Server error
           content:
@@ -242,9 +520,9 @@ paths:
                 $ref: '#/components/schemas/InternalServerErrorResponse'
       security:
         - ApiKeyAuth: []
-  /api/v1/documents/{id}/process:
-    post:
-      operationId: V1_processDocument
+  /api/v1/documents/{id}/card:
+    patch:
+      operationId: V1_editCard
       parameters:
         - name: id
           in: path
@@ -252,12 +530,12 @@ paths:
           schema:
             $ref: '#/components/schemas/uuid'
       responses:
-        '202':
-          description: The request has been accepted for processing, but processing has not yet completed.
+        '200':
+          description: The request has succeeded.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/JobRef'
+                $ref: '#/components/schemas/ReviewState'
         '401':
           description: Access is unauthorized.
           content:
@@ -276,6 +554,175 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardPatch'
+      security:
+        - ApiKeyAuth: []
+  /api/v1/documents/{id}/process:
+    post:
+      operationId: V1_processDocument
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+      responses:
+        '202':
+          description: The request has been accepted for processing, but processing has not yet completed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessAccepted'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProcessRequest'
+      security:
+        - ApiKeyAuth: []
+  /api/v1/documents/{id}/review:
+    post:
+      operationId: V1_reviewDocument
+      description: Решения без обязательного suggestion_id, включая complete/without_links/reopen/remove. Серверный таймер, версия вкладки и ключ идемпотентности обязательны.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewAction'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewRequest'
+      security:
+        - ApiKeyAuth: []
+  /api/v1/documents/{id}/review-sessions:
+    post:
+      operationId: V1_openReview
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewSession'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
         '500':
           description: Server error
           content:
@@ -287,6 +734,7 @@ paths:
   /api/v1/experiments:
     post:
       operationId: V1_createExperiment
+      description: Плановый контракт этапа 6; операция пока не реализована в FastAPI.
       parameters: []
       responses:
         '202':
@@ -295,18 +743,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ExperimentRun'
-        '400':
-          description: The server could not understand the request due to invalid syntax.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
         '401':
           description: Access is unauthorized.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
         '500':
           description: Server error
           content:
@@ -324,6 +784,7 @@ paths:
   /api/v1/experiments/{id}:
     get:
       operationId: V1_getExperiment
+      description: Плановый контракт этапа 6; операция пока не реализована в FastAPI.
       parameters:
         - name: id
           in: path
@@ -350,6 +811,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
         '500':
           description: Server error
           content:
@@ -361,6 +834,7 @@ paths:
   /api/v1/experiments/{id}/export:
     get:
       operationId: V1_exportExperiment
+      description: Плановый контракт этапа 6; операция пока не реализована в FastAPI.
       parameters:
         - name: id
           in: path
@@ -390,12 +864,6 @@ paths:
               schema:
                 type: string
                 format: binary
-        '400':
-          description: The server could not understand the request due to invalid syntax.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
         '401':
           description: Access is unauthorized.
           content:
@@ -408,6 +876,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
         '500':
           description: Server error
           content:
@@ -426,6 +906,12 @@ paths:
           schema:
             $ref: '#/components/schemas/uuid'
           explode: false
+        - name: client_id
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/uuid'
+          explode: false
         - name: link_type
           in: query
           required: false
@@ -438,12 +924,21 @@ paths:
           schema:
             $ref: '#/components/schemas/LinkOrigin'
           explode: false
+        - name: include_removed
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+          explode: false
         - name: limit
           in: query
           required: false
           schema:
             type: integer
             format: int32
+            minimum: 1
+            maximum: 100
             default: 50
           explode: false
         - name: offset
@@ -452,6 +947,7 @@ paths:
           schema:
             type: integer
             format: int32
+            minimum: 0
             default: 0
           explode: false
       responses:
@@ -486,6 +982,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
         '500':
           description: Server error
           content:
@@ -500,7 +1014,7 @@ paths:
       parameters:
         - name: decision
           in: query
-          required: true
+          required: false
           schema:
             $ref: '#/components/schemas/SuggestionFilter'
           explode: false
@@ -510,12 +1024,18 @@ paths:
           schema:
             $ref: '#/components/schemas/uuid'
           explode: false
-        - name: run_id
+        - name: client_id
           in: query
           required: false
           schema:
-            type: integer
-            format: int64
+            $ref: '#/components/schemas/uuid'
+          explode: false
+        - name: history
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
           explode: false
         - name: limit
           in: query
@@ -523,6 +1043,8 @@ paths:
           schema:
             type: integer
             format: int32
+            minimum: 1
+            maximum: 100
             default: 50
           explode: false
         - name: offset
@@ -531,6 +1053,7 @@ paths:
           schema:
             type: integer
             format: int32
+            minimum: 0
             default: 0
           explode: false
       responses:
@@ -549,7 +1072,7 @@ paths:
                   items:
                     type: array
                     items:
-                      $ref: '#/components/schemas/LinkSuggestion'
+                      $ref: '#/components/schemas/SearchOutcome'
                   total:
                     type: integer
                     format: int64
@@ -559,49 +1082,6 @@ paths:
                   offset:
                     type: integer
                     format: int32
-        '400':
-          description: The server could not understand the request due to invalid syntax.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        '401':
-          description: Access is unauthorized.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UnauthorizedResponse'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InternalServerErrorResponse'
-      security:
-        - ApiKeyAuth: []
-  /api/v1/suggestions/{id}/review:
-    post:
-      operationId: V1_reviewSuggestion
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ReviewResult'
-        '400':
-          description: The server could not understand the request due to invalid syntax.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
         '401':
           description: Access is unauthorized.
           content:
@@ -620,6 +1100,60 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - ApiKeyAuth: []
+  /api/v1/suggestions/{id}/review:
+    post:
+      operationId: V1_reviewSuggestion
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewAction'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
         '500':
           description: Server error
           content:
@@ -632,6 +1166,183 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ReviewRequest'
+      security:
+        - ApiKeyAuth: []
+  /api/v1/working-sets:
+    post:
+      operationId: V1_createWorkingSet
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkingSetDetail'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkingSetCreate'
+      security:
+        - ApiKeyAuth: []
+    get:
+      operationId: V1_listWorkingSets
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 100
+            default: 50
+          explode: false
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            default: 0
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - total
+                  - limit
+                  - offset
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WorkingSetSummary'
+                  total:
+                    type: integer
+                    format: int64
+                  limit:
+                    type: integer
+                    format: int32
+                  offset:
+                    type: integer
+                    format: int32
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
+      security:
+        - ApiKeyAuth: []
+  /api/v1/working-sets/{id}:
+    get:
+      operationId: V1_getWorkingSet
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkingSetDetail'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorResponse'
       security:
         - ApiKeyAuth: []
   /health:
@@ -664,11 +1375,36 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/ErrorBody'
+    CardPatch:
+      type: object
+      required:
+        - session_id
+        - version
+        - idempotency_key
+      properties:
+        session_id:
+          $ref: '#/components/schemas/uuid'
+        version:
+          type: integer
+          format: int32
+          minimum: 0
+        idempotency_key:
+          $ref: '#/components/schemas/uuid'
+        values:
+          type: object
+          additionalProperties: {}
+          description: doc_kind, number, date (ДД.ММ.ГГГГ), counterparty_name/inn, amount, subject, contract_refs, supp_ref, invoice_ref; null — явная очистка.
+        reset:
+          type: array
+          items:
+            type: string
     Client:
       type: object
       required:
         - id
         - name
+        - inn
+        - namespace
         - created_at
       properties:
         id:
@@ -677,9 +1413,25 @@ components:
           type: string
         inn:
           type: string
+          nullable: true
+        namespace:
+          type: string
         created_at:
           type: string
           format: date-time
+    ClientCreate:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 300
+        inn:
+          type: string
+          nullable: true
+          pattern: ^(\d{10}|\d{12})$
     ConflictResponse:
       type: object
       allOf:
@@ -689,86 +1441,146 @@ components:
       properties:
         number:
           type: string
+          nullable: true
         date:
           type: string
-          format: date
+          nullable: true
         quote:
           type: string
+          nullable: true
+      description: Даты внутри извлечений/ручных ссылок — ДД.ММ.ГГГГ; дата самого Extraction — ISO plainDate.
+    Copy:
+      type: object
+      required:
+        - document_id
+        - source_document_id
+        - source_result_id
+        - client_id
+      properties:
+        document_id:
+          $ref: '#/components/schemas/uuid'
+        source_document_id:
+          $ref: '#/components/schemas/uuid'
+        source_result_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
+        client_id:
+          $ref: '#/components/schemas/uuid'
+    CopyOrigin:
+      type: object
+      required:
+        - working_set_id
+        - source_document_id
+        - source_result_id
+        - initial_inputs
+      properties:
+        working_set_id:
+          $ref: '#/components/schemas/uuid'
+        source_document_id:
+          $ref: '#/components/schemas/uuid'
+        source_result_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
+        initial_inputs:
+          type: boolean
     CorpusImportResult:
       type: object
       required:
         - corpus_version_id
+        - reused
         - documents_imported
         - links_imported
-        - tune_documents
-        - test_documents
       properties:
         corpus_version_id:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/uuid'
+        reused:
+          type: boolean
         documents_imported:
           type: integer
           format: int32
         links_imported:
           type: integer
           format: int32
-        tune_documents:
-          type: integer
-          format: int32
-        test_documents:
-          type: integer
-          format: int32
-    Counterparty:
+    CorpusVersion:
       type: object
       required:
         - id
-        - client_id
         - name
+        - imported_at
       properties:
         id:
-          type: integer
-          format: int64
-        client_id:
           $ref: '#/components/schemas/uuid'
         name:
           type: string
-        inn:
+        imported_at:
           type: string
-        kpp:
-          type: string
-        aliases:
-          type: array
-          items:
-            type: string
+          format: date-time
     DocumentDetail:
       type: object
       required:
         - document
+        - text
         - extractions
-        - suggestions
+        - result
         - links
+        - review_state
+        - review_actions
+        - review_sessions
         - stage_timings
+        - pipeline
+        - working_copy
       properties:
         document:
           $ref: '#/components/schemas/DocumentSummary'
         text:
-          $ref: '#/components/schemas/DocumentText'
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/DocumentText'
+          nullable: true
         extractions:
           type: array
           items:
             $ref: '#/components/schemas/Extraction'
-        suggestions:
-          type: array
-          items:
-            $ref: '#/components/schemas/LinkSuggestion'
+        result:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/SearchOutcome'
+          nullable: true
         links:
           type: array
           items:
             $ref: '#/components/schemas/Link'
+        review_state:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/ReviewState'
+          nullable: true
+        review_actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewAction'
+        review_sessions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewSession'
         stage_timings:
           type: array
           items:
             $ref: '#/components/schemas/StageTiming'
+        pipeline:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Pipeline'
+          nullable: true
+        working_copy:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/CopyOrigin'
+          nullable: true
     DocumentKind:
       type: string
       enum:
@@ -799,14 +1611,20 @@ components:
       required:
         - id
         - client_id
+        - corpus_version_id
+        - split
         - source
+        - kind
+        - number
+        - date
         - filename
         - sha256
         - mime
-        - registered_at
+        - card_model_config_id
+        - card_extraction_id
         - is_anonymized
-        - in_scope
         - status
+        - registered_at
         - created_at
       properties:
         id:
@@ -814,49 +1632,63 @@ components:
         client_id:
           $ref: '#/components/schemas/uuid'
         corpus_version_id:
-          type: integer
-          format: int64
-        corpus_doc_id:
           type: string
-        deal_id:
-          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
         split:
-          $ref: '#/components/schemas/Split'
+          allOf:
+            - $ref: '#/components/schemas/Split'
+          nullable: true
         source:
           $ref: '#/components/schemas/DocumentSource'
         kind:
-          $ref: '#/components/schemas/DocumentKind'
+          allOf:
+            - $ref: '#/components/schemas/DocumentKind'
+          nullable: true
         number:
           type: string
+          nullable: true
         date:
           type: string
           format: date
+          nullable: true
         filename:
           type: string
         sha256:
           type: string
         mime:
           type: string
-        registered_at:
+        card_model_config_id:
           type: string
-          format: date-time
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
+        card_extraction_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
         is_anonymized:
-          type: boolean
-        in_scope:
           type: boolean
         status:
           $ref: '#/components/schemas/DocumentStatus'
+        registered_at:
+          type: string
+          format: date-time
         created_at:
           type: string
           format: date-time
     DocumentText:
       type: object
       required:
+        - text
         - pages
         - chars
         - ocr_pages
-        - text
       properties:
+        text:
+          type: string
         pages:
           type: integer
           format: int32
@@ -866,43 +1698,59 @@ components:
         ocr_pages:
           type: integer
           format: int32
-        text:
-          type: string
-        anonymized_text:
-          type: string
     DocumentUploadResult:
       type: object
       required:
-        - documents
+        - results
       properties:
-        documents:
+        results:
           type: array
           items:
-            $ref: '#/components/schemas/DocumentSummary'
+            $ref: '#/components/schemas/UploadItem'
+      description: 'Частичный приём: отдельный результат для каждого файла; общие ошибки отклоняют запрос целиком.'
     ErrorBody:
       type: object
       required:
         - code
         - message
+        - details
       properties:
         code:
           type: string
         message:
           type: string
         details:
-          type: object
-          additionalProperties: {}
-    Evidence:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+    EvidenceCheck:
       type: object
+      required:
+        - field
+        - ok
       properties:
-        number:
+        field:
           type: string
-        date:
+        ok:
+          type: boolean
+        quote:
           type: string
-        counterparty:
+          nullable: true
+        original_quote:
           type: string
-        amount:
+          nullable: true
+        method:
           type: string
+          nullable: true
+        start:
+          type: integer
+          format: int32
+          nullable: true
+        end:
+          type: integer
+          format: int32
+          nullable: true
     ExperimentCreate:
       type: object
       required:
@@ -919,8 +1767,7 @@ components:
         method:
           $ref: '#/components/schemas/ExperimentMethod'
         model_config_id:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/uuid'
         embedder:
           type: string
         weights:
@@ -935,8 +1782,7 @@ components:
         ablation:
           $ref: '#/components/schemas/Ablation'
         corpus_version_id:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/uuid'
         split_seed:
           type: integer
           format: int64
@@ -1005,8 +1851,7 @@ components:
         method:
           $ref: '#/components/schemas/ExperimentMethod'
         model_config_id:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/uuid'
         embedder:
           type: string
         weights:
@@ -1021,8 +1866,7 @@ components:
         ablation:
           $ref: '#/components/schemas/Ablation'
         corpus_version_id:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/uuid'
         split_seed:
           type: integer
           format: int64
@@ -1052,55 +1896,168 @@ components:
         - id
         - document_id
         - model_config_id
+        - llm_call_id
+        - source_extraction_id
+        - doc_kind
+        - number
+        - date
+        - cp_name
+        - cp_inn
+        - amount
+        - subject
         - contract_refs
+        - supp_ref
+        - invoice_ref
         - evidence
+        - evidence_checks
         - valid
         - evidence_ok
+        - cache_hit
+        - is_current
+        - preserved_error
+        - error
         - created_at
       properties:
         id:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/uuid'
         document_id:
           $ref: '#/components/schemas/uuid'
         model_config_id:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/uuid'
         llm_call_id:
-          type: integer
-          format: int64
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
+        source_extraction_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
         doc_kind:
-          $ref: '#/components/schemas/DocumentKind'
+          allOf:
+            - $ref: '#/components/schemas/DocumentKind'
+          nullable: true
         number:
           type: string
+          nullable: true
         date:
           type: string
           format: date
+          nullable: true
         cp_name:
           type: string
+          nullable: true
         cp_inn:
           type: string
+          nullable: true
         amount:
           type: string
+          nullable: true
         subject:
           type: string
+          nullable: true
         contract_refs:
           type: array
           items:
             $ref: '#/components/schemas/ContractRef'
         supp_ref:
-          $ref: '#/components/schemas/ContractRef'
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/ContractRef'
+          nullable: true
         invoice_ref:
-          $ref: '#/components/schemas/ContractRef'
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/ContractRef'
+          nullable: true
         evidence:
-          $ref: '#/components/schemas/Evidence'
+          type: object
+          additionalProperties:
+            type: string
+            nullable: true
+        evidence_checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvidenceCheck'
         valid:
           type: boolean
         evidence_ok:
           type: boolean
+        cache_hit:
+          type: boolean
+        is_current:
+          type: boolean
+        preserved_error:
+          type: boolean
+        error:
+          type: string
+          nullable: true
         created_at:
           type: string
           format: date-time
+    Features:
+      type: object
+      required:
+        - num
+        - date
+        - inn
+        - name
+        - sem
+      properties:
+        num:
+          type: number
+          format: double
+        date:
+          type: number
+          format: double
+        inn:
+          type: number
+          format: double
+        name:
+          type: number
+          format: double
+        sem:
+          type: number
+          format: double
+        reference_index:
+          type: integer
+          format: int32
+          nullable: true
+    Fields:
+      type: object
+      properties:
+        number:
+          type: string
+          nullable: true
+        inn:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        amount:
+          anyOf:
+            - type: string
+            - type: number
+              format: double
+          nullable: true
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/VerifiedReference'
+        number_verified:
+          type: boolean
+          default: false
+        counterparty_verified:
+          type: boolean
+          default: false
+        amount_verified:
+          type: boolean
+          default: false
+        error:
+          type: string
+          nullable: true
     HealthStatus:
       type: object
       required:
@@ -1128,8 +2085,7 @@ components:
         - status
       properties:
         job_id:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/uuid'
         status:
           $ref: '#/components/schemas/JobStatus'
     JobStatus:
@@ -1147,11 +2103,14 @@ components:
         - target_id
         - link_type
         - origin
+        - review_action_id
+        - suggestion_id
         - created_at
+        - removed_at
+        - removal_action_id
       properties:
         id:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/uuid'
         source_id:
           $ref: '#/components/schemas/uuid'
         target_id:
@@ -1161,17 +2120,24 @@ components:
         origin:
           $ref: '#/components/schemas/LinkOrigin'
         review_action_id:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/uuid'
         suggestion_id:
-          type: integer
-          format: int64
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
         created_at:
           type: string
           format: date-time
         removed_at:
           type: string
           format: date-time
+          nullable: true
+        removal_action_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
     LinkOrigin:
       type: string
       enum:
@@ -1181,51 +2147,89 @@ components:
       type: object
       required:
         - id
+        - result_id
         - source_id
         - target_id
         - link_type
-        - score
         - features
         - penalties
+        - score
         - rank
         - decision
-        - created_at
+        - source_evidence
+        - target_evidence
       properties:
         id:
-          type: integer
-          format: int64
-        run_id:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/uuid'
+        result_id:
+          $ref: '#/components/schemas/uuid'
         source_id:
           $ref: '#/components/schemas/uuid'
         target_id:
           $ref: '#/components/schemas/uuid'
         link_type:
           $ref: '#/components/schemas/LinkType'
+        features:
+          $ref: '#/components/schemas/Features'
+        penalties:
+          type: array
+          items:
+            $ref: '#/components/schemas/Penalty'
         score:
           type: number
           format: double
-        features:
-          type: object
-          additionalProperties: {}
-        penalties:
-          type: object
-          additionalProperties: {}
         rank:
           type: integer
           format: int32
         decision:
           $ref: '#/components/schemas/SuggestionDecision'
-        created_at:
-          type: string
-          format: date-time
+        source_evidence:
+          $ref: '#/components/schemas/Fields'
+        target_evidence:
+          $ref: '#/components/schemas/Fields'
     LinkType:
       type: string
       enum:
         - изменение
         - основание
         - исполнение
+    LinkingConfig:
+      type: object
+      required:
+        - tau_a
+        - tau_r
+      properties:
+        method:
+          allOf:
+            - $ref: '#/components/schemas/ExperimentMethod'
+          default: combined
+        tau_a:
+          type: number
+          format: double
+        tau_r:
+          type: number
+          format: double
+        weights:
+          $ref: '#/components/schemas/Weights'
+        amount_penalty:
+          type: number
+          format: double
+          default: 0.2
+        invalid_inn_penalty:
+          type: number
+          format: double
+          default: 0.05
+        checks:
+          type: boolean
+          default: true
+        use_semantic:
+          type: boolean
+          default: true
+        version:
+          type: string
+          enum:
+            - linking-v1
+          default: linking-v1
     ModelConfig:
       type: object
       required:
@@ -1238,8 +2242,7 @@ components:
         - active
       properties:
         id:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/uuid'
         name:
           type: string
         provider:
@@ -1267,12 +2270,85 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/ErrorBody'
+    Penalty:
+      type: object
+      required:
+        - reason
+        - value
+      properties:
+        reason:
+          type: string
+        value:
+          type: number
+          format: double
+    Pipeline:
+      type: object
+      required:
+        - document_id
+        - batch_id
+        - stage
+        - job_id
+        - result_id
+        - error
+      properties:
+        document_id:
+          $ref: '#/components/schemas/uuid'
+        batch_id:
+          $ref: '#/components/schemas/uuid'
+        stage:
+          type: string
+        job_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
+        result_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
+        error:
+          type: string
+          nullable: true
     Placement:
       type: string
       enum:
         - cloud
         - open-weights-cloud
         - local
+    ProcessAccepted:
+      type: object
+      required:
+        - document_id
+        - job_ids
+        - pipeline
+      properties:
+        document_id:
+          $ref: '#/components/schemas/uuid'
+        job_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/uuid'
+        pipeline:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Pipeline'
+          nullable: true
+    ProcessRequest:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum:
+            - failed
+            - search
+            - extract
+          default: failed
+        model_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
     ProcessingStage:
       type: string
       enum:
@@ -1293,22 +2369,45 @@ components:
       required:
         - id
         - document_id
+        - session_id
+        - result_id
+        - suggestion_id
+        - chosen_target_id
         - action
+        - reason
+        - idempotency_key
         - opened_at
         - decided_at
         - duration_ms
+        - state_version
       properties:
         id:
-          type: integer
-          format: int64
-        suggestion_id:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/uuid'
         document_id:
           $ref: '#/components/schemas/uuid'
-        action:
-          $ref: '#/components/schemas/ReviewActionType'
+        session_id:
+          $ref: '#/components/schemas/uuid'
+        result_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
+        suggestion_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
         chosen_target_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
+        action:
+          type: string
+        reason:
+          type: string
+          nullable: true
+        idempotency_key:
           $ref: '#/components/schemas/uuid'
         opened_at:
           type: string
@@ -1319,6 +2418,9 @@ components:
         duration_ms:
           type: integer
           format: int64
+        state_version:
+          type: integer
+          format: int32
     ReviewActionType:
       type: string
       enum:
@@ -1326,24 +2428,110 @@ components:
         - choose_other
         - reject
         - manual
+        - complete
+        - without_links
+        - reopen
+        - remove
     ReviewRequest:
       type: object
       required:
+        - session_id
+        - version
+        - idempotency_key
         - action
       properties:
+        session_id:
+          $ref: '#/components/schemas/uuid'
+        version:
+          type: integer
+          format: int32
+          minimum: 0
+        idempotency_key:
+          $ref: '#/components/schemas/uuid'
         action:
           $ref: '#/components/schemas/ReviewActionType'
-        chosen_target_id:
-          $ref: '#/components/schemas/uuid'
-    ReviewResult:
+        suggestion_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
+        target_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
+        link_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
+        reason:
+          type: string
+          nullable: true
+          maxLength: 2000
+    ReviewSession:
       type: object
       required:
-        - review_action
+        - id
+        - document_id
+        - result_id
+        - opened_at
+        - completed_at
+        - duration_ms
+        - input_revision
+        - working_copy
       properties:
-        review_action:
-          $ref: '#/components/schemas/ReviewAction'
-        link:
-          $ref: '#/components/schemas/Link'
+        id:
+          $ref: '#/components/schemas/uuid'
+        document_id:
+          $ref: '#/components/schemas/uuid'
+        result_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
+        opened_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        duration_ms:
+          type: integer
+          format: int64
+          nullable: true
+        input_revision:
+          type: string
+        working_copy:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/CopyOrigin'
+          nullable: true
+    ReviewState:
+      type: object
+      required:
+        - document_id
+        - version
+        - status
+        - overrides
+        - needs_review
+      properties:
+        document_id:
+          $ref: '#/components/schemas/uuid'
+        version:
+          type: integer
+          format: int32
+        status:
+          type: string
+          enum:
+            - open
+            - completed
+        overrides:
+          type: object
+          additionalProperties: {}
+        needs_review:
+          type: boolean
     RunStatus:
       type: string
       enum:
@@ -1351,6 +2539,64 @@ components:
         - running
         - done
         - error
+    SearchOutcome:
+      type: object
+      required:
+        - id
+        - source_id
+        - model_config_id
+        - method
+        - config
+        - outcome
+        - reasons
+        - recommendations
+        - error
+        - created_at
+        - input_hash
+        - working_copy
+        - candidates
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        source_id:
+          $ref: '#/components/schemas/uuid'
+        model_config_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
+        method:
+          type: string
+        config:
+          $ref: '#/components/schemas/LinkingConfig'
+        outcome:
+          $ref: '#/components/schemas/SuggestionFilter'
+        reasons:
+          type: array
+          items:
+            type: string
+        recommendations:
+          type: array
+          items:
+            $ref: '#/components/schemas/uuid'
+        error:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        input_hash:
+          type: string
+        working_copy:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/CopyOrigin'
+          nullable: true
+        candidates:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkSuggestion'
+      description: Исход целого документа. candidates может быть пустым, в том числе для none/error/review.
     Split:
       type: string
       enum:
@@ -1360,21 +2606,17 @@ components:
       type: object
       required:
         - id
-        - document_id
         - stage
         - duration_ms
         - ok
+        - error
+        - started_at
       properties:
         id:
           type: integer
           format: int64
-        document_id:
-          $ref: '#/components/schemas/uuid'
-        run_id:
-          type: integer
-          format: int64
         stage:
-          $ref: '#/components/schemas/ProcessingStage'
+          type: string
         duration_ms:
           type: integer
           format: int64
@@ -1382,6 +2624,10 @@ components:
           type: boolean
         error:
           type: string
+          nullable: true
+        started_at:
+          type: string
+          format: date-time
     SuggestionDecision:
       type: string
       enum:
@@ -1423,6 +2669,114 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/ErrorBody'
+    UploadItem:
+      type: object
+      required:
+        - filename
+        - document_id
+        - error
+      properties:
+        filename:
+          type: string
+        document_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
+        error:
+          type: string
+          nullable: true
+    VerifiedReference:
+      type: object
+      properties:
+        number:
+          type: string
+          nullable: true
+        date:
+          type: string
+          format: date
+          nullable: true
+        verified:
+          type: boolean
+          default: false
+    Weights:
+      type: object
+      properties:
+        num:
+          type: number
+          format: double
+          default: 0.45
+        date:
+          type: number
+          format: double
+          default: 0.15
+        inn:
+          type: number
+          format: double
+          default: 0.15
+        name:
+          type: number
+          format: double
+          default: 0.05
+        sem:
+          type: number
+          format: double
+          default: 0.2
+    WorkingSetCreate:
+      type: object
+      required:
+        - name
+        - corpus_version_id
+        - document_ids
+        - idempotency_key
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        corpus_version_id:
+          $ref: '#/components/schemas/uuid'
+        document_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/uuid'
+          minItems: 1
+          maxItems: 1000
+        result_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/uuid'
+          maxItems: 1000
+        idempotency_key:
+          $ref: '#/components/schemas/uuid'
+    WorkingSetDetail:
+      type: object
+      required:
+        - copies
+      properties:
+        copies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Copy'
+      allOf:
+        - $ref: '#/components/schemas/WorkingSetSummary'
+    WorkingSetSummary:
+      type: object
+      required:
+        - id
+        - name
+        - corpus_version_id
+        - created_at
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        name:
+          type: string
+        corpus_version_id:
+          $ref: '#/components/schemas/uuid'
+        created_at:
+          type: string
+          format: date-time
     uuid:
       type: string
       format: uuid

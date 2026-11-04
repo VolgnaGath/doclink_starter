@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}{{ work.name }} — DocLink{% endblock %}
+{% block content %}
+<h1>{{ work.name }}</h1>
+<p>Изолированные рабочие копии. Поиск выполняется в фоне, исходные документы не изменяются.</p>
+<p><a href="/review">Очередь подтверждения</a> · <a href="/working-sets">Все наборы</a></p>
+<ul>{% for doc, copy in rows %}<li>{{ doc.doc_kind or 'Вид неизвестен' }} № {{ doc.number or '—' }} от {{ doc.date.strftime('%d.%m.%Y') if doc.date else '—' }} — <a href="/documents/{{ doc.id }}">Карточка</a>{% if doc.doc_kind != 'договор' %} · <a href="/review/{{ doc.id }}">Проверить</a>{% endif %} · {{ statuses[doc.status] }}</li>{% endfor %}</ul>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Очередь подтверждения — DocLink{% endblock %}
+{% block content %}
+<h1>Очередь подтверждения</h1>
+<p>Рабочие документы. Экспериментальный корпус доступен в списке документов.</p>
+<form method="get">
+<label>Клиент <select name="client_id"><option value="">Все</option>{% for client in clients %}<option value="{{ client.id }}" {% if client.id|string == selected_client %}selected{% endif %}>{{ client.name }}</option>{% endfor %}</select></label>
+<label>Исход <select name="outcome"><option value="">Все</option>{% for key, title in outcomes.items() %}<option value="{{ key }}" {% if key == selected_outcome %}selected{% endif %}>{{ title }}</option>{% endfor %}</select></label>
+<label>Проверка <select name="status"><option value="">Все</option><option value="open" {% if selected_status == 'open' %}selected{% endif %}>Открыта</option><option value="completed" {% if selected_status == 'completed' %}selected{% endif %}>Завершена</option></select></label><button>Применить</button>
+</form>
+<p>{% for key, title in outcomes.items() %}{{ title }}: {{ counts.get(key, 0) }} · {% endfor %}Найдено: {{ total }}</p>
+<table><thead><tr><th>Документ</th><th>Исход</th><th>Проверка</th></tr></thead><tbody>
+{% for doc, result, state in rows %}<tr><td><a href="/review/{{ doc.id }}">{{ doc.filename }}</a></td><td>{{ outcomes[result.outcome] }}</td><td>{{ 'Завершена' if state and state.status == 'completed' else 'Открыта' }}{% if state and state.needs_review %} · Требует повторной проверки{% endif %}</td></tr>{% endfor %}
+</tbody></table>
+{% if page > 1 %}<a href="?page={{ page-1 }}&client_id={{ selected_client }}&outcome={{ selected_outcome }}&status={{ selected_status }}">Назад</a>{% endif %}
+{% if page*25 < total %}<a href="?page={{ page+1 }}&client_id={{ selected_client }}&outcome={{ selected_outcome }}&status={{ selected_status }}">Далее</a>{% endif %}
+{% endblock %}

@@ -18,6 +18,13 @@ VERIFY_COMPOSE = docker compose -p doclink-verify -f docker-compose.verify.yml
 .PHONY: install-addendum audit-addendum import-corpus-base
 .PHONY: embedding-download smoke-embedding embed verify-embedding
 .PHONY: link verify-linking
+.PHONY: transfer-extraction verify-transfer
+.PHONY: accept-linking verify-linking-acceptance
+.PHONY: verify-review
+.PHONY: configure-pipeline verify-pipeline
+.PHONY: accept-upload-start accept-upload-stop
+.PHONY: verify-api spec-format
+.PHONY: accept-working-set api-schema
 CERT_DIR ?= $(HOME)/Downloads
 
 help: ## Показать список целей
@@ -29,14 +36,15 @@ spec: ## Скомпилировать TypeSpec-контракт в OpenAPI
 
 spec-check: ## Проверить, что OpenAPI-артефакт соответствует TypeSpec
 	npm --prefix contract ci
-	npm --prefix contract run compile
-	@test -z "$$(git status --porcelain -- contract/openapi)" || { \
-		echo "OpenAPI artifact is stale: run make spec and commit contract/openapi"; \
-		git status --porcelain -- contract/openapi; exit 1; }
+	node contract/check-artifact.mjs
 
 spec-lint: ## Проверить форматирование TypeSpec
 	npm --prefix contract ci
 	npm --prefix contract run check-format
+
+spec-format: ## Отформатировать исходники TypeSpec
+	npm --prefix contract ci
+	npm --prefix contract run format
 
 lock: ## Сгенерировать uv.lock закреплённой версией uv
 	docker run --rm --entrypoint uv --user "$$(id -u):$$(id -g)" \
@@ -129,8 +137,8 @@ embedding-download: ## Скачать закреплённый BGE-M3 в volume 
 smoke-embedding: ## Реальный BGE-M3 CPU smoke без сети; сначала embedding-download
 	$(COMPOSE) -f docker-compose.yml -f docker-compose.embedding-smoke.yml run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace worker python -m app.embedding_smoke $(ARGS)
 
-embed: ## Локальная очередь векторов: ARGS='--document UUID --drain' или '--corpus-version UUID --drain'
-	$(COMPOSE) run --rm --no-deps worker python -m app.embed_cli $(ARGS)
+embed: ## Локальная очередь векторов: ARGS='--corpus-version UUID --drain', EMBED_RUN_FLAGS=-d для фона
+	$(COMPOSE) run --rm --no-deps $(EMBED_RUN_FLAGS) worker python -m app.embed_cli $(ARGS)
 
 link: ## Техническая очередь связывания: ARGS='--document UUID --model UUID --config /workspace/config.json --drain'
 	$(COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace worker python -m app.link_cli $(ARGS)
@@ -138,13 +146,48 @@ link: ## Техническая очередь связывания: ARGS='--doc
 verify-linking: verify-up ## Хранение, адаптер и worker link на отдельной PostgreSQL без внешних вызовов
 	$(VERIFY_COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_linking_store.py
 
+verify-review: verify-up ## Подтверждение, аудит, таймер и конкурентность без платных вызовов
+	$(VERIFY_COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_review.py
+
+configure-pipeline: ## Установить combined + Qwen из замороженной приёмки этапа 4
+	$(COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m app.pipeline_admin --freeze docs/reports/stage4-linking-freeze-2026-11-03.json
+
+accept-upload-start: ## Платная браузерная приёмка: временный worker на 10 минут, явный допуск и прежние бюджеты
+	@test "$${PAID_CALLS_ENABLED:-false}" = "true"
+	@test -n "$${BUDGET_RUB}"
+	$(COMPOSE) stop worker
+	$(COMPOSE) run -d --no-deps --name doclink-paid-upload -e PAID_CALLS_ENABLED -e BUDGET_RUB -e LLM_PROVIDER=live worker timeout --signal=TERM 600 python -m app.worker
+
+accept-upload-stop: ## Остановить временную платную приёмку и вернуть штатный worker
+	docker stop doclink-paid-upload
+	docker rm doclink-paid-upload
+	$(COMPOSE) up -d worker
+
+verify-pipeline: verify-up ## Пакеты, зависимости и восстановление конвейера без платных вызовов
+	$(VERIFY_COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_pipeline.py tests/test_documents.py
+
+verify-api: verify-up ## REST, изоляция рабочих копий и безопасный импорт без платных вызовов
+	$(VERIFY_COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_api.py tests/test_working_sets.py tests/test_corpus_archive.py
+
+accept-working-set: ## Без оплаты: реальные копии через REST, проверка неизменности корпуса/вызовов; ARGS='--corpus-version UUID --document UUID --output report.json'
+	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace worker python -m app.working_acceptance $(ARGS)
+
+api-schema: ## Показать живые операции OpenAPI и коды ответов для ручной сверки контракта
+	$(COMPOSE) exec -T api python -c 'import json, urllib.request; s=json.load(urllib.request.urlopen("http://localhost:8000/openapi.json")); print(json.dumps({p: {m: list(v["responses"]) for m,v in ops.items()} for p,ops in s["paths"].items()}, ensure_ascii=False, indent=2)); print(json.dumps(s["components"]["securitySchemes"]))'
+
+accept-linking: ## Приёмка 4.6 без LLM: ARGS='tune|run|embedding-audit --corpus-version UUID --output report.json'
+	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace worker python -m app.linking_acceptance $(ARGS)
+
+verify-linking-acceptance: verify-up ## Tune/freeze/test, запрет stale input и повтор без моделей
+	$(VERIFY_COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_linking_acceptance.py tests/test_extraction_audit.py
+
 verify-embedding: verify-up ## Реальная проверка BGE-M3/pgvector/повтора на отдельной DB; сначала embedding-download
 	$(VERIFY_COMPOSE) -f docker-compose.embedding-verify.yml run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_embedding_store.py -k real_embedding_cache
 
 smoke-paid: ## Платный smoke: только при PAID_CALLS_ENABLED=true и BUDGET_RUB>0
 	@test "$${PAID_CALLS_ENABLED:-false}" = "true" || { echo "PAID_CALLS_ENABLED must be true"; exit 1; }
 	@test -n "$${BUDGET_RUB}" || { echo "BUDGET_RUB must be > 0"; exit 1; }
-	$(COMPOSE) run --rm -e PAID_CALLS_ENABLED -e BUDGET_RUB api python -m app.smoke_paid $(ARGS)
+	$(COMPOSE) run --rm -e PAID_CALLS_ENABLED -e BUDGET_RUB -v "$(CURDIR):/workspace" -w /workspace api python -m app.smoke_paid $(ARGS)
 
 extract: ## Очередь/продолжение/отчёт: ARGS='--document UUID --drain' (облачные вызовы — smoke-paid)
 	$(COMPOSE) run --rm api python -m app.extract_cli $(ARGS)
@@ -154,6 +197,12 @@ freeze-extraction: ## Зафиксировать конфигурацию до t
 
 audit-extraction: ## Сохранить read-only JSON приёмки: ARGS='--corpus-version UUID --protocol-hash HASH --output docs/reports/report.json'
 	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace api python -m app.extraction_audit $(ARGS)
+
+transfer-extraction: ## Без сети: ARGS='preflight --source-version UUID --corpus-version UUID --output report.json', apply --input report.json или cards
+	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace api python -m app.transfer_cli $(ARGS)
+
+verify-transfer: verify-up ## Перенос успехов/ошибок, stale preflight и история test без внешних вызовов
+	$(VERIFY_COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_extraction_transfer.py
 
 reconcile-call: ## Сверка неизвестного расхода: ARGS='--reconcile-call UUID --cost-rub N --note ...'
 	$(COMPOSE) run --rm api python -m app.extract_cli $(ARGS)
@@ -175,7 +224,15 @@ verify-down: ## Удалить только изолированные конт�
 verify-test: verify-up ## Интеграционные тесты на отдельной PostgreSQL, включая импорт и веб
 	$(MAKE) test COMPOSE='$(VERIFY_COMPOSE)'
 
-verify-migrations: verify-up ## Откат/повтор миграций 0005–0002, проверка metadata на изолированной БД
+verify-migrations: verify-up ## Откат/повтор миграций 0009–0002, проверка metadata на изолированной БД
+	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0008
+	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
+	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0007
+	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
+	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0006
+	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
+	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0005
+	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
 	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0004
 	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
 	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0003

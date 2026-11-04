@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 {% block title %}Загрузка — DocLink{% endblock %}
 {% block content %}
-<h1>Загрузить документ</h1>
-<p>Один PDF, DOCX или TXT (UTF-8), до {{ max_mb }} МиБ. Получение текста выполняется сразу.</p>
+<h1>Загрузить документы</h1>
+<p>PDF, DOCX или TXT (UTF-8), до {{ max_mb }} МиБ каждый. Обработка выполняется в фоне.</p>
 {% if clients %}
 <form action="/documents/upload" method="post" enctype="multipart/form-data" class="stack">
   <label>Клиент <select name="client_id" required>
   {% for client in clients %}<option value="{{ client.id }}" {% if selected_client == client.id|string %}selected{% endif %}>{{ client.name }} ({{ client.namespace }})</option>{% endfor %}
   </select></label>
-  <label>Документ <input type="file" name="files" accept=".pdf,.docx,.txt" required></label>
-  <button type="submit">Загрузить и получить текст</button>
+  <label>Документы <input type="file" name="files" accept=".pdf,.docx,.txt" multiple required></label>
+  <label><input type="checkbox" name="is_anonymized" value="true"> Тексты уже обезличены</label>
+  <button type="submit">Загрузить и обработать</button>
 </form>
 {% else %}<p>Сначала создайте клиента.</p>{% endif %}
 <h2>Создать клиента</h2>

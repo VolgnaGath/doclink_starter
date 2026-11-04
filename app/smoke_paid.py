@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+from uuid import UUID
 
 from sqlalchemy import select
 
@@ -10,6 +11,7 @@ from app.db import get_session
 from app.extract_cli import execute, parser
 from app.models import Client, Document, DocumentText, ModelConfig
 from app.seed import seed
+from app.services.extraction_transfer import paid_blockers, preflight
 from app.services.model_calls import ProcessingError
 from app.services.storage import save_blob
 
@@ -17,6 +19,9 @@ from app.services.storage import save_blob
 def main() -> None:
     cli = parser()
     cli.add_argument("--mode", choices=["smoke", "tune", "corpus"], default="smoke")
+    cli.add_argument(
+        "--preflight", type=Path, help="Сохранённый preflight расширения; повторная сверка до jobs"
+    )
     args = cli.parse_args()
     settings = Settings()
     if (
@@ -26,6 +31,35 @@ def main() -> None:
     ):
         raise SystemExit("Нужны LLM_PROVIDER=live, PAID_CALLS_ENABLED=true и BUDGET_RUB>0")
     try:
+        if args.preflight:
+            saved = json.loads(args.preflight.read_text())
+            if args.model or args.document or args.split:
+                raise ProcessingError(
+                    "Preflight расширения запускается для всех активных моделей и всей версии"
+                )
+            if (
+                args.mode != "corpus"
+                or str(args.corpus_version) != saved["target_version"]
+                or args.retry
+            ):
+                raise ProcessingError(
+                    "Preflight требует mode=corpus, целевую версию и запуск без --retry"
+                )
+            with get_session(settings.database_url) as session:
+                fresh = preflight(
+                    session, UUID(saved["source_version"]), args.corpus_version, settings
+                )
+                if fresh["extraction_protocol_hash"] != saved["extraction_protocol_hash"]:
+                    raise ProcessingError("Снимки моделей/инструкции изменились после preflight")
+                if paid_blockers(fresh):
+                    raise ProcessingError("; ".join(paid_blockers(fresh)))
+                if any(
+                    pair["action"] in {"reuse_success", "preserve_error"} for pair in fresh["pairs"]
+                ):
+                    raise ProcessingError("Сначала выполните offline apply preflight")
+                if fresh["counts"].get("resume_budget") and not args.resume_budget_errors:
+                    raise ProcessingError("Для остановок до отправки нужен --resume-budget-errors")
+                session.commit()
         if args.mode == "smoke":
             import io
 

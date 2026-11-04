@@ -17,6 +17,60 @@ from app.models import CorpusVersion, Document, Extraction, Job, LLMCall, ModelC
 from app.services.model_calls import fingerprint
 
 
+def model_costs(calls: list[LLMCall]) -> list[dict[str, Any]]:
+    """Physical attempts only; each call retains its historical tariff, including cache."""
+    groups: dict[tuple[str, str], list[LLMCall]] = defaultdict(list)
+    for call in calls:
+        groups[(call.snapshot["provider"], call.snapshot["name"])].append(call)
+    totals = []
+    for (provider, name), rows in sorted(groups.items()):
+        regular_tokens = cached_tokens = output_tokens = incomplete = 0
+        regular_cost = cached_cost = output_cost = Decimal(0)
+        for call in rows:
+            if call.input_tokens is None or call.output_tokens is None:
+                incomplete += call.cost_rub != Decimal(0)
+                continue
+            snapshot = call.snapshot
+            cached = snapshot.get("usage_details", {}).get("cached_input_tokens") or 0
+            if (
+                cached > call.input_tokens
+                or snapshot.get("price_in_1k") is None
+                or snapshot.get("price_out_1k") is None
+            ):
+                incomplete += 1
+                continue
+            regular = call.input_tokens - cached
+            rate_in = Decimal(str(snapshot["price_in_1k"]))
+            rate_cached = (
+                Decimal(str(snapshot["price_cached_in_1k"]))
+                if snapshot.get("price_cached_in_1k") is not None
+                else rate_in
+            )
+            regular_tokens += regular
+            cached_tokens += cached
+            output_tokens += call.output_tokens
+            regular_cost += regular * rate_in / 1000
+            cached_cost += cached * rate_cached / 1000
+            output_cost += call.output_tokens * Decimal(str(snapshot["price_out_1k"])) / 1000
+        totals.append(
+            {
+                "provider": provider,
+                "model": name,
+                "physical_attempts": len(rows),
+                "regular_input_tokens": regular_tokens,
+                "cached_input_tokens": cached_tokens,
+                "output_tokens": output_tokens,
+                "regular_input_cost_rub": str(regular_cost),
+                "cached_input_cost_rub": str(cached_cost),
+                "output_cost_rub": str(output_cost),
+                "known_cost_rub": str(sum((c.cost_rub or Decimal(0) for c in rows), Decimal(0))),
+                "unknown_cost_attempts": sum(c.cost_rub is None for c in rows),
+                "incomplete_breakdown_attempts": incomplete,
+            }
+        )
+    return totals
+
+
 def audit(settings: Settings, version_id: UUID, protocol_hash: str) -> dict[str, Any]:
     with get_session(settings.database_url) as session:
         session.execute(text("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ, READ ONLY"))
@@ -156,8 +210,40 @@ def audit(settings: Settings, version_id: UUID, protocol_hash: str) -> dict[str,
             "results": summaries,
             "errors": errors,
             "active_jobs": len(active_jobs),
+            "cross_version_provenance": {
+                "source_versions": version.report.get("extraction_source_versions", []),
+                "transferred_results": sum(r.source_extraction_id is not None for r in results),
+                "preserved_errors": sum(r.preserved_error for r in results),
+                "results_with_input_hash": sum(r.input_hash is not None for r in results),
+                "physical_attempts_this_version": sum(c.document_id in documents for c in calls),
+                "known_cost_this_version_rub": str(
+                    sum(
+                        (c.cost_rub or Decimal(0) for c in calls if c.document_id in documents),
+                        Decimal(0),
+                    )
+                ),
+                "origins": [
+                    {
+                        "document_id": str(r.document_id),
+                        "extraction_id": str(r.id),
+                        "source_extraction_id": str(r.source_extraction_id)
+                        if r.source_extraction_id
+                        else None,
+                        "llm_call_id": str(r.llm_call_id) if r.llm_call_id else None,
+                        "input_hash": r.input_hash,
+                        "preserved_error": r.preserved_error,
+                    }
+                    for r in sorted(
+                        results, key=lambda r: (str(r.document_id), str(r.model_config_id))
+                    )
+                ],
+            },
             "consumption_all_history": consumption,
             "provider_totals_all_history": provider_totals,
+            "model_costs_all_history": model_costs(calls),
+            "model_costs_this_version": model_costs(
+                [c for c in calls if c.document_id in documents]
+            ),
             "notes": [
                 "other includes technical smoke and other corpus versions; "
                 "usage sums exclude nulls",

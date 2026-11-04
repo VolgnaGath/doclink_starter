@@ -11,12 +11,34 @@ from sqlalchemy.orm import Session
 
 from app.config import Settings
 from app.documents import database
-from app.models import Client, Document, DocumentText, Job, StageTiming
-from app.services.text_extraction import TextResult
+from app.models import (
+    Client,
+    Document,
+    DocumentText,
+    Job,
+    ModelConfig,
+    ProcessingPipeline,
+    Prompt,
+    StageTiming,
+)
+from app.services.embeddings import EncodingConfig
+from app.services.linking.types import LinkingConfig
+from app.services.pipeline import install_configuration, reconcile
+from app.services.text_extraction import TextResult, process_text
 
 
 @pytest.fixture
 def document_client(app: FastAPI, db_session: Session) -> Iterator[TestClient]:
+    model = ModelConfig(
+        name="Upload fixture", provider="regex", model_uri="regex", placement="local"
+    )
+    prompt = Prompt(name="extract", version="test", text="{text}", schema={})
+    db_session.add_all([model, prompt])
+    db_session.flush()
+    install_configuration(
+        db_session, model, prompt, LinkingConfig(tau_a=0.6, tau_r=0.3), EncodingConfig()
+    )
+
     def override() -> Iterator[Session]:
         yield db_session
 
@@ -50,6 +72,11 @@ def test_upload_clean_db_detail_original_and_dedup(
         )
         assert response.status_code == 303
         detail = client.get(response.headers["location"])
+        assert "Новый" in detail.text and "Конвейер" in detail.text
+        doc_id = UUID(response.headers["location"].rsplit("/", 1)[1])
+        process_text(db_session, db_session.get(Document, doc_id), settings)
+        db_session.commit()
+        detail = client.get(response.headers["location"])
         assert "Русский договор с текстом" in detail.text
         assert "Текст получен" in detail.text
         assert client.get(response.headers["location"] + "/original").content == content
@@ -66,7 +93,10 @@ def test_upload_clean_db_detail_original_and_dedup(
 
 
 def test_error_retains_original_and_retry_same_id(
-    document_client: TestClient, db_session: Session, monkeypatch: pytest.MonkeyPatch
+    document_client: TestClient,
+    db_session: Session,
+    settings: Settings,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     client = document_client
     client_id = create_client(client)
@@ -78,6 +108,12 @@ def test_error_retains_original_and_retry_same_id(
     )
     location = response.headers["location"]
     document_id = UUID(location.rsplit("/", 1)[1])
+    reconcile(db_session)
+    process_text(db_session, db_session.get(Document, document_id), settings)
+    job = db_session.scalar(select(Job))
+    job.status, job.error = "error", "Ошибка получения текста"
+    reconcile(db_session)
+    db_session.commit()
     assert "Ошибка обработки" in client.get(location).text
     assert client.get(location + "/original").content == b"%PDF-broken"
     assert db_session.get(DocumentText, document_id) is None
@@ -88,13 +124,15 @@ def test_error_retains_original_and_retry_same_id(
     retry = client.post(location + "/retry-text", follow_redirects=False)
     assert retry.headers["location"] == location
     assert "Текст восстановлен" not in client.get(location).text
-    assert db_session.scalar(select(Job)).status == "queued"
+    reconcile(db_session)
+    assert db_session.get(ProcessingPipeline, document_id).error is None
+    assert db_session.scalar(select(Job).where(Job.status == "queued")) is not None
     assert db_session.scalar(select(func.count()).select_from(Document)) == 1
     timings = db_session.scalars(select(StageTiming).order_by(StageTiming.id)).all()
     assert [t.ok for t in timings] == [False]
 
 
-def test_reject_multiple_files_bad_client_format_and_blank_name(
+def test_multiple_files_partial_admission_bad_client_format_and_blank_name(
     document_client: TestClient, db_session: Session, settings: Settings
 ) -> None:
     client = document_client
@@ -102,22 +140,36 @@ def test_reject_multiple_files_bad_client_format_and_blank_name(
     assert client.post("/documents/clients", data={"name": "test", "inn": "bad"}).status_code == 422
     client_id = create_client(client)
     for data, files in [
-        ({"client_id": client_id}, [("files", ("a.txt", b"text")), ("files", ("b.txt", b"text"))]),
         ({"client_id": str(uuid4())}, [("files", ("a.txt", b"text"))]),
-        ({"client_id": client_id}, [("files", ("file.exe", b"text"))]),
     ]:
         assert client.post("/documents/upload", data=data, files=files).status_code == 422
-    settings.max_file_bytes = 2
-    assert (
-        client.post(
-            "/documents/upload",
-            data={"client_id": client_id},
-            files={"files": ("large.txt", b"large")},
-        ).status_code
-        == 422
+    refused = client.post(
+        "/documents/upload", data={"client_id": client_id}, files={"files": ("file.exe", b"text")}
     )
+    assert refused.status_code == 200 and "Отказ" in refused.text
+    settings.max_file_bytes = 2
+    refused = client.post(
+        "/documents/upload",
+        data={"client_id": client_id},
+        files={"files": ("large.txt", b"large")},
+    )
+    assert refused.status_code == 200 and "Отказ" in refused.text
     assert db_session.scalar(select(func.count()).select_from(Document)) == 0
     assert not list(Path(settings.files_dir).glob("*/*"))
+    settings.max_file_bytes = 1024
+    accepted = client.post(
+        "/documents/upload",
+        data={"client_id": client_id, "is_anonymized": "true"},
+        files=[
+            ("files", ("a.txt", b"text")),
+            ("files", ("b.txt", b"text")),
+            ("files", ("bad.exe", b"text")),
+        ],
+    )
+    assert accepted.status_code == 200 and "Отказ" in accepted.text
+    assert accepted.text.count("Принят, обработка в фоне") == 2
+    assert db_session.scalar(select(func.count()).select_from(Document)) == 2
+    assert all(d.is_anonymized for d in db_session.scalars(select(Document)))
 
 
 def test_filters_pagination_and_client_namespace(
@@ -171,7 +223,9 @@ def test_unauthorized_no_files_or_database(
     )
 
 
-def test_docx_and_pdf_uploads(document_client: TestClient, tmp_path: Path) -> None:
+def test_docx_and_pdf_uploads(
+    document_client: TestClient, db_session: Session, settings: Settings, tmp_path: Path
+) -> None:
     from docx import Document as Docx
     from test_text_extraction import make_pdf
 
@@ -193,4 +247,8 @@ def test_docx_and_pdf_uploads(document_client: TestClient, tmp_path: Path) -> No
         response = client.post(
             "/documents/upload", data={"client_id": client_id}, files={"files": (name, content)}
         )
-        assert response.status_code == 200 and expected in response.text
+        assert response.status_code == 200 and "Конвейер" in response.text
+        document_id = UUID(response.url.path.rsplit("/", 1)[1])
+        process_text(db_session, db_session.get(Document, document_id), settings)
+        db_session.commit()
+        assert expected in client.get(response.url.path).text

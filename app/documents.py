@@ -1,4 +1,3 @@
-import re
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Annotated
@@ -11,12 +10,22 @@ from sqlalchemy.orm import Session
 
 from app.auth import require_user, templates
 from app.db import get_session
-from app.models import Client, Document, DocumentText, Extraction, Job, ModelConfig, StageTiming
+from app.models import (
+    Client,
+    Document,
+    DocumentText,
+    Extraction,
+    Job,
+    ModelConfig,
+    ProcessingPipeline,
+    StageTiming,
+)
 from app.services.extraction import select_card
 from app.services.jobs import enqueue
 from app.services.model_calls import ProcessingError
-from app.services.storage import StorageError, document_mime, save_blob
-from app.services.text_extraction import process_text
+from app.services.pipeline import retry_pipeline
+from app.services.processing_requests import request_processing
+from app.services.registration import IncomingFile, register_batch, register_client
 
 router = APIRouter(
     prefix="/documents", include_in_schema=False, dependencies=[Depends(require_user)]
@@ -124,7 +133,9 @@ def upload_form(request: Request, session: DB, client_id: str = "") -> Response:
         request,
         "document_upload.html",
         selected_client=client_id,
-        clients=session.scalars(select(Client).order_by(Client.name)).all(),
+        clients=session.scalars(
+            select(Client).where(~Client.namespace.startswith("corpus")).order_by(Client.name)
+        ).all(),
         max_mb=request.app.state.settings.max_file_bytes // (1024 * 1024),
     )
 
@@ -135,13 +146,10 @@ def create_client(
     name: Annotated[str, Form()],
     inn: Annotated[str, Form()] = "",
 ) -> Response:
-    name, inn = name.strip(), inn.strip()
-    if not name or len(name) > 300:
-        raise HTTPException(422, "Укажите название клиента (до 300 символов)")
-    if inn and not re.fullmatch(r"\d{10}|\d{12}", inn):
-        raise HTTPException(422, "ИНН должен содержать 10 или 12 цифр")
-    client = Client(name=name, inn=inn or None, namespace="upload")
-    session.add(client)
+    try:
+        client = register_client(session, name, inn)
+    except ProcessingError as exc:
+        raise HTTPException(422, str(exc)) from exc
     session.commit()
     return RedirectResponse(f"/documents/upload?client_id={client.id}", status_code=303)
 
@@ -152,35 +160,22 @@ def upload_document(
     session: DB,
     client_id: Annotated[str, Form()],
     files: Annotated[list[UploadFile], File()],
+    is_anonymized: Annotated[bool, Form()] = False,
 ) -> Response:
-    if len(files) != 1:
-        raise HTTPException(422, "Загрузите ровно один файл")
-    client = session.get(Client, parse_uuid(client_id))
-    if client is None:
-        raise HTTPException(422, "Клиент не найден")
-    upload = files[0]
-    filename = (upload.filename or "").replace("\\", "/").rsplit("/", 1)[-1]
-    settings = request.app.state.settings
     try:
-        mime = document_mime(filename)
-        blob = save_blob(upload.file, Path(settings.files_dir), settings.max_file_bytes)
-    except StorageError as exc:
+        results = register_batch(
+            session,
+            request.app.state.settings,
+            parse_uuid(client_id),
+            [IncomingFile(upload.filename or "", upload.file) for upload in files],
+            is_anonymized=is_anonymized,
+        )
+    except ProcessingError as exc:
         raise HTTPException(422, str(exc)) from exc
-    document = Document(
-        client_id=client.id,
-        source="upload",
-        filename=filename,
-        sha256=blob.sha256,
-        storage_path=str(blob.path),
-        mime=mime,
-    )
-    session.add(document)
-    session.flush()
-    process_text(session, document, settings)
-    if document.status == "text":
-        enqueue(session, document)
     session.commit()
-    return RedirectResponse(f"/documents/{document.id}", status_code=303)
+    if len(results) == 1 and results[0].document_id:
+        return RedirectResponse(f"/documents/{results[0].document_id}", status_code=303)
+    return render(request, "document_upload_results.html", results=results)
 
 
 @router.get("/{document_id}")
@@ -190,6 +185,7 @@ def document_detail(request: Request, session: DB, document_id: UUID) -> Respons
         request,
         "document_detail.html",
         document=document,
+        pipeline=session.get(ProcessingPipeline, document_id),
         client=session.get(Client, document.client_id),
         text=session.get(DocumentText, document_id),
         extractions=session.scalars(
@@ -220,21 +216,34 @@ def original(session: DB, document_id: UUID) -> Response:
 @router.post("/{document_id}/retry-text")
 def retry_text(request: Request, session: DB, document_id: UUID) -> Response:
     document = find_document(session, document_id, lock=True)
+    if document.source == "corpus":
+        raise HTTPException(422, "Корпус доступен только для просмотра; создайте рабочую копию")
     if document.status != "error":
         raise HTTPException(409, "Повтор доступен только для ошибочного документа")
-    enqueue(session, document, text_only=True)
+    if session.get(ProcessingPipeline, document_id):
+        retry_pipeline(session, document_id)
+    else:
+        enqueue(session, document, text_only=True)
     session.commit()
+    return RedirectResponse(f"/documents/{document_id}", status_code=303)
+
+
+@router.post("/{document_id}/process")
+def process_document(
+    session: DB, document_id: UUID, mode: Annotated[str, Form()] = "failed"
+) -> Response:
+    try:
+        request_processing(session, document_id, mode=mode)
+        session.commit()
+    except ProcessingError as exc:
+        raise HTTPException(409, str(exc)) from exc
     return RedirectResponse(f"/documents/{document_id}", status_code=303)
 
 
 @router.post("/{document_id}/extract")
 def queue_extraction(session: DB, document_id: UUID, model_id: Annotated[UUID, Form()]) -> Response:
-    document = find_document(session, document_id)
-    model = session.get(ModelConfig, model_id)
-    if model is None or session.get(DocumentText, document_id) is None:
-        raise HTTPException(422, "Нет модели или текста")
     try:
-        enqueue(session, document, [model], retry=True)
+        request_processing(session, document_id, mode="extract", model_id=model_id)
     except ProcessingError as exc:
         raise HTTPException(409, str(exc)) from exc
     session.commit()
@@ -243,7 +252,9 @@ def queue_extraction(session: DB, document_id: UUID, model_id: Annotated[UUID, F
 
 @router.post("/{document_id}/card")
 def choose_card(session: DB, document_id: UUID, extraction_id: Annotated[UUID, Form()]) -> Response:
-    find_document(session, document_id)
+    document = find_document(session, document_id)
+    if document.source == "corpus":
+        raise HTTPException(422, "Корпус доступен только для просмотра; создайте рабочую копию")
     result = session.get(Extraction, extraction_id)
     if result is None or result.document_id != document_id or not result.valid:
         raise HTTPException(422, "Извлечение недоступно")

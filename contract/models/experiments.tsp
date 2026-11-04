@@ -3,7 +3,7 @@ using TypeSpec.Http;
 namespace DocLink;
 
 model ModelConfig {
-  id: int64;
+  id: uuid;
   name: string;
   provider: Provider;
   model_uri: string;
@@ -20,13 +20,13 @@ model ExperimentRun {
   id: int64;
   name: string;
   method: ExperimentMethod;
-  model_config_id?: int64;
+  model_config_id?: uuid;
   embedder: string;
   weights: Record<unknown>;
   tau_a?: float64;
   tau_r?: float64;
   ablation: Ablation;
-  corpus_version_id: int64;
+  corpus_version_id: uuid;
   split_seed: int64;
   git_commit: string;
   status: RunStatus;
@@ -60,13 +60,13 @@ model ExperimentDetail {
 model ExperimentCreate {
   name: string;
   method: ExperimentMethod;
-  model_config_id?: int64;
+  model_config_id?: uuid;
   embedder: string;
   weights: Record<unknown>;
   tau_a?: float64;
   tau_r?: float64;
   ablation: Ablation;
-  corpus_version_id: int64;
+  corpus_version_id: uuid;
   split_seed: int64;
 }
 
