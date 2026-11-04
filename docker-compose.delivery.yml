@@ -1,0 +1,47 @@
+# Overlay on verify: portable real artifacts, separate DB/files/journal, offline models.
+services:
+  api:
+    environment: &delivery_env
+      DATABASE_URL: postgresql+psycopg://doclink:doclink@db:5432/doclink
+      APP_PASSWORD: verification-password
+      SECRET_KEY: verification-secret-key-at-least-32-characters
+      DELIVERY_ACCEPTANCE_ENABLED: "1"
+      PAID_CALLS_ENABLED: "false"
+      LLM_PROVIDER: mock
+      BUDGET_RUB: "0"
+      MOCK1C_ENABLED: "true"
+      MOCK1C_POLL_SECONDS: "2"
+      HF_HOME: /data/models/hf-home
+      HF_HUB_OFFLINE: "1"
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TOKENIZERS_PARALLELISM: "false"
+    ports:
+      - "127.0.0.1:28000:8000"
+    volumes:
+      - delivery_inbox:/data/accept-inbox
+      - delivery_models:/data/models:ro
+  worker:
+    image: doclink:dev
+    command: ["python", "-m", "app.worker"]
+    environment: *delivery_env
+    volumes:
+      - verify_files:/data/files
+      - ./corpus:/data/corpus:ro
+      - delivery_models:/data/models:ro
+    depends_on:
+      db:
+        condition: service_healthy
+  mock1c:
+    image: doclink:dev
+    command: ["uvicorn", "mock1c.main:app", "--host", "0.0.0.0", "--port", "8001"]
+    ports:
+      - "127.0.0.1:28001:8001"
+    volumes:
+      - delivery_inbox:/data/inbox:ro
+      - delivery_journal:/data/mock1c
+volumes:
+  delivery_inbox:
+  delivery_journal:
+  delivery_models:
+    external: true
+    name: ${EMBEDDING_MODEL_VOLUME:-doclink_starter_models}

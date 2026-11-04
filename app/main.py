@@ -12,6 +12,7 @@ from app.auth import router as auth_router
 from app.config import Settings
 from app.db import check_database
 from app.documents import router as documents_router
+from app.effect_web import router as effect_router
 from app.experiment_api import router as experiment_api_router
 from app.experiment_web import router as experiment_web_router
 from app.health import router as health_router
@@ -51,6 +52,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application.include_router(experiment_api_router)
     application.include_router(experiment_web_router)
     application.include_router(integration_router)
+    application.include_router(effect_router)
     return application
 
 

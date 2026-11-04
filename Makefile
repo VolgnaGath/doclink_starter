@@ -6,6 +6,7 @@ COMPOSE ?= docker compose
 UV_IMAGE ?= ghcr.io/astral-sh/uv:0.5.18-python3.12-bookworm-slim
 VERIFY_COMPOSE = docker compose -p doclink-verify -f docker-compose.verify.yml
 INTEGRATION_COMPOSE = docker compose -p doclink-integration -f docker-compose.verify.yml -f docker-compose.integration-acceptance.yml
+DELIVERY_COMPOSE = docker compose -p doclink-delivery -f docker-compose.verify.yml -f docker-compose.delivery.yml
 export GIT_COMMIT := $(shell git rev-parse HEAD)
 
 .DEFAULT_GOAL := help
@@ -33,6 +34,45 @@ export GIT_COMMIT := $(shell git rev-parse HEAD)
 .PHONY: integration verify-integration
 .PHONY: accept-integration-up accept-integration accept-integration-down accept-integration-disconnect accept-integration-connect accept-integration-restart
 CERT_DIR ?= $(HOME)/Downloads
+.PHONY: effect verify-effect accept-effect-web
+.PHONY: delivery-export delivery-up delivery-restore delivery-experiments delivery-prepare delivery-browser delivery-down delivery-materials
+
+delivery-export: ## Сохранить переносимые реальные артефакты серии без anon_maps; ARGS='--series UUID --file data/delivery.json.gz --report docs/reports/....json'
+	$(COMPOSE) run --rm --no-deps --user 0:0 -v "$(CURDIR):/workspace" -w /workspace api python -m app.delivery_artifacts export $(ARGS)
+
+delivery-up: ## Чистый отдельный стенд сдачи: миграции, без seed до переноса реальных артефактов
+	$(DELIVERY_COMPOSE) build api
+	$(DELIVERY_COMPOSE) up -d --wait db
+	$(DELIVERY_COMPOSE) run --rm api alembic upgrade head
+
+delivery-restore: ## Восстановить пакет только в пустую БД сдачи; ARGS='--file data/delivery.json.gz --report docs/reports/....json'
+	$(DELIVERY_COMPOSE) run --rm --no-deps --user 0:0 -v "$(CURDIR):/workspace" -w /workspace api python -m app.delivery_artifacts restore $(ARGS)
+
+delivery-experiments: ## Воспроизвести реальную матрицу на чистом стенде из перенесённых вычислений; ARGS как experiments
+	$(MAKE) experiments COMPOSE='$(DELIVERY_COMPOSE)' ARGS='$(ARGS)'
+
+delivery-prepare: ## Настроить единый новый поток mock1c: явный regex + реальный BGE, отдельно от LLM-матрицы
+	$(DELIVERY_COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m app.delivery_acceptance prepare
+	$(DELIVERY_COMPOSE) up -d api worker mock1c
+
+delivery-browser: ## Chromium на стенде сдачи: новый документ→предложение→подтверждение→mock1c и эффект
+	node contract/accept-delivery.mjs
+	$(DELIVERY_COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace api python -m app.delivery_acceptance audit
+
+delivery-down: ## Удалить только стенд сдачи; общие веса BGE остаются
+	$(DELIVERY_COMPOSE) down -v
+
+delivery-materials: ## Генерировать описание metadata БД, приложения Г/Ж и манифест файлов сдачи
+	$(COMPOSE) run --rm --no-deps -e GIT_COMMIT --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace api python -m app.delivery_materials
+
+effect: ## Без оплаты: snapshot/prepare-measurements --run UUID --output файл.json; replay --input файл.json --output файл.json
+	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace api python -m app.effect_cli $(ARGS)
+
+verify-effect: verify-up ## Формулы, исходы, расходы, замеры и HTTP калькулятора без оплаты
+	$(VERIFY_COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_effect.py
+
+accept-effect-web: ## Chromium: расчёт, пустые данные, два сценария и идентичные выгрузки снимка
+	node contract/accept-effect.mjs
 
 help: ## Показать список целей
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
