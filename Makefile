@@ -5,6 +5,7 @@
 COMPOSE ?= docker compose
 UV_IMAGE ?= ghcr.io/astral-sh/uv:0.5.18-python3.12-bookworm-slim
 VERIFY_COMPOSE = docker compose -p doclink-verify -f docker-compose.verify.yml
+export GIT_COMMIT := $(shell git rev-parse HEAD)
 
 .DEFAULT_GOAL := help
 .PHONY: help spec spec-check spec-lint lock up down logs ps build migrate revision seed import-corpus test test-fast lint format smoke-paid db-shell
@@ -25,6 +26,8 @@ VERIFY_COMPOSE = docker compose -p doclink-verify -f docker-compose.verify.yml
 .PHONY: accept-upload-start accept-upload-stop
 .PHONY: verify-api spec-format
 .PHONY: accept-working-set api-schema
+.PHONY: verify-experiments
+.PHONY: experiments
 CERT_DIR ?= $(HOME)/Downloads
 
 help: ## Показать список целей
@@ -169,6 +172,12 @@ verify-pipeline: verify-up ## Пакеты, зависимости и восст
 verify-api: verify-up ## REST, изоляция рабочих копий и безопасный импорт без платных вызовов
 	$(VERIFY_COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_api.py tests/test_working_sets.py tests/test_corpus_archive.py
 
+verify-experiments: verify-up ## Матрица, tune/freeze/test, происхождение и восстановление без оплаты
+	$(VERIFY_COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_experiments.py
+
+experiments: ## Без оплаты: ARGS='accept --corpus-version UUID --output report.json'; status/export/resume --series UUID; accept --repeat-of UUID
+	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace worker python -m app.experiment_cli $(ARGS)
+
 accept-working-set: ## Без оплаты: реальные копии через REST, проверка неизменности корпуса/вызовов; ARGS='--corpus-version UUID --document UUID --output report.json'
 	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace worker python -m app.working_acceptance $(ARGS)
 
@@ -224,7 +233,9 @@ verify-down: ## Удалить только изолированные конт�
 verify-test: verify-up ## Интеграционные тесты на отдельной PostgreSQL, включая импорт и веб
 	$(MAKE) test COMPOSE='$(VERIFY_COMPOSE)'
 
-verify-migrations: verify-up ## Откат/повтор миграций 0009–0002, проверка metadata на изолированной БД
+verify-migrations: verify-up ## Откат/повтор миграций 0010–0002, проверка metadata на изолированной БД
+	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0009
+	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
 	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0008
 	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
 	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0007

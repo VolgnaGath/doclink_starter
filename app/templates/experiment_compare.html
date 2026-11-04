@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Сравнение прогонов — DocLink{% endblock %}
+{% block content %}
+<h1>Сравнение выбранных прогонов</h1><p><a href="/experiments">Эксперименты</a></p>
+<p>Tune и test показаны раздельно. Сравнивайте прогоны одной версии корпуса и общей карточки.
+Трудные срезы пересекаются; повтор одинаковой конфигурации не является независимым экспериментом.</p>
+{% for run in runs %}<h2>{{ run.variant }} · {{ run.id }}</h2><p>{{ run.status }} · reused_test={{ run.reused_test }} · {{ run.error or '' }}</p>{% include "experiment_metrics.html" %}{% endfor %}
+{% endblock %}

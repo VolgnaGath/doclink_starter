@@ -4,6 +4,7 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
+    MPLCONFIGDIR=/tmp/doclink-matplotlib \
     PATH="/app/.venv/bin:$PATH"
 
 RUN apt-get update \
@@ -24,6 +25,9 @@ COPY certs ./certs
 COPY mock1c ./mock1c
 COPY migrations ./migrations
 COPY tests ./tests
+COPY docs/EXPERIMENTS.md ./docs/EXPERIMENTS.md
+ARG GIT_COMMIT=unknown
+ENV DOCLINK_GIT_COMMIT=$GIT_COMMIT
 
 RUN groupadd --gid 10001 app \
     && useradd --uid 10001 --gid app --no-create-home --shell /usr/sbin/nologin app \

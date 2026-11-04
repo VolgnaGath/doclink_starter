@@ -17,62 +17,71 @@ model ModelConfig {
 }
 
 model ExperimentRun {
-  id: int64;
-  name: string;
+  id: uuid;
+  variant: string;
   method: ExperimentMethod;
-  model_config_id?: uuid;
-  embedder: string;
-  weights: Record<unknown>;
-  tau_a?: float64;
-  tau_r?: float64;
+  model_config_id: uuid | null;
   ablation: Ablation;
-  corpus_version_id: uuid;
-  split_seed: int64;
-  git_commit: string;
-  status: RunStatus;
-  started_at?: utcDateTime;
-  finished_at?: utcDateTime;
-  cost_rub?: string;
-  notes?: string;
+  status: RunStatus | "frozen" | "NO_FEASIBLE_CONFIGURATION" | "BLOCKED";
+  progress: int64;
+  total: int64;
+  config: Record<unknown>;
+  snapshot: Record<unknown>;
+  protocol_hash: string | null;
+  reused_test: boolean;
+  test_started_at: utcDateTime | null;
+  started_at: utcDateTime | null;
+  finished_at: utcDateTime | null;
+  error: string | null;
+  report: Record<unknown>;
+  metrics: ExperimentMetric[];
+  threshold_curves: ThresholdCurvePoint[];
 }
 
 model ExperimentMetric {
-  run_id: int64;
+  split: Split;
   slice: string;
   metric: string;
-  value: float64;
+  value: float64 | null;
+  numerator: int64 | null;
+  denominator: int64 | null;
 }
 
 model ThresholdCurvePoint {
-  tau: float64;
-  precision: float64;
-  recall: float64;
-  recommendation_share: float64;
+  split: "tune";
+  purpose: "tuning";
+  values: Record<unknown>;
 }
 
 model ExperimentDetail {
-  run: ExperimentRun;
-  model_config?: ModelConfig;
-  metrics: ExperimentMetric[];
-  threshold_curve: ThresholdCurvePoint[];
+  id: uuid;
+  name: string;
+  corpus_version_id: uuid;
+  status: RunStatus;
+  mode: "matrix" | "single" | "ablations";
+  selected_model_id: uuid | null;
+  progress: int64;
+  total: int64;
+  error: string | null;
+  created_at: utcDateTime;
+  finished_at: utcDateTime | null;
+  dataset_hash: string | null;
+  runs: ExperimentRun[];
 }
 
 model ExperimentCreate {
-  name: string;
-  method: ExperimentMethod;
-  model_config_id?: uuid;
-  embedder: string;
-  weights: Record<unknown>;
-  tau_a?: float64;
-  tau_r?: float64;
-  ablation: Ablation;
+  @minLength(1) @maxLength(200) name: string;
   corpus_version_id: uuid;
-  split_seed: int64;
+  idempotency_key: uuid;
+  mode?: "matrix" | "single" | "ablations" = "matrix";
+  method?: ExperimentMethod = ExperimentMethod.combined;
+  model_config_id?: uuid;
+  ablation?: Ablation = Ablation.none;
 }
 
 model ExperimentAccepted {
   @statusCode statusCode: 202;
-  @bodyRoot body: ExperimentRun;
+  @bodyRoot body: ExperimentDetail;
 }
 
 model ExportFile extends File<

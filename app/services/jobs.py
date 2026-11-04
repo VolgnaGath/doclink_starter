@@ -159,7 +159,7 @@ def recover(session: Session, guard: Connection) -> None:
         if not guard.scalar(text("SELECT pg_try_advisory_lock(:key)"), {"key": key}):
             continue
         try:
-            if job.type in {"embed", "link"}:
+            if job.type in {"embed", "link"} or job.type.startswith("experiment:"):
                 # Local work can resume. Durable vectors/link outcomes cover a
                 # crash after result commit but before job completion.
                 job.status, job.locked_at = "queued", None
@@ -285,6 +285,10 @@ def work_once(
                 from app.services.linking_store import link_document
 
                 link_document(settings, job.document_id, job.payload, job_id=job.id)
+            elif job.type.startswith("experiment:"):
+                from app.services.experiments import execute_series
+
+                execute_series(settings, UUID(job.payload["series_id"]))
             else:
                 extract_document(
                     settings,

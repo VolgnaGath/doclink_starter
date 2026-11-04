@@ -7,6 +7,7 @@ eligible pool, not top-k; a changed input is an error requiring a new explicit e
 import hashlib
 import time
 from datetime import UTC, datetime
+from types import SimpleNamespace
 from typing import Any
 from uuid import UUID
 
@@ -32,6 +33,7 @@ from app.models import (
 from app.services.card_edits import overrides_for
 from app.services.embeddings import EmbeddingError, EncodingConfig, cosine, prepare_text
 from app.services.extraction import lock_number
+from app.services.extraction_schema import check_evidence, regex_extract
 from app.services.linking import link
 from app.services.linking.types import (
     Card,
@@ -103,15 +105,55 @@ def linking_payload(
     model_id: UUID | None,
     config: LinkingConfig,
     encoding: EncodingConfig,
+    *,
+    no_llm: bool = False,
 ) -> dict[str, Any]:
     """Build a frozen, label-free input and provenance from a consistent DB snapshot."""
-    if config.method == "combined" and model_id is None:
+    if config.method == "combined" and model_id is None and not no_llm:
         raise ProcessingError("Для combined выберите модель извлечения")
     source = session.execute(select(*CARD_COLUMNS).where(Document.id == document_id)).first()
     if source is None:
         raise ProcessingError("Документ не найден")
+    regex_rows: dict[UUID, tuple[str, Any]] = {}
+
+    def regex_card(row: Any) -> Any:
+        raw = session.scalar(select(DocumentText.text).where(DocumentText.document_id == row.id))
+        if raw is None:
+            raise ProcessingError("Текст для regex-карточки отсутствует")
+        parsed = regex_extract(raw)
+        regex_rows[row.id] = (raw, parsed)
+        return SimpleNamespace(
+            **{
+                **dict(row._mapping),
+                "doc_kind": parsed.doc_kind,
+                "date": datetime.strptime(parsed.date, "%d.%m.%Y").date() if parsed.date else None,
+                "card_model_config_id": None,
+                "card_extraction_id": None,
+            }
+        )
+
     pool = []
-    if source.date is not None and source.doc_kind is not None:
+    if no_llm:
+        source = regex_card(source)
+        rows = session.execute(
+            select(*CARD_COLUMNS)
+            .where(
+                Document.id != document_id,
+                Document.client_id == source.client_id,
+                Document.corpus_version_id == source.corpus_version_id,
+            )
+            .order_by(Document.id)
+        ).all()
+        parsed_pool = [regex_card(row) for row in rows]
+        pool = [
+            row
+            for row in parsed_pool
+            if row.doc_kind == "договор"
+            and row.date is not None
+            and source.date is not None
+            and row.date <= source.date
+        ]
+    elif source.date is not None and source.doc_kind is not None:
         pool = list(
             session.execute(
                 select(*CARD_COLUMNS)
@@ -129,7 +171,7 @@ def linking_payload(
     vectors: dict[str, tuple[float, ...]] = {}
     semantic_errors: list[str] = []
     preparation_error = None
-    pipeline = session.get(ProcessingPipeline, document_id)
+    pipeline = None if no_llm else session.get(ProcessingPipeline, document_id)
     dependency_origins = None
     if pipeline and source.doc_kind is not None and source.date is not None:
         from app.services.pipeline import dependencies
@@ -160,7 +202,7 @@ def linking_payload(
             },
         }
         fields = Fields()
-        if config.method == "combined":
+        if config.method == "combined" and not no_llm:
             extraction = _current(session, row.id, model_id)
             fields = _fields(extraction)
             origin["extraction"] = (
@@ -208,7 +250,33 @@ def linking_payload(
                         for ref in (overrides["contract_refs"] or [])
                     )
                 fields = Fields.model_validate({**fields.model_dump(), **updates})
-        raw = session.scalar(select(DocumentText.text).where(DocumentText.document_id == row.id))
+        if no_llm:
+            raw, parsed = regex_rows[row.id]
+            origin = {
+                "regex": {"version": "regex-card-v1", "fields": parsed.model_dump(mode="json")}
+            }
+            verified = {c["field"] for c in check_evidence(parsed, [raw]) if c.get("ok")}
+            fields = Fields(
+                number=parsed.number,
+                inn=parsed.counterparty_inn,
+                name=parsed.counterparty_name,
+                amount=parsed.amount,
+                number_verified="number" in verified,
+                counterparty_verified="counterparty" in verified,
+                amount_verified="amount" in verified,
+                references=tuple(
+                    ContractReference(
+                        number=ref.number,
+                        date=datetime.strptime(ref.date, "%d.%m.%Y").date() if ref.date else None,
+                        verified=f"contract_refs.{i}" in verified,
+                    )
+                    for i, ref in enumerate(parsed.contract_refs)
+                ),
+            )
+        else:
+            raw = session.scalar(
+                select(DocumentText.text).where(DocumentText.document_id == row.id)
+            )
         origin["text_hash"] = hashlib.sha256(raw.encode()).hexdigest() if raw is not None else None
         if config.method == "rules" and not raw:
             card_error = "Текст для rules отсутствует"
@@ -292,6 +360,9 @@ def linking_payload(
     if pipeline:
         payload["provenance"]["operational_configuration"] = pipeline.snapshot
         payload["provenance"]["dependencies"] = dependency_origins
+    if no_llm:
+        payload["no_llm"] = True
+        payload["provenance"]["card_source"] = "regex"
     from app.services.working_identity import copy_origin
 
     origin = copy_origin(session, document_id)
@@ -402,6 +473,7 @@ def link_document(
                             UUID(payload["model_id"]) if payload["model_id"] else None,
                             config,
                             encoding,
+                            no_llm=payload.get("no_llm", False),
                         )
                         if current != payload:
                             raise ProcessingError("Вход link изменился после постановки задания")

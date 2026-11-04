@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Эксперименты — DocLink{% endblock %}
+{% block content %}
+<h1>Эксперименты</h1>
+<p>Матрица и три абляции запускаются одной кнопкой. Пороги и модель абляций выбираются только на tune.
+Используются сохранённые реальные извлечения и BGE-M3. Новые LLM-вызовы не выполняются.</p>
+<form method="post" action="/experiments">
+  <input type="hidden" name="idempotency_key" value="{{ key }}">
+  <label>Название <input name="name" value="Матрица этапа 6" required maxlength="200"></label>
+  <label>Корпус <select name="corpus_version_id" required>{% for version in versions %}<option value="{{ version.id }}">{{ version.name }} · {{ version.id }}</option>{% endfor %}</select></label>
+  <label>Режим <select name="mode"><option value="matrix">Полная матрица + абляции</option><option value="ablations">Выбор модели на tune + три абляции</option><option value="single">Один прогон</option></select></label>
+  <details><summary>Настройки одиночного прогона</summary>
+    <label>Метод <select name="method"><option>combined</option><option>rules</option><option>semantic</option></select></label>
+    <label>Модель (только combined) <select name="model_config_id"><option value="">Общий baseline</option>{% for model in models %}<option value="{{ model.id }}">{{ model.name }}</option>{% endfor %}</select></label>
+    <label>Абляция <select name="ablation"><option value="none">Нет</option><option value="no_llm">Без LLM</option><option value="no_checks">Без проверок</option><option value="no_sem">Без семантики</option></select></label>
+  </details>
+  <button type="submit">Запустить</button>
+</form>
+<h2>Серии</h2>
+<table><thead><tr><th>Название</th><th>Статус</th><th>Создано</th><th>Причина остановки</th></tr></thead><tbody>
+{% for row in series %}<tr><td><a href="/experiments/{{ row.id }}">{{ row.name }}</a></td><td>{{ row.status }}</td><td>{{ row.created_at.strftime('%d.%m.%Y %H:%M') }}</td><td>{{ row.error or '—' }}</td></tr>{% endfor %}
+</tbody></table>
+<h2>Сравнить прогоны</h2>
+<form method="get" action="/experiments/compare">
+{% for run in runs %}<label><input type="checkbox" name="run_ids" value="{{ run.id }}"> {{ run.variant }} · {{ run.series_id }} · {{ run.status }}</label><br>{% endfor %}
+<button type="submit">Сравнить выбранные</button>
+</form>
+{% endblock %}

@@ -540,3 +540,107 @@ class Link(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     removed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     removal_action_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("review_actions.id"))
+
+
+class ExperimentSeries(Base):
+    __tablename__ = "experiment_series"
+    __table_args__ = (CheckConstraint("status IN ('queued','running','done','error')"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    name: Mapped[str]
+    corpus_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("corpus_versions.id"))
+    idempotency_key: Mapped[uuid.UUID] = mapped_column(unique=True)
+    request_hash: Mapped[str]
+    request: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    status: Mapped[str] = mapped_column(default="queued")
+    job_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("jobs.id"))
+    selected_model_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("model_configs.id"))
+    error: Mapped[str | None]
+    dataset: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class ExperimentRun(Base):
+    __tablename__ = "experiment_runs"
+    __table_args__ = (
+        UniqueConstraint("series_id", "variant"),
+        CheckConstraint(
+            "status IN ('queued','frozen','running','done','error',"
+            "'NO_FEASIBLE_CONFIGURATION','BLOCKED')"
+        ),
+        CheckConstraint("progress >= 0 AND total >= progress"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    series_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("experiment_series.id"), index=True)
+    variant: Mapped[str]
+    model_config_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("model_configs.id"))
+    method: Mapped[str]
+    ablation: Mapped[str] = mapped_column(default="none")
+    status: Mapped[str] = mapped_column(default="queued")
+    config: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    snapshot: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    protocol_hash: Mapped[str | None]
+    reused_test: Mapped[bool] = mapped_column(default=False)
+    test_started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    progress: Mapped[int] = mapped_column(default=0)
+    total: Mapped[int] = mapped_column(default=0)
+    error: Mapped[str | None]
+    report: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+
+
+class ExperimentMetric(Base):
+    __tablename__ = "experiment_metrics"
+    __table_args__ = (CheckConstraint("split IN ('tune','test')"),)
+
+    run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("experiment_runs.id"), primary_key=True)
+    split: Mapped[str] = mapped_column(primary_key=True)
+    slice: Mapped[str] = mapped_column(primary_key=True)
+    metric: Mapped[str] = mapped_column(primary_key=True)
+    value: Mapped[float | None]
+    numerator: Mapped[int | None]
+    denominator: Mapped[int | None]
+
+
+class ThresholdCurve(Base):
+    __tablename__ = "threshold_curves"
+    __table_args__ = (CheckConstraint("split = 'tune' AND purpose = 'tuning'"),)
+
+    run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("experiment_runs.id"), primary_key=True)
+    index: Mapped[int] = mapped_column(primary_key=True)
+    split: Mapped[str] = mapped_column(default="tune")
+    purpose: Mapped[str] = mapped_column(default="tuning")
+    values: Mapped[dict[str, Any]] = mapped_column(JSONB)
+
+
+class ExperimentResult(Base):
+    __tablename__ = "experiment_results"
+
+    run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("experiment_runs.id"), primary_key=True)
+    document_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"), primary_key=True)
+    result_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("linking_results.id"))
+    timing_id: Mapped[int] = mapped_column(ForeignKey("stage_timings.id"))
+    reused: Mapped[bool]
+
+
+class ExperimentArtifact(Base):
+    """Many-to-many physical provenance; a shared call is never reassigned to a run."""
+
+    __tablename__ = "experiment_artifacts"
+    __table_args__ = (
+        CheckConstraint("num_nonnulls(extraction_id,llm_call_id,embedding_id,timing_id) = 1"),
+        *(
+            UniqueConstraint("run_id", name)
+            for name in ("extraction_id", "llm_call_id", "embedding_id", "timing_id")
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("experiment_runs.id"), index=True)
+    extraction_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("extractions.id"))
+    llm_call_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("llm_calls.id"))
+    embedding_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("embeddings.id"))
+    timing_id: Mapped[int | None] = mapped_column(ForeignKey("stage_timings.id"))

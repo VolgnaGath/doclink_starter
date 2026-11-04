@@ -1,0 +1,5 @@
+<table><thead><tr><th>Split</th><th>Срез</th><th>N</th><th>M</th><th>Верных / gold</th><th>Precision</th><th>Recall</th><th>F1</th><th>Охват</th><th>Док. точно</th><th>Разбор</th><th>Ошибки</th><th>Recall@3</th></tr></thead><tbody>
+{% for split, slices in run.report.get('metrics', {}).items() %}
+{% for slice, m in slices.items() %}<tr><td>{{ split }}</td><td>{{ slice }}</td><td>{{ m.n }}</td><td>{{ m.m }}</td><td>{{ m.correct_links }} / {{ m.gold_links }}</td>
+{% for metric in ['precision','recall','f1','coverage','document_accuracy','review_share','processing_errors','recall_at_3'] %}<td>{{ '%.5f'|format(m[metric]) if m[metric] is not none else '—' }}</td>{% endfor %}</tr>{% endfor %}
+{% endfor %}</tbody></table>

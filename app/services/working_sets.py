@@ -150,7 +150,7 @@ def create_working_set(session: Session, request: WorkingSetCreate) -> WorkingSe
                 .limit(1)
             )
         origin_current = False
-        if origin:
+        if origin and origin.provenance.get("card_source") != "regex":
             actual = linking_payload(
                 session,
                 original.id,
@@ -174,7 +174,7 @@ def create_working_set(session: Session, request: WorkingSetCreate) -> WorkingSe
     for original in documents:
         target, origin = mapping[original.id]
         snapshot = copy.deepcopy(operational.snapshot)
-        if origin:
+        if origin and origin.provenance.get("card_source") != "regex":
             if (
                 origin.config != snapshot["config"]
                 or str(origin.model_config_id) != snapshot["model_id"]

@@ -15,7 +15,10 @@ services:
       retries: 30
   api:
     image: doclink:dev
-    build: .
+    build:
+      context: .
+      args:
+        GIT_COMMIT: ${GIT_COMMIT:-unknown}
     environment:
       DATABASE_URL: postgresql+psycopg://doclink:doclink@db:5432/doclink
       APP_PASSWORD: verification-password

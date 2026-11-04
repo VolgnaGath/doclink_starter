@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Исход эксперимента — DocLink{% endblock %}
+{% block content %}
+<h1>Сохранённый исход {{ result.id }}</h1>
+<p><a href="/documents/{{ result.source_id }}">Исходный документ</a> · {{ result.outcome }} · {{ result.reasons|join(', ') }}</p>
+<pre>{{ result.config|tojson(indent=2) }}</pre>
+<table><tr><th>Ранг</th><th>Договор</th><th>Оценка</th><th>Решение</th><th>Признаки / штрафы</th></tr>
+{% for c in result.candidates %}<tr><td>{{ c.rank }}</td><td><a href="/documents/{{ c.target_id }}">{{ c.target_id }}</a></td><td>{{ '%.5f'|format(c.score) }}</td><td>{{ c.decision }}</td><td><pre>{{ c.features|tojson }} / {{ c.penalties|tojson }}</pre></td></tr>{% endfor %}</table>
+<form method="post" action="/experiments/results/{{ result.id }}/working-copy">
+  <input type="hidden" name="idempotency_key" value="{{ key }}"><button>Создать рабочую копию с происхождением из этого исхода</button>
+</form>
+<p>Время проверки копий учитывается только при завершённой сессии и initial_inputs=true.
+Копии regex-абляции переходят в обычный рабочий конвейер, initial_inputs=false;
+их замеры не считаются исходным измерением regex-абляции.</p>
+{% endblock %}

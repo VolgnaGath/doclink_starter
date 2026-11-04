@@ -166,22 +166,22 @@ namespace DocLink {
     @route("/working-sets/{id}")
     op getWorkingSet(@path id: uuid): WorkingSetDetail | ApiErrors;
 
-    @doc("Плановый контракт этапа 6; операция пока не реализована в FastAPI.")
+    @doc("Создать фоновую серию: матрица, tune-выбор модели с абляциями или один прогон. Ключ идемпотентности не повторяет вычисления.")
     @post
     @route("/experiments")
     op createExperiment(@body body: ExperimentCreate):
       | ExperimentAccepted
       | ApiErrors;
 
-    @doc("Плановый контракт этапа 6; операция пока не реализована в FastAPI.")
+    @doc("Прогресс серии, freeze и происхождение, раздельные tune/test-метрики и кривые настройки.")
     @get
     @route("/experiments/{id}")
-    op getExperiment(@path id: int64): ExperimentDetail | ApiErrors;
+    op getExperiment(@path id: uuid): ExperimentDetail | ApiErrors;
 
-    @doc("Плановый контракт этапа 6; операция пока не реализована в FastAPI.")
+    @doc("Выгрузка из одного сохранённого dataset: таблицы 2.6–2.8 CSV/Markdown, рисунок 2.4 PNG (только tune). До завершения — 409.")
     @get
     @route("/experiments/{id}/export")
-    op exportExperiment(@path id: int64, @query format: ExportFormat):
+    op exportExperiment(@path id: uuid, @query format: ExportFormat):
       | ExportFile
       | ApiErrors;
   }

@@ -734,7 +734,7 @@ paths:
   /api/v1/experiments:
     post:
       operationId: V1_createExperiment
-      description: Плановый контракт этапа 6; операция пока не реализована в FastAPI.
+      description: 'Создать фоновую серию: матрица, tune-выбор модели с абляциями или один прогон. Ключ идемпотентности не повторяет вычисления.'
       parameters: []
       responses:
         '202':
@@ -742,7 +742,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ExperimentRun'
+                $ref: '#/components/schemas/ExperimentDetail'
         '401':
           description: Access is unauthorized.
           content:
@@ -784,14 +784,13 @@ paths:
   /api/v1/experiments/{id}:
     get:
       operationId: V1_getExperiment
-      description: Плановый контракт этапа 6; операция пока не реализована в FastAPI.
+      description: Прогресс серии, freeze и происхождение, раздельные tune/test-метрики и кривые настройки.
       parameters:
         - name: id
           in: path
           required: true
           schema:
-            type: integer
-            format: int64
+            $ref: '#/components/schemas/uuid'
       responses:
         '200':
           description: The request has succeeded.
@@ -834,14 +833,13 @@ paths:
   /api/v1/experiments/{id}/export:
     get:
       operationId: V1_exportExperiment
-      description: Плановый контракт этапа 6; операция пока не реализована в FastAPI.
+      description: 'Выгрузка из одного сохранённого dataset: таблицы 2.6–2.8 CSV/Markdown, рисунок 2.4 PNG (только tune). До завершения — 409.'
       parameters:
         - name: id
           in: path
           required: true
           schema:
-            type: integer
-            format: int64
+            $ref: '#/components/schemas/uuid'
         - name: format
           in: query
           required: true
@@ -1755,56 +1753,93 @@ components:
       type: object
       required:
         - name
-        - method
-        - embedder
-        - weights
-        - ablation
         - corpus_version_id
-        - split_seed
+        - idempotency_key
       properties:
         name:
           type: string
-        method:
-          $ref: '#/components/schemas/ExperimentMethod'
-        model_config_id:
-          $ref: '#/components/schemas/uuid'
-        embedder:
-          type: string
-        weights:
-          type: object
-          additionalProperties: {}
-        tau_a:
-          type: number
-          format: double
-        tau_r:
-          type: number
-          format: double
-        ablation:
-          $ref: '#/components/schemas/Ablation'
+          minLength: 1
+          maxLength: 200
         corpus_version_id:
           $ref: '#/components/schemas/uuid'
-        split_seed:
-          type: integer
-          format: int64
+        idempotency_key:
+          $ref: '#/components/schemas/uuid'
+        mode:
+          type: string
+          enum:
+            - matrix
+            - single
+            - ablations
+          default: matrix
+        method:
+          allOf:
+            - $ref: '#/components/schemas/ExperimentMethod'
+          default: combined
+        model_config_id:
+          $ref: '#/components/schemas/uuid'
+        ablation:
+          allOf:
+            - $ref: '#/components/schemas/Ablation'
+          default: none
     ExperimentDetail:
       type: object
       required:
-        - run
-        - metrics
-        - threshold_curve
+        - id
+        - name
+        - corpus_version_id
+        - status
+        - mode
+        - selected_model_id
+        - progress
+        - total
+        - error
+        - created_at
+        - finished_at
+        - dataset_hash
+        - runs
       properties:
-        run:
-          $ref: '#/components/schemas/ExperimentRun'
-        model_config:
-          $ref: '#/components/schemas/ModelConfig'
-        metrics:
+        id:
+          $ref: '#/components/schemas/uuid'
+        name:
+          type: string
+        corpus_version_id:
+          $ref: '#/components/schemas/uuid'
+        status:
+          $ref: '#/components/schemas/RunStatus'
+        mode:
+          type: string
+          enum:
+            - matrix
+            - single
+            - ablations
+        selected_model_id:
+          type: string
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
+        progress:
+          type: integer
+          format: int64
+        total:
+          type: integer
+          format: int64
+        error:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        finished_at:
+          type: string
+          format: date-time
+          nullable: true
+        dataset_hash:
+          type: string
+          nullable: true
+        runs:
           type: array
           items:
-            $ref: '#/components/schemas/ExperimentMetric'
-        threshold_curve:
-          type: array
-          items:
-            $ref: '#/components/schemas/ThresholdCurvePoint'
+            $ref: '#/components/schemas/ExperimentRun'
     ExperimentMethod:
       type: string
       enum:
@@ -1814,14 +1849,15 @@ components:
     ExperimentMetric:
       type: object
       required:
-        - run_id
+        - split
         - slice
         - metric
         - value
+        - numerator
+        - denominator
       properties:
-        run_id:
-          type: integer
-          format: int64
+        split:
+          $ref: '#/components/schemas/Split'
         slice:
           type: string
         metric:
@@ -1829,61 +1865,102 @@ components:
         value:
           type: number
           format: double
+          nullable: true
+        numerator:
+          type: integer
+          format: int64
+          nullable: true
+        denominator:
+          type: integer
+          format: int64
+          nullable: true
     ExperimentRun:
       type: object
       required:
         - id
-        - name
+        - variant
         - method
-        - embedder
-        - weights
+        - model_config_id
         - ablation
-        - corpus_version_id
-        - split_seed
-        - git_commit
         - status
+        - progress
+        - total
+        - config
+        - snapshot
+        - protocol_hash
+        - reused_test
+        - test_started_at
+        - started_at
+        - finished_at
+        - error
+        - report
+        - metrics
+        - threshold_curves
       properties:
         id:
-          type: integer
-          format: int64
-        name:
+          $ref: '#/components/schemas/uuid'
+        variant:
           type: string
         method:
           $ref: '#/components/schemas/ExperimentMethod'
         model_config_id:
-          $ref: '#/components/schemas/uuid'
-        embedder:
           type: string
-        weights:
-          type: object
-          additionalProperties: {}
-        tau_a:
-          type: number
-          format: double
-        tau_r:
-          type: number
-          format: double
+          allOf:
+            - $ref: '#/components/schemas/uuid'
+          nullable: true
         ablation:
           $ref: '#/components/schemas/Ablation'
-        corpus_version_id:
-          $ref: '#/components/schemas/uuid'
-        split_seed:
+        status:
+          anyOf:
+            - $ref: '#/components/schemas/RunStatus'
+            - type: string
+              enum:
+                - frozen
+                - NO_FEASIBLE_CONFIGURATION
+                - BLOCKED
+        progress:
           type: integer
           format: int64
-        git_commit:
+        total:
+          type: integer
+          format: int64
+        config:
+          type: object
+          additionalProperties: {}
+        snapshot:
+          type: object
+          additionalProperties: {}
+        protocol_hash:
           type: string
-        status:
-          $ref: '#/components/schemas/RunStatus'
+          nullable: true
+        reused_test:
+          type: boolean
+        test_started_at:
+          type: string
+          format: date-time
+          nullable: true
         started_at:
           type: string
           format: date-time
+          nullable: true
         finished_at:
           type: string
           format: date-time
-        cost_rub:
+          nullable: true
+        error:
           type: string
-        notes:
-          type: string
+          nullable: true
+        report:
+          type: object
+          additionalProperties: {}
+        metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExperimentMetric'
+        threshold_curves:
+          type: array
+          items:
+            $ref: '#/components/schemas/ThresholdCurvePoint'
     ExportFormat:
       type: string
       enum:
@@ -2644,23 +2721,21 @@ components:
     ThresholdCurvePoint:
       type: object
       required:
-        - tau
-        - precision
-        - recall
-        - recommendation_share
+        - split
+        - purpose
+        - values
       properties:
-        tau:
-          type: number
-          format: double
-        precision:
-          type: number
-          format: double
-        recall:
-          type: number
-          format: double
-        recommendation_share:
-          type: number
-          format: double
+        split:
+          type: string
+          enum:
+            - tune
+        purpose:
+          type: string
+          enum:
+            - tuning
+        values:
+          type: object
+          additionalProperties: {}
     UnauthorizedResponse:
       type: object
       allOf:

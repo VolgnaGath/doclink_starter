@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ experiment.name }} — DocLink{% endblock %}
+{% block content %}
+{% if experiment.status in ['queued', 'running'] %}<meta http-equiv="refresh" content="5">{% endif %}
+<h1>{{ experiment.name }}</h1>
+<p><a href="/experiments">Все серии</a> · Статус: <strong>{{ experiment.status }}</strong> · Исходов: {{ experiment.progress }} / {{ experiment.total }}.</p>
+{% if experiment.error %}<p class="error">{{ experiment.error }}</p><form method="post" action="/experiments/{{ experiment.id }}/retry"><button>Продолжить по тому же freeze</button></form>{% endif %}
+<p>Модель абляций (выбор только на tune): {{ experiment.selected_model_id or 'ещё не выбрана / одиночный прогон' }}.</p>
+<p>Сравнение условно на общей карточке Qwen. Baselines общие для трёх моделей. Трудные срезы пересекаются.</p>
+{% if experiment.dataset_hash %}
+<p>Dataset: <code>{{ experiment.dataset_hash }}</code></p>
+<p>{% for format in ['csv','md','png'] %}<a href="/experiments/{{ experiment.id }}/export?format={{ format }}">Скачать {{ format|upper }}</a> {% endfor %}</p>
+<img src="/experiments/{{ experiment.id }}/export?format=png" alt="Рисунок 2.4 — настроечная часть tune" style="max-width:100%">
+{% endif %}
+<form method="get" action="/experiments/compare">
+{% for run in experiment.runs %}<label><input type="checkbox" name="run_ids" value="{{ run.id }}">{{ run.variant }}</label> {% endfor %}<button>Сравнить выбранные</button>
+</form>
+{% for run in experiment.runs %}
+<section><h2 id="{{ run.id }}">{{ run.variant }}</h2>
+<p>{{ run.status }} · {{ run.progress }}/{{ run.total }} · reused_test={{ run.reused_test }} · {{ run.error or '' }}</p>
+<p>τ_a={{ run.config.get('tau_a', '—') }} · τ_r={{ run.config.get('tau_r', '—') }} · Протокол: <code>{{ run.protocol_hash or '—' }}</code></p>
+<details><summary>Конфигурация и происхождение</summary><pre>{{ run.snapshot|tojson(indent=2) }}</pre></details>
+{% include "experiment_metrics.html" %}
+<details><summary>Все исходы и контрольные случаи</summary>
+{% for result_id in run.report.get('result_ids', []) %}<a href="/experiments/results/{{ result_id }}">{{ result_id }}</a><br>{% endfor %}
+<table><tr><th>Документ</th><th>Split</th><th>Ожидание</th><th>Исход / причины</th><th>Пройдено</th></tr>
+{% for row in run.report.get('controls', []) %}<tr><td><a href="/documents/{{ row.document_id }}">{{ row.document }}</a></td><td>{{ row.split }}</td><td>{{ row.expected }}</td><td>{{ row.actual }} / {{ row.reasons|join(', ') }}</td><td>{{ row.passed }}</td></tr>{% endfor %}</table>
+</details></section>
+{% endfor %}
+{% endblock %}
