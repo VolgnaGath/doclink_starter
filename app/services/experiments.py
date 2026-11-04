@@ -291,6 +291,8 @@ def snapshot(
             if p.get("test_started")
         ),
     }
+    if series.request.get("mode") == "holdout":
+        frozen["holdout_registration"] = series.request["holdout_registration"]
     from app.services.experiment_reporting import physical_calls
 
     calls = physical_calls(session, extraction_objects)
@@ -497,7 +499,7 @@ def execute_series(settings: Settings, series_id: UUID) -> None:
                 tune_run(settings, id)
             with get_session(settings.database_url) as session:
                 series = session.get(ExperimentSeries, series_id)
-                if series.request["mode"] != "single":
+                if series.request["mode"] not in {"single", "holdout"}:
                     eligible = [
                         r
                         for r in runs(session, series_id)

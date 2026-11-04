@@ -365,7 +365,11 @@ def test_api_zip_import_transaction_and_repeat(
     stream = BytesIO()
     with zipfile.ZipFile(stream, "w", compression=zipfile.ZIP_DEFLATED) as zipped:
         for path in root.rglob("*"):
-            if path.is_file() and path.suffix in {".txt", ".csv"}:
+            if (
+                path.is_file()
+                and path.relative_to(root).parts[0] in {"real", "synth", "synth_extra"}
+                and path.suffix in {".txt", ".csv"}
+            ):
                 zipped.write(path, str(path.relative_to(root)))
     for reused in [False, True]:
         response = api_client.post(

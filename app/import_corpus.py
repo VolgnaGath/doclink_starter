@@ -13,6 +13,9 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=2026)
     parser.add_argument("--tune-share", type=float, default=0.3)
     parser.add_argument("--base-only", action="store_true", help="Только real/synth (корпус v2)")
+    parser.add_argument(
+        "--holdout-only", action="store_true", help="Только synth_holdout, весь test"
+    )
     args = parser.parse_args()
     settings = Settings()
     try:
@@ -24,6 +27,7 @@ def main() -> None:
                 args.seed,
                 args.tune_share,
                 include_extra=not args.base_only,
+                holdout_only=args.holdout_only,
             )
     except CorpusError as exc:
         parser.exit(1, f"Импорт отменён: {exc}\n")

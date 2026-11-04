@@ -79,7 +79,13 @@ def safe_id(value: str) -> str:
 
 
 def prepare_corpus(
-    root: Path, seed: int, tune_share: float, settings: Settings, *, include_extra: bool = True
+    root: Path,
+    seed: int,
+    tune_share: float,
+    settings: Settings,
+    *,
+    include_extra: bool = True,
+    holdout_only: bool = False,
 ) -> PreparedCorpus:
     # Snapshot bytes used both for fingerprinting and importing, avoiding mutable-input races.
     inputs: dict[str, bytes] = {}
@@ -99,9 +105,11 @@ def prepare_corpus(
     documents: dict[str, CorpusDocument] = {}
     warnings: list[dict[str, str]] = []
     distributions: dict[str, Any] = {}
-    parts = ["real", "synth"]
-    if include_extra and (root / "synth_extra").exists():
+    parts = ["synth_holdout"] if holdout_only else ["real", "synth"]
+    if not holdout_only and include_extra and (root / "synth_extra").exists():
         parts.append("synth_extra")
+    if holdout_only and tune_share != 0:
+        raise CorpusError("Holdout допускает только tune_share=0")
     try:
         for part in parts:
             required = {"doc_id", "deal_id", "source", "kind", "number", "date", "hard_types"}
@@ -112,6 +120,8 @@ def prepare_corpus(
             )
             if part == "synth_extra":
                 required |= {"case", "expected"}
+            if part == "synth_holdout":
+                required.add("split")
             path = f"{part}/documents.csv"
             rows = csv_rows(read(path), required, path)
             if not rows:
@@ -121,8 +131,13 @@ def prepare_corpus(
                 doc_id = safe_id(row["doc_id"])
                 deal = safe_id(row["deal_id"])
                 key = f"{part}/{doc_id}"
-                if key in documents or row["source"] != part:
+                source_part = "synth" if part == "synth_holdout" else part
+                if key in documents or row["source"] != source_part:
                     raise CorpusError(f"Повтор ID или некорректный source: {key}")
+                if part == "synth_holdout" and (
+                    row["split"] != "test" or not doc_id.startswith("hold_")
+                ):
+                    raise CorpusError(f"Holdout требует split=test и ID hold_: {key}")
                 in_scope = row.get("in_scope", "1")
                 if in_scope not in {"0", "1"}:
                     raise CorpusError(f"Некорректный in_scope: {key}")
@@ -194,10 +209,14 @@ def prepare_corpus(
             }
 
         path = "real/manifest.csv"
-        manifest = csv_rows(
-            read(path),
-            {"сделка", "документ", "страниц", "страниц_OCR", "символов", "замечание"},
-            path,
+        manifest = (
+            []
+            if holdout_only
+            else csv_rows(
+                read(path),
+                {"сделка", "документ", "страниц", "страниц_OCR", "символов", "замечание"},
+                path,
+            )
         )
         seen_manifest: set[str] = set()
         for row in manifest:
@@ -263,6 +282,9 @@ def prepare_corpus(
         raise CorpusError(f"Ошибка входных данных корпуса ({type(exc).__name__})") from exc
 
     parameters = {"algorithm": ALGORITHM, "seed": seed, "tune_share": tune_share}
+    if holdout_only:
+        parameters["algorithm"] = "corpus-holdout-v1/explicit-test"
+        parameters["tune_share"] = 0.0
     if "synth_extra" in parts:
         parameters["algorithm"] = "corpus-v2-extra/split-v1"
     fingerprint_input = {
@@ -291,8 +313,11 @@ def import_corpus(
     tune_share: float = 0.3,
     *,
     include_extra: bool = True,
+    holdout_only: bool = False,
 ) -> dict[str, Any]:
-    prepared = prepare_corpus(root, seed, tune_share, settings, include_extra=include_extra)
+    prepared = prepare_corpus(
+        root, seed, tune_share, settings, include_extra=include_extra, holdout_only=holdout_only
+    )
     with session.begin():
         # Serialize matching snapshots; DB uniqueness remains the final invariant.
         lock_key = int(prepared.fingerprint[:16], 16)

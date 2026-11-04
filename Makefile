@@ -36,6 +36,20 @@ export GIT_COMMIT := $(shell git rev-parse HEAD)
 CERT_DIR ?= $(HOME)/Downloads
 .PHONY: effect verify-effect accept-effect-web
 .PHONY: delivery-export delivery-up delivery-restore delivery-experiments delivery-prepare delivery-browser delivery-down delivery-materials
+.PHONY: holdout install-holdout import-holdout verify-holdout
+
+install-holdout: ## Сохранить неизменный архив №2 и установить synth_holdout; SOURCE=/путь/addendum_2.zip
+	@test -n "$(SOURCE)"
+	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -v "$(SOURCE):/incoming/addendum_2.zip:ro" -w /workspace api python -m app.holdout_cli install --source /incoming/addendum_2.zip --output corpus_history/addendum_2-audit.json
+
+import-holdout: ## Импортировать только отложенный корпус, seed=20261104, все split=test
+	$(COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m app.import_corpus --path corpus --holdout-only --seed 20261104 --tune-share 0
+
+holdout: ## Без оплаты: register|freeze|audit --corpus-version UUID --source-series UUID --output report.json; прежние пороги без tune
+	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace worker python -m app.holdout_cli $(ARGS)
+
+verify-holdout: verify-up ## Изолированные проверки test-only импорта и переноса freeze без подбора порогов
+	$(VERIFY_COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_holdout.py
 
 delivery-export: ## Сохранить переносимые реальные артефакты серии без anon_maps; ARGS='--series UUID --file data/delivery.json.gz --report docs/reports/....json'
 	$(COMPOSE) run --rm --no-deps --user 0:0 -v "$(CURDIR):/workspace" -w /workspace api python -m app.delivery_artifacts export $(ARGS)
@@ -276,7 +290,7 @@ verify-embedding: verify-up ## Реальная проверка BGE-M3/pgvector
 smoke-paid: ## Платный smoke: только при PAID_CALLS_ENABLED=true и BUDGET_RUB>0
 	@test "$${PAID_CALLS_ENABLED:-false}" = "true" || { echo "PAID_CALLS_ENABLED must be true"; exit 1; }
 	@test -n "$${BUDGET_RUB}" || { echo "BUDGET_RUB must be > 0"; exit 1; }
-	$(COMPOSE) run --rm -e PAID_CALLS_ENABLED -e BUDGET_RUB -v "$(CURDIR):/workspace" -w /workspace api python -m app.smoke_paid $(ARGS)
+	$(COMPOSE) run --rm -e PAID_CALLS_ENABLED -e BUDGET_RUB $(PAID_RUN_FLAGS) -v "$(CURDIR):/workspace" -w /workspace api python -m app.smoke_paid $(ARGS)
 
 extract: ## Очередь/продолжение/отчёт: ARGS='--document UUID --drain' (облачные вызовы — smoke-paid)
 	$(COMPOSE) run --rm api python -m app.extract_cli $(ARGS)

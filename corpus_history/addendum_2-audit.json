@@ -1,0 +1,26 @@
+{
+  "archive_sha256": "ccd1166b64d61ede4bd5954a1cb92c15d009ebb6050a37da053eb25d5b224674",
+  "fingerprint": "9857dc95c99fc0624964d6a0062018ec117aad96a1f3b19e82389fde798d15e4",
+  "parameters": {
+    "algorithm": "corpus-holdout-v1/explicit-test",
+    "seed": 20261104,
+    "tune_share": 0.0
+  },
+  "total": 221,
+  "in_scope": 221,
+  "links": 146,
+  "link_sources": 136,
+  "distribution": {
+    "synth_holdout": {
+      "tune": {
+        "deals": 0,
+        "documents": 0
+      },
+      "test": {
+        "deals": 78,
+        "documents": 221
+      }
+    }
+  },
+  "warnings": []
+}
