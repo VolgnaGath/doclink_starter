@@ -15,6 +15,7 @@ from app.models import (
     Extraction,
     LinkingResult,
     ModelConfig,
+    WorkingCopy,
 )
 from app.services.effect import OUTCOMES, Scenario, defaults
 from app.services.effect_measurements import measurement_audit, validate_protocol
@@ -109,6 +110,7 @@ def run_data(
                 }
             )
     working_set_id, selected_ids = None, None
+    working_set_ids, selected_document_ids = None, None
     if protocol:
         validate_protocol(protocol)
         if (
@@ -117,7 +119,24 @@ def run_data(
             or protocol["run_protocol_hash"] != run.protocol_hash
         ):
             raise ValueError("Протокол замеров относится к другому прогону")
-        working_set_id = UUID(protocol["working_set_id"])
+        batches = protocol.get("batches", [protocol])
+        working_set_ids = [UUID(batch["working_set_id"]) for batch in batches]
+        if len(batches) == 1:
+            working_set_id = working_set_ids[0]
+        actual_results = {str(r.id): (str(a.document_id), r.outcome) for a, r in test}
+        selected_document_ids = []
+        for batch in batches:
+            for doc in batch["documents"]:
+                copy = session.get(WorkingCopy, UUID(doc["document_id"]))
+                expected = actual_results.get(doc["source_result_id"])
+                if (
+                    copy is None
+                    or str(copy.working_set_id) != batch["working_set_id"]
+                    or str(copy.source_result_id) != doc["source_result_id"]
+                    or expected != (str(copy.source_document_id), doc["outcome"])
+                ):
+                    raise ValueError("Документ не соответствует протоколу замеров")
+                selected_document_ids.append(copy.document_id)
         selected_ids = [r["source_result_id"] for r in protocol["documents"]]
     return {
         "run_id": str(run.id),
@@ -146,7 +165,12 @@ def run_data(
         "extraction_ids": sorted(str(e.id) for e in extraction_rows),
         "contract_document_ids": sorted(contract_ids),
         "measurements": measurement_audit(
-            session, run.id, working_set_id=working_set_id, selected_result_ids=selected_ids
+            session,
+            run.id,
+            working_set_id=working_set_id,
+            selected_result_ids=selected_ids,
+            working_set_ids=working_set_ids,
+            selected_document_ids=selected_document_ids,
         ),
         "measurement_protocol": protocol,
         "test_metrics": saved["report"]["metrics"]["test"]["all"],
@@ -178,7 +202,7 @@ def scenario_defaults(data: dict[str, Any], mode: str = "cloud") -> dict[str, An
                 field = f"{outcome}_seconds"
                 values[field] = str(Decimal(str(group["mean_ms"])) / 1000)
                 values["sources"][field] = (
-                    "Среднее завершённых сессий effect-review-v1: "
+                    f"Среднее завершённых сессий {data['measurements']['protocol']}: "
                     + ", ".join(group["session_ids"])
                 )
     return values

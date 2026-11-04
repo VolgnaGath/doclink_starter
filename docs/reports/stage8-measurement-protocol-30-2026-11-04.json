@@ -1,0 +1,407 @@
+{
+  "version": "effect-review-v2",
+  "run_id": "37a41963-0dce-4fbb-be64-94858a6f4a7a",
+  "dataset_hash": "28fc1e37cad4f7ef5f798a9f1d57c9eb4d2242e282bf2facfba331bf5005775e",
+  "run_protocol_hash": "2a3130c4a39a7ded5cb2a8bc1dc0ca885398fe36dcccd1334a6697d6245a07c6",
+  "registered_at": "2026-11-04T18:24:47.145055+00:00",
+  "session_rule": "Первая открытая сессия; незавершённую/изменённую не заменять повтором",
+  "batches": [
+    {
+      "version": "effect-review-v1",
+      "run_id": "37a41963-0dce-4fbb-be64-94858a6f4a7a",
+      "dataset_hash": "28fc1e37cad4f7ef5f798a9f1d57c9eb4d2242e282bf2facfba331bf5005775e",
+      "run_protocol_hash": "2a3130c4a39a7ded5cb2a8bc1dc0ca885398fe36dcccd1334a6697d6245a07c6",
+      "registered_at": "2026-11-04T13:53:56.832514+00:00",
+      "working_set_id": "88510452-2a1a-432c-b972-398b1561fd7c",
+      "per_outcome": 3,
+      "selection_rule": "Первые k test-результатов каждого исхода по ID; порядок исходов recommendation/review/none/error",
+      "session_rule": "Первая открытая сессия; незавершённую/изменённую не заменять повтором",
+      "documents": [
+        {
+          "source_result_id": "06a9597a-9a2b-4c93-a042-e3ce0af6b097",
+          "outcome": "recommendation",
+          "document_id": "00004443-82e2-4370-8923-0677401ff633",
+          "url": "/review/00004443-82e2-4370-8923-0677401ff633"
+        },
+        {
+          "source_result_id": "06c59587-7d8e-4073-9df0-dd577cd83b40",
+          "outcome": "recommendation",
+          "document_id": "adf124b5-d80f-4046-98c9-8d45b14f38d7",
+          "url": "/review/adf124b5-d80f-4046-98c9-8d45b14f38d7"
+        },
+        {
+          "source_result_id": "0c956501-c286-427a-9359-e3a2531b76b9",
+          "outcome": "recommendation",
+          "document_id": "1911f149-5ba9-4ef1-b72c-67d8b8a9acff",
+          "url": "/review/1911f149-5ba9-4ef1-b72c-67d8b8a9acff"
+        },
+        {
+          "source_result_id": "0095272b-4b2d-4c2f-a82e-9b4c833073fd",
+          "outcome": "review",
+          "document_id": "df412781-0b38-49ac-ba9c-0fe0a2696bff",
+          "url": "/review/df412781-0b38-49ac-ba9c-0fe0a2696bff"
+        },
+        {
+          "source_result_id": "0fb3ed56-6c5d-4479-b8a6-f765ccedaf2e",
+          "outcome": "review",
+          "document_id": "b482df94-24ee-410f-aebb-252df45e2d23",
+          "url": "/review/b482df94-24ee-410f-aebb-252df45e2d23"
+        },
+        {
+          "source_result_id": "11cca980-5365-4064-802c-261fb4ea6acd",
+          "outcome": "review",
+          "document_id": "76c39563-6293-436b-916b-272a4fa96058",
+          "url": "/review/76c39563-6293-436b-916b-272a4fa96058"
+        },
+        {
+          "source_result_id": "64ead7c0-4abf-4ee1-b0e0-505e5e9ceaf0",
+          "outcome": "none",
+          "document_id": "711ca1f3-25c2-411c-a355-ced480b48309",
+          "url": "/review/711ca1f3-25c2-411c-a355-ced480b48309"
+        },
+        {
+          "source_result_id": "71493ea9-034c-4139-9a62-88599f07df15",
+          "outcome": "none",
+          "document_id": "155022d6-42b0-455d-889a-5c2fe6e6635b",
+          "url": "/review/155022d6-42b0-455d-889a-5c2fe6e6635b"
+        },
+        {
+          "source_result_id": "7baae96a-77a6-49c6-9673-c8340584566f",
+          "outcome": "none",
+          "document_id": "a011f2c6-1bc0-47ad-a0e7-b03de436afca",
+          "url": "/review/a011f2c6-1bc0-47ad-a0e7-b03de436afca"
+        }
+      ],
+      "protocol_hash": "add3ae0bebbd9d3b2cfb29e25480d5ce65ef1c06fba6ca048440a495adf41e41"
+    },
+    {
+      "version": "effect-review-v1",
+      "run_id": "37a41963-0dce-4fbb-be64-94858a6f4a7a",
+      "dataset_hash": "28fc1e37cad4f7ef5f798a9f1d57c9eb4d2242e282bf2facfba331bf5005775e",
+      "run_protocol_hash": "2a3130c4a39a7ded5cb2a8bc1dc0ca885398fe36dcccd1334a6697d6245a07c6",
+      "registered_at": "2026-11-04T18:24:47.145055+00:00",
+      "working_set_id": "0ec90034-53bb-4406-bb87-cd68fb0aad47",
+      "base_protocol_hash": "add3ae0bebbd9d3b2cfb29e25480d5ce65ef1c06fba6ca048440a495adf41e41",
+      "allocation": {
+        "recommendation": 11,
+        "review": 10,
+        "none": 0,
+        "error": 0
+      },
+      "selection_rule": "Следующие test-результаты по ID каждого исхода, исключая базовый протокол",
+      "session_rule": "Первая открытая сессия; незавершённую/изменённую не заменять повтором",
+      "documents": [
+        {
+          "source_result_id": "1284d1fa-084b-4cb9-b3ec-4706022a2fe5",
+          "outcome": "recommendation",
+          "document_id": "fb942b9a-e612-4942-889e-c0e115a299a4",
+          "url": "/review/fb942b9a-e612-4942-889e-c0e115a299a4"
+        },
+        {
+          "source_result_id": "13374a1d-5ae0-414e-8a6f-9b0c828fbaea",
+          "outcome": "recommendation",
+          "document_id": "2f5571e3-968f-4a98-9573-c19bd02c18b2",
+          "url": "/review/2f5571e3-968f-4a98-9573-c19bd02c18b2"
+        },
+        {
+          "source_result_id": "1469e871-8aff-405e-945c-98ea2dc5d714",
+          "outcome": "recommendation",
+          "document_id": "9f5b6e3d-8406-4f8f-8a39-42f51831816e",
+          "url": "/review/9f5b6e3d-8406-4f8f-8a39-42f51831816e"
+        },
+        {
+          "source_result_id": "152ef89e-5de9-4ddc-ad3e-485c14f6eb15",
+          "outcome": "recommendation",
+          "document_id": "655cb1b9-044b-4e35-99ef-bd15439d2a40",
+          "url": "/review/655cb1b9-044b-4e35-99ef-bd15439d2a40"
+        },
+        {
+          "source_result_id": "1a2956a1-9cc9-45d0-ac56-6ccf4497a128",
+          "outcome": "recommendation",
+          "document_id": "22eced2a-44eb-4fc2-bf40-81ef787f54ba",
+          "url": "/review/22eced2a-44eb-4fc2-bf40-81ef787f54ba"
+        },
+        {
+          "source_result_id": "1d622c7e-3a86-4a35-8889-729b44f6cd0d",
+          "outcome": "recommendation",
+          "document_id": "aec803bb-ce4f-4632-9105-1387d07df960",
+          "url": "/review/aec803bb-ce4f-4632-9105-1387d07df960"
+        },
+        {
+          "source_result_id": "20add17d-fae1-41cd-962a-3705d98ec9c3",
+          "outcome": "recommendation",
+          "document_id": "1a0394b4-13c8-44da-96ae-23bef3b89d28",
+          "url": "/review/1a0394b4-13c8-44da-96ae-23bef3b89d28"
+        },
+        {
+          "source_result_id": "2162e1c1-6f5c-4f75-9006-772f0c0fabb6",
+          "outcome": "recommendation",
+          "document_id": "d2c208d5-59ef-4db3-a654-5e209b4aa974",
+          "url": "/review/d2c208d5-59ef-4db3-a654-5e209b4aa974"
+        },
+        {
+          "source_result_id": "227457c6-10bc-4ad8-a723-22529d139201",
+          "outcome": "recommendation",
+          "document_id": "500a2c7b-e972-480e-9bce-57b1cba91588",
+          "url": "/review/500a2c7b-e972-480e-9bce-57b1cba91588"
+        },
+        {
+          "source_result_id": "2b2b04de-f27d-481e-bfda-0b54f4e2f407",
+          "outcome": "recommendation",
+          "document_id": "9ca9b868-9e89-491f-b1e5-d8492a6d500d",
+          "url": "/review/9ca9b868-9e89-491f-b1e5-d8492a6d500d"
+        },
+        {
+          "source_result_id": "2bb04009-cb92-412a-bc93-e487a9830ed7",
+          "outcome": "recommendation",
+          "document_id": "23959780-42ac-4d99-8575-45f1db62ba6a",
+          "url": "/review/23959780-42ac-4d99-8575-45f1db62ba6a"
+        },
+        {
+          "source_result_id": "1589e02c-9771-4f93-a685-d82d7e39deaf",
+          "outcome": "review",
+          "document_id": "6e0dfe82-ab25-4baf-84eb-4e0c86cbebd3",
+          "url": "/review/6e0dfe82-ab25-4baf-84eb-4e0c86cbebd3"
+        },
+        {
+          "source_result_id": "4a47b5d3-ed02-48b4-9938-f879927433f1",
+          "outcome": "review",
+          "document_id": "63370f95-0fff-4bd7-9288-570cc76cdcb6",
+          "url": "/review/63370f95-0fff-4bd7-9288-570cc76cdcb6"
+        },
+        {
+          "source_result_id": "4e6e4718-1aba-453f-b473-4b375f6cd9f1",
+          "outcome": "review",
+          "document_id": "50350539-5f8f-4c44-8fe6-3228f807637d",
+          "url": "/review/50350539-5f8f-4c44-8fe6-3228f807637d"
+        },
+        {
+          "source_result_id": "5362fa96-ce8b-4d1e-9580-9f114ea52130",
+          "outcome": "review",
+          "document_id": "f2786661-f5cf-4f97-b07d-1e28e332ecfb",
+          "url": "/review/f2786661-f5cf-4f97-b07d-1e28e332ecfb"
+        },
+        {
+          "source_result_id": "5c110959-6a9c-4610-9fbc-1fc54864247b",
+          "outcome": "review",
+          "document_id": "eed23ee8-2a9e-4d47-9b86-11fed8c6ab04",
+          "url": "/review/eed23ee8-2a9e-4d47-9b86-11fed8c6ab04"
+        },
+        {
+          "source_result_id": "607fe525-751e-4e18-b908-a5fb08532504",
+          "outcome": "review",
+          "document_id": "601ae768-e869-4df7-8fd5-dfbb9b95b6be",
+          "url": "/review/601ae768-e869-4df7-8fd5-dfbb9b95b6be"
+        },
+        {
+          "source_result_id": "68d17605-f4db-454d-a0ac-34e978cdcfc9",
+          "outcome": "review",
+          "document_id": "34b88a57-c8eb-433d-883d-264b2d0ed846",
+          "url": "/review/34b88a57-c8eb-433d-883d-264b2d0ed846"
+        },
+        {
+          "source_result_id": "6cfaa5f2-94aa-4568-abbc-86f7a8a2e566",
+          "outcome": "review",
+          "document_id": "5a44dcd4-6833-40ac-8270-3f57f3d66230",
+          "url": "/review/5a44dcd4-6833-40ac-8270-3f57f3d66230"
+        },
+        {
+          "source_result_id": "712837db-e978-4aad-80df-700235936c4b",
+          "outcome": "review",
+          "document_id": "a2f2fd18-d409-49de-8936-e93525653914",
+          "url": "/review/a2f2fd18-d409-49de-8936-e93525653914"
+        },
+        {
+          "source_result_id": "77357bd3-8c9c-4717-8f76-3c451538c523",
+          "outcome": "review",
+          "document_id": "ba58137d-c4f0-4378-99fd-5a61759ac9c2",
+          "url": "/review/ba58137d-c4f0-4378-99fd-5a61759ac9c2"
+        }
+      ],
+      "protocol_hash": "5412b48c2df51699d74751d2edf69c57859bc9b898a7aa27f9ed3437167076a9"
+    }
+  ],
+  "documents": [
+    {
+      "source_result_id": "06a9597a-9a2b-4c93-a042-e3ce0af6b097",
+      "outcome": "recommendation",
+      "document_id": "00004443-82e2-4370-8923-0677401ff633",
+      "url": "/review/00004443-82e2-4370-8923-0677401ff633"
+    },
+    {
+      "source_result_id": "06c59587-7d8e-4073-9df0-dd577cd83b40",
+      "outcome": "recommendation",
+      "document_id": "adf124b5-d80f-4046-98c9-8d45b14f38d7",
+      "url": "/review/adf124b5-d80f-4046-98c9-8d45b14f38d7"
+    },
+    {
+      "source_result_id": "0c956501-c286-427a-9359-e3a2531b76b9",
+      "outcome": "recommendation",
+      "document_id": "1911f149-5ba9-4ef1-b72c-67d8b8a9acff",
+      "url": "/review/1911f149-5ba9-4ef1-b72c-67d8b8a9acff"
+    },
+    {
+      "source_result_id": "0095272b-4b2d-4c2f-a82e-9b4c833073fd",
+      "outcome": "review",
+      "document_id": "df412781-0b38-49ac-ba9c-0fe0a2696bff",
+      "url": "/review/df412781-0b38-49ac-ba9c-0fe0a2696bff"
+    },
+    {
+      "source_result_id": "0fb3ed56-6c5d-4479-b8a6-f765ccedaf2e",
+      "outcome": "review",
+      "document_id": "b482df94-24ee-410f-aebb-252df45e2d23",
+      "url": "/review/b482df94-24ee-410f-aebb-252df45e2d23"
+    },
+    {
+      "source_result_id": "11cca980-5365-4064-802c-261fb4ea6acd",
+      "outcome": "review",
+      "document_id": "76c39563-6293-436b-916b-272a4fa96058",
+      "url": "/review/76c39563-6293-436b-916b-272a4fa96058"
+    },
+    {
+      "source_result_id": "64ead7c0-4abf-4ee1-b0e0-505e5e9ceaf0",
+      "outcome": "none",
+      "document_id": "711ca1f3-25c2-411c-a355-ced480b48309",
+      "url": "/review/711ca1f3-25c2-411c-a355-ced480b48309"
+    },
+    {
+      "source_result_id": "71493ea9-034c-4139-9a62-88599f07df15",
+      "outcome": "none",
+      "document_id": "155022d6-42b0-455d-889a-5c2fe6e6635b",
+      "url": "/review/155022d6-42b0-455d-889a-5c2fe6e6635b"
+    },
+    {
+      "source_result_id": "7baae96a-77a6-49c6-9673-c8340584566f",
+      "outcome": "none",
+      "document_id": "a011f2c6-1bc0-47ad-a0e7-b03de436afca",
+      "url": "/review/a011f2c6-1bc0-47ad-a0e7-b03de436afca"
+    },
+    {
+      "source_result_id": "1284d1fa-084b-4cb9-b3ec-4706022a2fe5",
+      "outcome": "recommendation",
+      "document_id": "fb942b9a-e612-4942-889e-c0e115a299a4",
+      "url": "/review/fb942b9a-e612-4942-889e-c0e115a299a4"
+    },
+    {
+      "source_result_id": "13374a1d-5ae0-414e-8a6f-9b0c828fbaea",
+      "outcome": "recommendation",
+      "document_id": "2f5571e3-968f-4a98-9573-c19bd02c18b2",
+      "url": "/review/2f5571e3-968f-4a98-9573-c19bd02c18b2"
+    },
+    {
+      "source_result_id": "1469e871-8aff-405e-945c-98ea2dc5d714",
+      "outcome": "recommendation",
+      "document_id": "9f5b6e3d-8406-4f8f-8a39-42f51831816e",
+      "url": "/review/9f5b6e3d-8406-4f8f-8a39-42f51831816e"
+    },
+    {
+      "source_result_id": "152ef89e-5de9-4ddc-ad3e-485c14f6eb15",
+      "outcome": "recommendation",
+      "document_id": "655cb1b9-044b-4e35-99ef-bd15439d2a40",
+      "url": "/review/655cb1b9-044b-4e35-99ef-bd15439d2a40"
+    },
+    {
+      "source_result_id": "1a2956a1-9cc9-45d0-ac56-6ccf4497a128",
+      "outcome": "recommendation",
+      "document_id": "22eced2a-44eb-4fc2-bf40-81ef787f54ba",
+      "url": "/review/22eced2a-44eb-4fc2-bf40-81ef787f54ba"
+    },
+    {
+      "source_result_id": "1d622c7e-3a86-4a35-8889-729b44f6cd0d",
+      "outcome": "recommendation",
+      "document_id": "aec803bb-ce4f-4632-9105-1387d07df960",
+      "url": "/review/aec803bb-ce4f-4632-9105-1387d07df960"
+    },
+    {
+      "source_result_id": "20add17d-fae1-41cd-962a-3705d98ec9c3",
+      "outcome": "recommendation",
+      "document_id": "1a0394b4-13c8-44da-96ae-23bef3b89d28",
+      "url": "/review/1a0394b4-13c8-44da-96ae-23bef3b89d28"
+    },
+    {
+      "source_result_id": "2162e1c1-6f5c-4f75-9006-772f0c0fabb6",
+      "outcome": "recommendation",
+      "document_id": "d2c208d5-59ef-4db3-a654-5e209b4aa974",
+      "url": "/review/d2c208d5-59ef-4db3-a654-5e209b4aa974"
+    },
+    {
+      "source_result_id": "227457c6-10bc-4ad8-a723-22529d139201",
+      "outcome": "recommendation",
+      "document_id": "500a2c7b-e972-480e-9bce-57b1cba91588",
+      "url": "/review/500a2c7b-e972-480e-9bce-57b1cba91588"
+    },
+    {
+      "source_result_id": "2b2b04de-f27d-481e-bfda-0b54f4e2f407",
+      "outcome": "recommendation",
+      "document_id": "9ca9b868-9e89-491f-b1e5-d8492a6d500d",
+      "url": "/review/9ca9b868-9e89-491f-b1e5-d8492a6d500d"
+    },
+    {
+      "source_result_id": "2bb04009-cb92-412a-bc93-e487a9830ed7",
+      "outcome": "recommendation",
+      "document_id": "23959780-42ac-4d99-8575-45f1db62ba6a",
+      "url": "/review/23959780-42ac-4d99-8575-45f1db62ba6a"
+    },
+    {
+      "source_result_id": "1589e02c-9771-4f93-a685-d82d7e39deaf",
+      "outcome": "review",
+      "document_id": "6e0dfe82-ab25-4baf-84eb-4e0c86cbebd3",
+      "url": "/review/6e0dfe82-ab25-4baf-84eb-4e0c86cbebd3"
+    },
+    {
+      "source_result_id": "4a47b5d3-ed02-48b4-9938-f879927433f1",
+      "outcome": "review",
+      "document_id": "63370f95-0fff-4bd7-9288-570cc76cdcb6",
+      "url": "/review/63370f95-0fff-4bd7-9288-570cc76cdcb6"
+    },
+    {
+      "source_result_id": "4e6e4718-1aba-453f-b473-4b375f6cd9f1",
+      "outcome": "review",
+      "document_id": "50350539-5f8f-4c44-8fe6-3228f807637d",
+      "url": "/review/50350539-5f8f-4c44-8fe6-3228f807637d"
+    },
+    {
+      "source_result_id": "5362fa96-ce8b-4d1e-9580-9f114ea52130",
+      "outcome": "review",
+      "document_id": "f2786661-f5cf-4f97-b07d-1e28e332ecfb",
+      "url": "/review/f2786661-f5cf-4f97-b07d-1e28e332ecfb"
+    },
+    {
+      "source_result_id": "5c110959-6a9c-4610-9fbc-1fc54864247b",
+      "outcome": "review",
+      "document_id": "eed23ee8-2a9e-4d47-9b86-11fed8c6ab04",
+      "url": "/review/eed23ee8-2a9e-4d47-9b86-11fed8c6ab04"
+    },
+    {
+      "source_result_id": "607fe525-751e-4e18-b908-a5fb08532504",
+      "outcome": "review",
+      "document_id": "601ae768-e869-4df7-8fd5-dfbb9b95b6be",
+      "url": "/review/601ae768-e869-4df7-8fd5-dfbb9b95b6be"
+    },
+    {
+      "source_result_id": "68d17605-f4db-454d-a0ac-34e978cdcfc9",
+      "outcome": "review",
+      "document_id": "34b88a57-c8eb-433d-883d-264b2d0ed846",
+      "url": "/review/34b88a57-c8eb-433d-883d-264b2d0ed846"
+    },
+    {
+      "source_result_id": "6cfaa5f2-94aa-4568-abbc-86f7a8a2e566",
+      "outcome": "review",
+      "document_id": "5a44dcd4-6833-40ac-8270-3f57f3d66230",
+      "url": "/review/5a44dcd4-6833-40ac-8270-3f57f3d66230"
+    },
+    {
+      "source_result_id": "712837db-e978-4aad-80df-700235936c4b",
+      "outcome": "review",
+      "document_id": "a2f2fd18-d409-49de-8936-e93525653914",
+      "url": "/review/a2f2fd18-d409-49de-8936-e93525653914"
+    },
+    {
+      "source_result_id": "77357bd3-8c9c-4717-8f76-3c451538c523",
+      "outcome": "review",
+      "document_id": "ba58137d-c4f0-4378-99fd-5a61759ac9c2",
+      "url": "/review/ba58137d-c4f0-4378-99fd-5a61759ac9c2"
+    }
+  ],
+  "protocol_hash": "c891120126489e68ce00915668e832034c84d40576cdf89e3b90b5dae21ae9c6"
+}

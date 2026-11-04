@@ -4,6 +4,7 @@ import copy
 import json
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
+from pathlib import Path
 from uuid import UUID, uuid4
 
 import pytest
@@ -17,12 +18,14 @@ from test_linking_acceptance import sample as sample
 
 from app.config import Settings
 from app.db import get_session
+from app.effect_cli import extension_selection
 from app.main import create_app
 from app.models import ExperimentRun, ExperimentSeries, ReviewAction, ReviewSession, WorkingCopy
 from app.services.effect import OUTCOMES, Scenario, calculate, defaults, markdown, replay, snapshot
 from app.services.effect_data import local_estimate, run_data, scenario_defaults
-from app.services.effect_measurements import measurement_audit
+from app.services.effect_measurements import measurement_audit, validate_protocol
 from app.services.experiments import execute_series, runs
+from app.services.model_calls import fingerprint
 
 
 def scenario(**changes: object) -> Scenario:
@@ -44,6 +47,113 @@ def scenario(**changes: object) -> Scenario:
     }
     values["sources"] = {k: "Тестовое допущение, не измерение" for k in values}
     return Scenario.model_validate(values)
+
+
+def test_extension_selects_21_unseen_results_from_frozen_dataset() -> None:
+    root = Path(__file__).resolve().parents[1]
+    saved = json.loads((root / "docs/reports/stage8-human-effect-2026-11-04.json").read_text())[
+        "data"
+    ]
+    base = saved["measurement_protocol"]
+    allocation = dict(recommendation=11, review=10, none=0, error=0)
+    selected = extension_selection(list(reversed(saved["results"])), base, allocation)
+    assert len(selected) == 21
+    assert len({r["document_id"] for r in selected}) == 21
+    assert not {r["result_id"] for r in selected} & {
+        d["source_result_id"] for d in base["documents"]
+    }
+    assert selected[0]["result_id"] == "1284d1fa-084b-4cb9-b3ec-4706022a2fe5"
+    assert selected[-1]["result_id"] == "77357bd3-8c9c-4717-8f76-3c451538c523"
+    with pytest.raises(ValueError, match="Недостаточно"):
+        extension_selection(saved["results"], base, {**allocation, "none": 1})
+    with pytest.raises(ValueError, match="число"):
+        extension_selection(saved["results"], base, {**allocation, "review": -1})
+
+
+def test_combined_protocol_rejects_duplicate_and_tampered_batches() -> None:
+    root = Path(__file__).resolve().parents[1]
+    base = json.loads(
+        (root / "docs/reports/stage8-measurement-protocol-2026-11-04.json").read_text()
+    )
+    combined = {
+        "version": "effect-review-v2",
+        **{key: base[key] for key in ("run_id", "dataset_hash", "run_protocol_hash")},
+        "batches": [base, base],
+        "documents": base["documents"] * 2,
+    }
+    combined["protocol_hash"] = fingerprint(combined)
+    with pytest.raises(ValueError, match="Повтор"):
+        validate_protocol(combined)
+    combined["batches"] = [copy.deepcopy(base)]
+    combined["documents"] = copy.deepcopy(base["documents"])
+    combined["batches"][0]["documents"][0]["outcome"] = "error"
+    combined["protocol_hash"] = fingerprint(
+        {k: v for k, v in combined.items() if k != "protocol_hash"}
+    )
+    with pytest.raises(ValueError, match="Неверный"):
+        validate_protocol(combined)
+
+
+def test_combined_protocol_checks_copy_binding_and_keeps_v1(
+    database: Settings, matrix: tuple[UUID, UUID]
+) -> None:
+    id = create(database, matrix[0])
+    execute_series(database, id)
+    with get_session(database.database_url) as session:
+        from app.models import WorkingSet
+
+        run = next(r for r in runs(session, id) if r.status == "done")
+        data = run_data(session, run.id)
+        source = data["results"][0]
+        work = WorkingSet(
+            corpus_version_id=matrix[0],
+            name="fixture",
+            idempotency_key=uuid4(),
+            request_hash="fixture",
+        )
+        session.add(work)
+        session.flush()
+        session.add(
+            WorkingCopy(
+                document_id=UUID(source["document_id"]),
+                working_set_id=work.id,
+                source_document_id=UUID(source["document_id"]),
+                source_result_id=UUID(source["result_id"]),
+                source_result_current=True,
+            )
+        )
+        session.flush()
+        base = {
+            "version": "effect-review-v1",
+            "run_id": str(run.id),
+            "dataset_hash": data["dataset_hash"],
+            "run_protocol_hash": data["protocol_hash"],
+            "working_set_id": str(work.id),
+            "documents": [
+                {
+                    "source_result_id": source["result_id"],
+                    "document_id": source["document_id"],
+                    "outcome": source["outcome"],
+                }
+            ],
+        }
+        base["protocol_hash"] = fingerprint(base)
+        before = run_data(session, run.id, base)["measurements"]
+        combined = {
+            "version": "effect-review-v2",
+            **{key: base[key] for key in ("run_id", "dataset_hash", "run_protocol_hash")},
+            "batches": [base],
+            "documents": base["documents"],
+        }
+        combined["protocol_hash"] = fingerprint(combined)
+        assert run_data(session, run.id, combined)["measurements"] == before
+        batch = copy.deepcopy(base)
+        batch["documents"][0]["document_id"] = str(uuid4())
+        batch["protocol_hash"] = fingerprint(
+            {k: v for k, v in batch.items() if k != "protocol_hash"}
+        )
+        with pytest.raises(ValueError, match="Документ"):
+            run_data(session, run.id, batch)
 
 
 def test_units_full_document_times_and_separate_contract_preparation() -> None:
@@ -335,6 +445,39 @@ def test_measurements_first_session_actions_outcomes_and_exclusions(
             assert audit["groups"][source["outcome"]]["mean_ms"] == 30000
             assert len(audit["groups"][source["outcome"]]["action_ids"]) == 2
             assert audit["exclusions"] == {"repeat_session": 1}
+            from app.models import LinkingResult
+
+            changed = LinkingResult(
+                source_id=original.id,
+                input_hash=str(uuid4()),
+                method="combined",
+                method_version="fixture",
+                config={},
+                input_snapshot={},
+                provenance={},
+                outcome="error" if source["outcome"] != "error" else "review",
+                reasons=[],
+                recommendations=[],
+            )
+            session.add(changed)
+            session.flush()
+            old_result = review.result_id
+            review.result_id = changed.id
+            for action in session.scalars(
+                select(ReviewAction).where(ReviewAction.session_id == review.id)
+            ):
+                action.result_id = changed.id
+            session.flush()
+            changed_audit = measurement_audit(
+                session,
+                run.id,
+                working_set_ids=[work.id],
+                selected_document_ids=[original.id],
+                selected_result_ids=[source["result_id"]],
+            )
+            assert changed_audit["exclusions"] == {"different_outcome": 1, "repeat_session": 1}
+            assert changed_audit["groups"][source["outcome"]]["n"] == 0
+            review.result_id = old_result
             review.completed_at = None
             session.flush()
             audit = measurement_audit(

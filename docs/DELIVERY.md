@@ -63,6 +63,24 @@ Replay не просто показывает старый отчёт: зано�
 решения и завершает проверку. Первая сессия единственная; не заменять неудачную
 быстрым повтором. Ошибок обработки в выбранном Qwen-test нет; эта категория p=0.
 
+Согласовано расширение: **9 прежних + 21 новый = 30 выбранных документов**
+(14 рекомендаций / 13 разборов / 3 без кандидата). Общий протокол и инструкция
+с 21 новым URL: `reports/stage8-measurement-protocol-30-2026-11-04.{json,md}`.
+Используйте только новые ссылки из этой инструкции; старые 9 не повторяйте.
+Пока новые проверки не выполнены, число реальных замеров остаётся 9.
+
+Идемпотентная подготовка и обновление после завершения человеком:
+
+```sh
+make extend-measurements ARGS='--run 37a41963-0dce-4fbb-be64-94858a6f4a7a --base-protocol docs/reports/stage8-measurement-protocol-2026-11-04.json --allocation recommendation=11,review=10,none=0,error=0 --output docs/reports/stage8-measurement-protocol-30-2026-11-04.json'
+make effect ARGS='snapshot --run 37a41963-0dce-4fbb-be64-94858a6f4a7a --protocol docs/reports/stage8-measurement-protocol-30-2026-11-04.json --output docs/reports/stage8-human-effect-refresh-2026-11-04.json'
+make effect ARGS='replay --input docs/reports/stage8-human-effect-refresh-2026-11-04.json --output data/human-effect-replayed.json'
+```
+
+Вторую команду выполнять после новых замеров. Она перезапишет refresh JSON и Markdown,
+сохранив ID реальных сессий/действий, исключения и неоткрытые документы двух наборов.
+Прежняя версия остаётся в Git; метод и dataset серии не меняются.
+
 Протокол подключается на `/effect` вставкой JSON или CLI `--protocol`:
 
 ```sh

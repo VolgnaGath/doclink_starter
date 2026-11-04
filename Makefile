@@ -35,6 +35,7 @@ export GIT_COMMIT := $(shell git rev-parse HEAD)
 .PHONY: accept-integration-up accept-integration accept-integration-down accept-integration-disconnect accept-integration-connect accept-integration-restart
 CERT_DIR ?= $(HOME)/Downloads
 .PHONY: effect verify-effect accept-effect-web
+.PHONY: extend-measurements
 .PHONY: delivery-export delivery-up delivery-restore delivery-experiments delivery-prepare delivery-browser delivery-down delivery-materials
 .PHONY: holdout install-holdout import-holdout verify-holdout
 .PHONY: resume-paid-errors verify-paid-resume
@@ -88,6 +89,9 @@ delivery-materials: ## Генерировать описание metadata БД, 
 
 effect: ## Без оплаты: snapshot/prepare-measurements --run UUID --output файл.json; replay --input файл.json --output файл.json
 	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace api python -m app.effect_cli $(ARGS)
+
+extend-measurements: ## Без оплаты: расширить протокол; ARGS='--run UUID --base-protocol файл.json --allocation recommendation=11,review=10,none=0,error=0 --output файл.json'
+	$(MAKE) effect ARGS='extend-measurements $(ARGS)'
 
 verify-effect: verify-up ## Формулы, исходы, расходы, замеры и HTTP калькулятора без оплаты
 	$(VERIFY_COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_effect.py

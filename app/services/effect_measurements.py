@@ -27,7 +27,10 @@ def measurement_audit(
     *,
     working_set_id: UUID | None = None,
     selected_result_ids: list[str] | None = None,
+    working_set_ids: list[UUID] | None = None,
+    selected_document_ids: list[UUID] | None = None,
 ) -> dict[str, Any]:
+    scopes = set(working_set_ids or ([] if working_set_id is None else [working_set_id]))
     results = {
         str(r.id): r
         for r in session.scalars(
@@ -45,7 +48,9 @@ def measurement_audit(
         select(ReviewSession).order_by(ReviewSession.opened_at, ReviewSession.id)
     ):
         copy = copies.get(review.document_id)
-        if copy is None or (working_set_id and copy.working_set_id != working_set_id):
+        if copy is None or (scopes and copy.working_set_id not in scopes):
+            continue
+        if selected_document_ids is not None and review.document_id not in selected_document_ids:
             continue
         source_id = str(copy.source_result_id)
         if source_id not in results or (
@@ -61,6 +66,7 @@ def measurement_audit(
                 .order_by(ReviewAction.decided_at, ReviewAction.id)
             )
         )
+        observed = session.get(LinkingResult, review.result_id) if review.result_id else None
         reason = None
         if source_id in seen:
             reason = "repeat_session"
@@ -76,6 +82,8 @@ def measurement_audit(
             reason = "no_completion_action"
         elif any(a.result_id != review.result_id for a in actions):
             reason = "different_result"
+        elif observed is None or observed.outcome != results[source_id].outcome:
+            reason = "different_outcome"
         seen.add(source_id)
         rows.append(
             {
@@ -83,6 +91,7 @@ def measurement_audit(
                 "document_id": str(review.document_id),
                 "source_result_id": source_id,
                 "outcome": results[source_id].outcome,
+                "observed_outcome": observed.outcome if observed else None,
                 "opened_at": review.opened_at.isoformat(),
                 "completed_at": review.completed_at.isoformat() if review.completed_at else None,
                 "duration_ms": review.duration_ms,
@@ -110,9 +119,10 @@ def measurement_audit(
             "action_ids": [a["id"] for r in accepted for a in r["actions"]],
         }
     return {
-        "protocol": "effect-review-v1",
+        "protocol": "effect-review-v2" if len(scopes) > 1 else "effect-review-v1",
         "working_set_id": str(working_set_id) if working_set_id else None,
-        "usable_as_measurement": working_set_id is not None and selected_result_ids is not None,
+        "working_set_ids": sorted(str(id) for id in scopes),
+        "usable_as_measurement": bool(scopes) and selected_result_ids is not None,
         "groups": groups,
         "sessions": rows,
         "exclusions": dict(Counter(r["excluded_reason"] for r in rows if r["excluded_reason"])),
@@ -127,7 +137,23 @@ def validate_protocol(protocol: dict[str, Any]) -> None:
     if not isinstance(protocol, dict):
         raise ValueError("Ожидается объект протокола")
     content = {k: v for k, v in protocol.items() if k != "protocol_hash"}
-    if protocol.get("version") != "effect-review-v1" or fingerprint(content) != protocol.get(
-        "protocol_hash"
-    ):
+    if protocol.get("version") not in {"effect-review-v1", "effect-review-v2"} or fingerprint(
+        content
+    ) != protocol.get("protocol_hash"):
         raise ValueError("Неверный протокол человеческих замеров")
+    if protocol["version"] == "effect-review-v2":
+        batches = protocol.get("batches", [])
+        if not batches:
+            raise ValueError("Нет партий замеров")
+        documents = []
+        for batch in batches:
+            validate_protocol(batch)
+            if batch["version"] != "effect-review-v1" or any(
+                batch[key] != protocol[key]
+                for key in ("run_id", "dataset_hash", "run_protocol_hash")
+            ):
+                raise ValueError("Партии относятся к разным прогонам")
+            documents.extend(batch["documents"])
+        ids = [d["source_result_id"] for d in documents]
+        if documents != protocol.get("documents") or len(set(ids)) != len(ids):
+            raise ValueError("Повтор или подмена документов в протоколе")
