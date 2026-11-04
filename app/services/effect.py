@@ -10,22 +10,28 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from app.services.model_calls import fingerprint
 
 VERSION = "effect-v1"
+RESOURCE_NOTE = (
+    "Денежные показатели — условная оценка трудового ресурса за вычетом расходов, "
+    "не фактический денежный приток. Автоматизация операций не заменяет специалиста. "
+    "Фактическая денежная экономия и финансовая окупаемость не установлены: "
+    "нужен подтверждённый механизм сокращения денежных расходов."
+)
 OUTCOMES = ("recommendation", "review", "none", "error")
 RESULT_LABELS = {
     "asis_seconds": "AS-IS, с/документ",
     "tobe_seconds": "TO-BE, с/документ",
     "asis_hours_month": "AS-IS, часов/месяц",
     "tobe_hours_month": "TO-BE, часов/месяц",
-    "saved_hours_month": "Экономия, часов/месяц",
-    "asis_labor_rub_month": "Труд AS-IS, ₽/месяц",
-    "tobe_labor_rub_month": "Труд TO-BE, ₽/месяц",
+    "saved_hours_month": "Сценарная разница трудоёмкости, часов/месяц",
+    "asis_labor_rub_month": "Условная стоимость труда AS-IS, ₽/месяц",
+    "tobe_labor_rub_month": "Условная стоимость труда TO-BE, ₽/месяц",
     "variable_rub_month": "Переменные расходы, ₽/месяц",
     "contract_preparation_rub_month": "Подготовка договоров, ₽/месяц",
     "fixed_rub_month": "Все постоянные расходы, ₽/месяц",
-    "contribution_rub_document": "Удельный вклад c, ₽/документ",
-    "net_rub_month": "Чистый эффект, ₽/месяц",
-    "break_even_documents": "Точка безубыточности N*, документов/месяц",
-    "payback_months": "Окупаемость, месяцев",
+    "contribution_rub_document": "Условный ресурсный вклад c, ₽/документ",
+    "net_rub_month": "Условный ресурсный эффект за вычетом расходов, ₽/месяц",
+    "break_even_documents": "Условная точка N* ресурсного сценария, документов/месяц",
+    "payback_months": "Условный срок ресурсного сценария, месяцев (не финансовая окупаемость)",
 }
 NonNegative = Annotated[Decimal, Field(ge=0, allow_inf_nan=False)]
 Positive = Annotated[Decimal, Field(gt=0, allow_inf_nan=False)]
@@ -236,6 +242,8 @@ def markdown(saved: dict[str, Any]) -> str:
         "# Расчёт эффекта",
         "",
         saved["label"],
+        "",
+        RESOURCE_NOTE,
         "",
         f"Хеш: `{saved['calculation_hash']}`",
         "",

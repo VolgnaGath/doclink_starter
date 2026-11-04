@@ -13,6 +13,7 @@ from app.documents import DB, render
 from app.effect_cli import prepare_measurements
 from app.models import ExperimentRun
 from app.services.effect import (
+    RESOURCE_NOTE,
     RESULT_LABELS,
     Scenario,
     defaults,
@@ -37,7 +38,7 @@ FIELDS = {
     "review_seconds": "Полный ручной разбор, с/документ",
     "none_seconds": "Полная проверка отсутствия кандидата, с/документ",
     "error_seconds": "Полная обработка ошибки, с/документ",
-    "hourly_rate_rub": "Ставка бухгалтера, ₽/час",
+    "hourly_rate_rub": "Оценочная стоимость часа ресурса (необязательно), ₽/час",
     "incoming_price_rub": "Прогноз обработки входящего, ₽/документ",
     "contract_price_rub": "Прогноз подготовки договора, ₽/документ",
     "extra_variable_rub": "Прочие переменные расходы, ₽/входящий",
@@ -62,6 +63,7 @@ def page(request: Request, session: DB, **context: Any) -> Response:
         "effect.html",
         fields=FIELDS,
         result_labels=RESULT_LABELS,
+        resource_note=RESOURCE_NOTE,
         number=number,
         outcome_labels=OUTCOME_LABELS,
         calculation_statuses={

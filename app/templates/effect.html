@@ -3,6 +3,7 @@
 {% block content %}
 <h1>Расчёт эффекта</h1>
 <p>Сценарная оценка, не измеренный эффект внедрения. База §1.3 — исходные допущения черновика: 1 640 документов, 191,33 ч/месяц. Qwen: открытые веса, облачное размещение.</p>
+<p>{{ resource_note }}</p>
 <p>Полная проверка включает карточку, поиск, все подтверждения и завершение. Общие операции вводятся только сверх неё. Ожидание API не считается трудом. Неизвестное оставьте пустым; ноль задаётся явно.</p>
 <form method="get" action="/effect">
   <label>Завершённый прогон <select name="run_id" required>
@@ -42,7 +43,7 @@
 <p>Хеш <code id="calculation-hash">{{ saved.calculation_hash }}</code></p>
 <table><tr><th>Показатель</th><th>Результат</th></tr>{% for key, label in result_labels.items() %}<tr><td>{{ label }}</td><td>{{ number(saved.result[key]) }}</td></tr>{% endfor %}</table>
 <p>Неизмеренные времена: {% for field in saved.result.missing_times %}{{ fields[field] }}{% if not loop.last %}; {% endif %}{% else %}нет{% endfor %}. N*: {{ calculation_statuses[saved.result.break_even_status] }}; окупаемость: {{ calculation_statuses[saved.result.payback_status] }}.</p>
-<p>N* предполагает постоянную структуру исходов и удельные расходы. Отрицательная экономия сохраняется.</p>
+<p>N* предполагает постоянную структуру исходов и удельные расходы. Это условная ресурсная оценка, не финансовая окупаемость. Отрицательная разница трудоёмкости сохраняется.</p>
 <p>{{ data.local_estimate.label }}: {{ data.local_estimate.seconds if data.local_estimate.seconds is not none else 'нет данных (нужны обе положительные скорости и токены)' }} с.</p>
 <form method="post" action="/effect/export"><input type="hidden" name="snapshot_json" value="{{ snapshot_json }}"><button name="format" value="json">Скачать JSON</button><button name="format" value="md">Скачать Markdown</button></form>
 </section>

@@ -9,12 +9,12 @@
     {
       "path": "docs/APPENDIX_G.md",
       "bytes": 6016,
-      "sha256": "56bee899530f89e31495f97564af5fd8a3f94fef95f4fd5db08e9187589b5258"
+      "sha256": "537656cd5f0d8127b7dea096a5c30d9716c8425dffd439c0f5cc0d64aafc69d0"
     },
     {
       "path": "docs/APPENDIX_ZH.md",
       "bytes": 4921,
-      "sha256": "75b7aa4aaa803e666824f9e9a6c9de6cadbfdca6f4a3ba33ce1f8b797f0ec38d"
+      "sha256": "f6d6a7932b972717cbe5aeefb0d4509c3630bae0ecf606d40dd6a268637b81dc"
     },
     {
       "path": "docs/DB_SCHEMA.md",
@@ -28,8 +28,8 @@
     },
     {
       "path": "docs/EFFECT.md",
-      "bytes": 10451,
-      "sha256": "59f16b1cf25bc77a59ab995ac824db0d8a865959c6963d2ac54f2ce524a51e66"
+      "bytes": 13122,
+      "sha256": "6f636c6741039d7c426ac03ec2fbb046e18851d7e8c35c966214e34616db73c3"
     },
     {
       "path": "docs/reports/stage6-audit-2026-11-04.json",
@@ -168,8 +168,8 @@
     },
     {
       "path": "docs/reports/stage8-human-review-2026-11-04.md",
-      "bytes": 6830,
-      "sha256": "af00d00f96a9c1623bd86a50f926e0d73a9aaba918fa26a6d597e4c095e1f5ae"
+      "bytes": 8108,
+      "sha256": "40b3414afdd19af65e75a1a968876e14da2780a68e9cced81777909e56fe76cb"
     },
     {
       "path": "docs/reports/stage8-main-audit-2026-11-04.json",
@@ -191,5 +191,5 @@
     "Переносимый пакет реальных вычислений находится в data/ и не коммитится; его хеш и состав — в отчётах export/restore.",
     "Метрики и техническая приёмка отдельно от целей качества и замеров человека."
   ],
-  "manifest_hash": "aae46b2bac876fe38e802d9d239f7c9ee9fb12f97eaeeaaf254e4c4b1a3bbe66"
+  "manifest_hash": "c7f242296d5919498fa3ccc7523418c103d9ad4b79a45ffa50dcb2274b5af630"
 }
