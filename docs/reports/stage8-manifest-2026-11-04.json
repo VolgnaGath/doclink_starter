@@ -9,12 +9,12 @@
     {
       "path": "docs/APPENDIX_G.md",
       "bytes": 6016,
-      "sha256": "537656cd5f0d8127b7dea096a5c30d9716c8425dffd439c0f5cc0d64aafc69d0"
+      "sha256": "bdbe5edcddc119b0bcd6770c4c26427334a621805908a043c0caf8f01e1543c3"
     },
     {
       "path": "docs/APPENDIX_ZH.md",
       "bytes": 4921,
-      "sha256": "f6d6a7932b972717cbe5aeefb0d4509c3630bae0ecf606d40dd6a268637b81dc"
+      "sha256": "d1dbe385028965d543f351fa90737d9c7dba5865bea7dedd6b0e160f88fb17bb"
     },
     {
       "path": "docs/DB_SCHEMA.md",
@@ -23,13 +23,13 @@
     },
     {
       "path": "docs/DELIVERY.md",
-      "bytes": 8757,
-      "sha256": "cd3b12cdbae2a12c966bba3ecca036a35687a3413196b565d1a5b61200d38574"
+      "bytes": 10849,
+      "sha256": "419fe3f7d8518f007fa806e5bd6d68ae769af397ff5485ea291044f1069d9096"
     },
     {
       "path": "docs/EFFECT.md",
-      "bytes": 13122,
-      "sha256": "6f636c6741039d7c426ac03ec2fbb046e18851d7e8c35c966214e34616db73c3"
+      "bytes": 15921,
+      "sha256": "68438f4d4f961ccc0cfb0c9c0957657e7221cd32a40d96a3d70b093e16cd8d1a"
     },
     {
       "path": "docs/reports/stage6-audit-2026-11-04.json",
@@ -167,9 +167,29 @@
       "sha256": "4b1522283acc2a1c87af0c3931cd0c897f41d4117f947961d96e9006b3f00c5a"
     },
     {
+      "path": "docs/reports/stage8-human-effect-refresh-2026-11-04.json",
+      "bytes": 216019,
+      "sha256": "f85de365c64e921fc3a4bd866b4cbc61d2bdb9f2a8a4a3b83be5573fe4361d52"
+    },
+    {
+      "path": "docs/reports/stage8-human-effect-refresh-2026-11-04.md",
+      "bytes": 218157,
+      "sha256": "a1cabd04f87d01c10978f2de6edf9a00eaddec34cd2a7ba2ba82d0dbcbd8d8b4"
+    },
+    {
+      "path": "docs/reports/stage8-human-extension-preflight-2026-11-04.md",
+      "bytes": 3040,
+      "sha256": "16b10dc9c0115ad70c5d47b27a5ac03c777484b96b36f8a3dade313b8e3d18f5"
+    },
+    {
       "path": "docs/reports/stage8-human-review-2026-11-04.md",
-      "bytes": 8108,
-      "sha256": "40b3414afdd19af65e75a1a968876e14da2780a68e9cced81777909e56fe76cb"
+      "bytes": 8732,
+      "sha256": "26c993b306ddbbf145d605441d6832359e93908c6b145681d4751292090aba76"
+    },
+    {
+      "path": "docs/reports/stage8-human-review-extension-2026-11-04.md",
+      "bytes": 4875,
+      "sha256": "66f3035e15e329f39c5e6de8a436f7679b299ca7a8e147f655ddae63f822b0f3"
     },
     {
       "path": "docs/reports/stage8-main-audit-2026-11-04.json",
@@ -182,6 +202,16 @@
       "sha256": "7b58e13fb9d3ba0b565ebd7e4061839d176404b2b18a8f3421b5a9ccefe2085c"
     },
     {
+      "path": "docs/reports/stage8-measurement-protocol-30-2026-11-04.json",
+      "bytes": 17098,
+      "sha256": "95feebf8917a1fd114dc3f5c4fea01885a8dfbf09b9e617beec424bf840d65d1"
+    },
+    {
+      "path": "docs/reports/stage8-measurement-protocol-30-2026-11-04.md",
+      "bytes": 4156,
+      "sha256": "6c03073d4e071ad940aaf9eb8012a18c694ff099ece1193d16718f6b26f2d54f"
+    },
+    {
       "path": "docs/reports/stage8-measurements-2026-11-04.md",
       "bytes": 3653,
       "sha256": "69e71dfa04483bf6f7540a3500700f9365cb3a37bd431f9a3697d1820ae7dd5d"
@@ -191,5 +221,5 @@
     "Переносимый пакет реальных вычислений находится в data/ и не коммитится; его хеш и состав — в отчётах export/restore.",
     "Метрики и техническая приёмка отдельно от целей качества и замеров человека."
   ],
-  "manifest_hash": "c7f242296d5919498fa3ccc7523418c103d9ad4b79a45ffa50dcb2274b5af630"
+  "manifest_hash": "74c895e77ca277fca14440c2d1a78b833142e7b5c59955d249c31526247f55fc"
 }
