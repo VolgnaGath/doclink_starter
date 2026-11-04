@@ -6,7 +6,7 @@
 
 Чистый вход метода, фильтр допустимых кандидатов и полный рейтинг.
 
-Источник: `app/services/linking/methods.py:17–74`; версия кода `5228c0adc9e6e96c2960c838670b9f8e77fae12a`.
+Источник: `app/services/linking/methods.py:17–74`; версия кода `e52d696251e867d53b631ded398ab64a3be7fe96`.
 SHA-256 полного файла: `06face8ffbce5dcdfe3540abd0af79dd8ea51cf10d71a2107bef54003e65776a`.
 
 ```python
@@ -74,7 +74,7 @@ def link(data: LinkingInput, config: LinkingConfig) -> LinkingResult:
 
 Документное решение, неоднозначность и две независимые ссылки.
 
-Источник: `app/services/linking/decisions.py:38–87`; версия кода `5228c0adc9e6e96c2960c838670b9f8e77fae12a`.
+Источник: `app/services/linking/decisions.py:38–87`; версия кода `e52d696251e867d53b631ded398ab64a3be7fe96`.
 SHA-256 полного файла: `4f7503b7e1f31843961e500d662d91c8e7bf505ecb2c97f52762243e79689f51`.
 
 ```python

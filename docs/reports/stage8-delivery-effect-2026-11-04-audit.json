@@ -1,0 +1,56 @@
+{
+  "browser": "156.0.8078.4",
+  "run_id": "37a41963-0dce-4fbb-be64-94858a6f4a7a",
+  "calculation_hash": "4186956c55b89d1103cc9ad7421cebf9fa8ffba4831c3a9883989ff89ccf31fd",
+  "missing_data": "passed",
+  "cloud": "passed",
+  "server": "passed",
+  "downloads": {
+    "json": 163706,
+    "md": 164880
+  },
+  "result": {
+    "asis_seconds": "420.00",
+    "tobe_seconds": "115.4621848739495798319327731",
+    "asis_hours_month": "191.3333333333333333333333333",
+    "tobe_hours_month": "52.59943977591036414565826331",
+    "saved_hours_month": "138.7338935574229691876750700",
+    "asis_labor_rub_month": "114800.0000000000000000000000",
+    "tobe_labor_rub_month": "31559.66386554621848739495799",
+    "variable_rub_month": "336.3116302521008403361344538",
+    "contract_preparation_rub_month": "14.06707142857142857142857143",
+    "fixed_rub_month": "1014.067071428571428571428571",
+    "contribution_rub_document": "50.55123445378151260504201680",
+    "net_rub_month": "81889.95743277310924369747898",
+    "break_even_documents": "20.06018413567571324468233567",
+    "payback_months": "0.1221150958371106519079198515",
+    "test_n": 119,
+    "outcomes": {
+      "recommendation": {
+        "numerator": 93,
+        "denominator": 119,
+        "share": "0.7815126050420168067226890756"
+      },
+      "review": {
+        "numerator": 23,
+        "denominator": 119,
+        "share": "0.1932773109243697478991596639"
+      },
+      "none": {
+        "numerator": 3,
+        "denominator": 119,
+        "share": "0.02521008403361344537815126050"
+      },
+      "error": {
+        "numerator": 0,
+        "denominator": 119,
+        "share": "0"
+      }
+    },
+    "missing_times": [],
+    "break_even_status": "available",
+    "payback_status": "available"
+  },
+  "page_errors": [],
+  "label": "Только сценарные допущения, не замер человека"
+}

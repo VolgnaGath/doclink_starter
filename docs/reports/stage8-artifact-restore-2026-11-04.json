@@ -1,0 +1,28 @@
+{
+  "bundle_hash": "6a2236c5cbbfb15a5c36a7cc70c7b353049251d5e673e6cd4c0ac818606c11d6",
+  "dataset_hash": "28fc1e37cad4f7ef5f798a9f1d57c9eb4d2242e282bf2facfba331bf5005775e",
+  "counts": {
+    "clients": 12,
+    "corpus_versions": 2,
+    "counterparties": 485,
+    "document_embeddings": 252,
+    "document_texts": 485,
+    "documents": 485,
+    "embeddings": 252,
+    "experiment_artifacts": 17992,
+    "experiment_metrics": 3276,
+    "experiment_results": 1071,
+    "experiment_runs": 8,
+    "experiment_series": 1,
+    "extractions": 1569,
+    "jobs": 966,
+    "link_suggestions": 10943,
+    "linking_results": 1071,
+    "llm_calls": 984,
+    "model_configs": 3,
+    "prompts": 2,
+    "stage_timings": 2644,
+    "threshold_curves": 1960
+  },
+  "new_llm_calls": 0
+}

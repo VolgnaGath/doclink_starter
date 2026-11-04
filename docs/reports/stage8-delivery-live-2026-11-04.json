@@ -1,0 +1,56 @@
+{
+  "scenario": "Новый mock1c документ → реальные regex/BGE-M3 → рекомендация → Chromium confirm → mock1c",
+  "quality_scope": "Не LLM-оценка; реальные LLM и их ошибки отдельно воспроизведены матрицей",
+  "paid_calls_enabled": false,
+  "document_ids": [
+    "7a041f20-3e6f-4284-8444-ebf9cdb109ab",
+    "6ad3cfc4-93c9-48fb-ac43-c0aa34647982"
+  ],
+  "link_id": "c2c3a138-7416-4615-a2b5-4fbd2fecc9a7",
+  "review_action_id": "51ef5b2e-e920-4a55-85a2-29c5b2ab15aa",
+  "llm_calls": 984,
+  "embeddings": [
+    {
+      "document_id": "6ad3cfc4-93c9-48fb-ac43-c0aa34647982",
+      "embedding_id": "412343c2-4f30-43f2-8a55-fc3e450f213d",
+      "cache_hit": false
+    },
+    {
+      "document_id": "7a041f20-3e6f-4284-8444-ebf9cdb109ab",
+      "embedding_id": "c394815a-d52e-4ca7-8aa4-b63d35f55920",
+      "cache_hit": false
+    }
+  ],
+  "datasets": [
+    {
+      "id": "f396bd92-1639-4193-87ae-d065bc0ee2b9",
+      "hash": "28fc1e37cad4f7ef5f798a9f1d57c9eb4d2242e282bf2facfba331bf5005775e"
+    }
+  ],
+  "journal": {
+    "events": [
+      {
+        "event_id": "fcb2e370-9f62-428d-ac2c-998a1fab660e",
+        "link_id": "c2c3a138-7416-4615-a2b5-4fbd2fecc9a7",
+        "link_type": "основание",
+        "occurred_at": "2026-11-04T14:43:12.436056Z",
+        "operation": "create",
+        "review_action_id": "51ef5b2e-e920-4a55-85a2-29c5b2ab15aa",
+        "source_id": "6b74f637-38fa-448e-9330-79c10beb0351",
+        "target_id": "d7e1e14a-5d8f-4173-840c-30e0fa03956a"
+      }
+    ],
+    "links": [
+      {
+        "event_id": "fcb2e370-9f62-428d-ac2c-998a1fab660e",
+        "link_id": "c2c3a138-7416-4615-a2b5-4fbd2fecc9a7",
+        "link_type": "основание",
+        "occurred_at": "2026-11-04T14:43:12.436056Z",
+        "operation": "create",
+        "review_action_id": "51ef5b2e-e920-4a55-85a2-29c5b2ab15aa",
+        "source_id": "6b74f637-38fa-448e-9330-79c10beb0351",
+        "target_id": "d7e1e14a-5d8f-4173-840c-30e0fa03956a"
+      }
+    ]
+  }
+}

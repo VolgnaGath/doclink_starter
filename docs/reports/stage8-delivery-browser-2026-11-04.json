@@ -1,0 +1,9 @@
+{
+  "browser": "156.0.8078.4",
+  "source": "новый mock1c документ",
+  "extractor": "real regex, not LLM",
+  "document_id": "6ad3cfc4-93c9-48fb-ac43-c0aa34647982",
+  "result_id": "9f4673e0-fc39-434f-b32a-7029ff7d2557",
+  "confirmed_delivery": "passed",
+  "page_errors": []
+}

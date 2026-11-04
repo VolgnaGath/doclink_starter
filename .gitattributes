@@ -5,3 +5,5 @@
 /corpus/real/manifest.csv text eol=crlf
 /corpus/synth/*.csv text eol=crlf
 /corpus/synth_extra/*.csv text eol=crlf
+# Delivery manifest hashes exported bytes, including the CSV line endings.
+/docs/reports/stage8-*.csv -text whitespace=cr-at-eol

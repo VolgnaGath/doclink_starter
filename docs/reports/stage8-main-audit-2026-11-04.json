@@ -1,0 +1,10 @@
+{
+  "documents": 1027,
+  "documents_hash": "202ab59a29330233ecabd2192d5d05c5c97c5a694d2b4e68cbb85659b4e2205b",
+  "llm_calls": 1006,
+  "llm_calls_hash": "92e93bd04c05090fa23a251e3f45308538595eee8f77de3fbb6a41ff6a5a41b9",
+  "cost_rub": "501.48244000",
+  "operational_config_hash": "c6abd60daa05706e65ba207ab91398e0e4ab3a24fe8c220d7c4cb580b634ece9",
+  "paid_calls_enabled": false,
+  "active_jobs": 0
+}

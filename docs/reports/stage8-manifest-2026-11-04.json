@@ -1,0 +1,180 @@
+{
+  "version": "delivery-manifest-v1",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 8104,
+      "sha256": "7419ec7442f706ef54769e4c04e39288d5d7d0dee833016339acba48378d3f48"
+    },
+    {
+      "path": "docs/APPENDIX_G.md",
+      "bytes": 6016,
+      "sha256": "3682ea44dbcf366cd2d8f23531021f7ae072f11841dbf005cc174f06239d6857"
+    },
+    {
+      "path": "docs/APPENDIX_ZH.md",
+      "bytes": 4921,
+      "sha256": "c1dca42e424ea3faa3215d8a8aa27b0f23a66018d0aba2534a01e672ddd2f393"
+    },
+    {
+      "path": "docs/DB_SCHEMA.md",
+      "bytes": 29210,
+      "sha256": "cd05072dc65ee500119a65d723b0ba0abdaeaab2cb27396b35853ab1ed49e3a3"
+    },
+    {
+      "path": "docs/DELIVERY.md",
+      "bytes": 8757,
+      "sha256": "cd3b12cdbae2a12c966bba3ecca036a35687a3413196b565d1a5b61200d38574"
+    },
+    {
+      "path": "docs/EFFECT.md",
+      "bytes": 10451,
+      "sha256": "59f16b1cf25bc77a59ab995ac824db0d8a865959c6963d2ac54f2ce524a51e66"
+    },
+    {
+      "path": "docs/reports/stage6-audit-2026-11-04.json",
+      "bytes": 1445,
+      "sha256": "781819821dfe5531967eb976505ce29de48137b41897bfeb42f168df77f32000"
+    },
+    {
+      "path": "docs/reports/stage6-matrix-2026-11-04.csv",
+      "bytes": 2714741,
+      "sha256": "6a0ed20f72fa66afacaa88e454531d86df1bf4f33e699a0ce359e792c744e8d7"
+    },
+    {
+      "path": "docs/reports/stage6-matrix-2026-11-04.json",
+      "bytes": 7259054,
+      "sha256": "1475fd1d543ae2e51710e3c4eb4896614c2b682e35a0afdbd3b441f4f93ec7e6"
+    },
+    {
+      "path": "docs/reports/stage6-matrix-2026-11-04.md",
+      "bytes": 28933,
+      "sha256": "e9cc1f23f1080d15b2f217937d624ad69b75aff68376328291779764db87118a"
+    },
+    {
+      "path": "docs/reports/stage6-matrix-2026-11-04.png",
+      "bytes": 120694,
+      "sha256": "512c585f88cdc1663b79474e94e904576bbca2036f5666191c24d8d6cd09ade6"
+    },
+    {
+      "path": "docs/reports/stage8-acceptance-2026-11-04.md",
+      "bytes": 12427,
+      "sha256": "1bfec3007239de97d1d2d2db9102e97c900879d6845b025459cfe4deeea7e751"
+    },
+    {
+      "path": "docs/reports/stage8-artifact-export-2026-11-04.json",
+      "bytes": 799,
+      "sha256": "58da48ca3c7fa3533bc3c0fab785acf16c175f20b1dd4e95982cbd68638d711f"
+    },
+    {
+      "path": "docs/reports/stage8-artifact-restore-2026-11-04.json",
+      "bytes": 766,
+      "sha256": "27f67d1d99d4c43ae2a2bea775ce6c0abeff6ac871d4b0dc15700653d03fdf2e"
+    },
+    {
+      "path": "docs/reports/stage8-bootstrap-2026-11-04.json",
+      "bytes": 387,
+      "sha256": "44f819697b8472a2f93df008047a39650715a4ba9281b3a08d07e41e399e55f1"
+    },
+    {
+      "path": "docs/reports/stage8-clean-matrix-2026-11-04.csv",
+      "bytes": 2714753,
+      "sha256": "2e0d29fffeb2069f2305d9473be754ce2f7a6b0a6a142e55fb417d0e3a2a1bd6"
+    },
+    {
+      "path": "docs/reports/stage8-clean-matrix-2026-11-04.json",
+      "bytes": 7259098,
+      "sha256": "2f12fc50dabba63b26c6d44d2b39a07b0b55efaf2462fbfabfcf7975fe42043b"
+    },
+    {
+      "path": "docs/reports/stage8-clean-matrix-2026-11-04.md",
+      "bytes": 28943,
+      "sha256": "04d40dd7b0a4a7ad4e8e941cf6a94d82ce43a2e26a33ec507fbd5178dcbf763e"
+    },
+    {
+      "path": "docs/reports/stage8-clean-matrix-2026-11-04.png",
+      "bytes": 120694,
+      "sha256": "1cb461dbeebcc1aa111e5f04a61a1d5a2dcf4ecc42ab14dcfc5eaf5027ee1e46"
+    },
+    {
+      "path": "docs/reports/stage8-delivery-browser-2026-11-04.json",
+      "bytes": 287,
+      "sha256": "5832bef67270c2de78a8bdf8a4515086d7d70007a0f847551f60fcc1bf50c713"
+    },
+    {
+      "path": "docs/reports/stage8-delivery-confirmed-2026-11-04.png",
+      "bytes": 648409,
+      "sha256": "6a2c778e610d707f4ba84325c75e78436a4443d6bb34da45ead8b6357f0c399d"
+    },
+    {
+      "path": "docs/reports/stage8-delivery-effect-2026-11-04-audit.json",
+      "bytes": 1878,
+      "sha256": "0be77349ebea3da9af9eb9a477fd7832f796e195e389850c60ea5b9cd6515342"
+    },
+    {
+      "path": "docs/reports/stage8-delivery-effect-2026-11-04-cloud.png",
+      "bytes": 589534,
+      "sha256": "5182e3a2b2ed69fb557337995f153e9a8f4eaafbc666b42f6e0d2e885ce23613"
+    },
+    {
+      "path": "docs/reports/stage8-delivery-effect-2026-11-04-missing.png",
+      "bytes": 564364,
+      "sha256": "5d8d4d02f31d15c2cf6c512d049aa4ddda23bdfeff270137d7bc75a96750ff9d"
+    },
+    {
+      "path": "docs/reports/stage8-delivery-effect-2026-11-04-server.png",
+      "bytes": 585150,
+      "sha256": "7a18c8551c2e00039e84055634ac032633adb70fe4ff97e7bec8dc568824c614"
+    },
+    {
+      "path": "docs/reports/stage8-delivery-effect-2026-11-04.json",
+      "bytes": 163706,
+      "sha256": "cab67faa073166b45cbc9597d55dcbf2ac8f03e27e3640c6c1670a787120fe88"
+    },
+    {
+      "path": "docs/reports/stage8-delivery-effect-2026-11-04.md",
+      "bytes": 164880,
+      "sha256": "d7419033ec2c2158bc04be05dccd766fa29b2ea0fd13fd465863cbc68d45a08c"
+    },
+    {
+      "path": "docs/reports/stage8-delivery-live-2026-11-04.json",
+      "bytes": 2056,
+      "sha256": "edc88c6d3885b36b25545d4d93bba172ecc7bd49c41336c9d9bc61e6a729924a"
+    },
+    {
+      "path": "docs/reports/stage8-delivery-proposal-2026-11-04.png",
+      "bytes": 227828,
+      "sha256": "38a413218e1d7a9525656a940f40ef200c48c4cc203cb7bad17ada416ad7f262"
+    },
+    {
+      "path": "docs/reports/stage8-effect-2026-11-04.json",
+      "bytes": 165605,
+      "sha256": "5b1274a9384297aa95c35b7366526833dd13b82529a80ee698efc764f484c238"
+    },
+    {
+      "path": "docs/reports/stage8-effect-2026-11-04.md",
+      "bytes": 166929,
+      "sha256": "a876709546a6f49ac5c614815e0843fffa1ac1dde9cc694067e820c93c64faac"
+    },
+    {
+      "path": "docs/reports/stage8-main-audit-2026-11-04.json",
+      "bytes": 399,
+      "sha256": "7ad1e75e121d0cbfed654e2ba0352af92dc5471076d458a6d22a8afbe3ba0084"
+    },
+    {
+      "path": "docs/reports/stage8-measurement-protocol-2026-11-04.json",
+      "bytes": 2887,
+      "sha256": "7b58e13fb9d3ba0b565ebd7e4061839d176404b2b18a8f3421b5a9ccefe2085c"
+    },
+    {
+      "path": "docs/reports/stage8-measurements-2026-11-04.md",
+      "bytes": 3653,
+      "sha256": "69e71dfa04483bf6f7540a3500700f9365cb3a37bd431f9a3697d1820ae7dd5d"
+    }
+  ],
+  "notes": [
+    "Переносимый пакет реальных вычислений находится в data/ и не коммитится; его хеш и состав — в отчётах export/restore.",
+    "Метрики и техническая приёмка отдельно от целей качества и замеров человека."
+  ],
+  "manifest_hash": "7c0f5a0843558f5c32b13a0a9a5ccfa4408d3ac5fde1b09a5e559fedc7cd261f"
+}

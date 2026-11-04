@@ -1,0 +1,68 @@
+{
+  "version": "effect-review-v1",
+  "run_id": "37a41963-0dce-4fbb-be64-94858a6f4a7a",
+  "dataset_hash": "28fc1e37cad4f7ef5f798a9f1d57c9eb4d2242e282bf2facfba331bf5005775e",
+  "run_protocol_hash": "2a3130c4a39a7ded5cb2a8bc1dc0ca885398fe36dcccd1334a6697d6245a07c6",
+  "registered_at": "2026-11-04T13:53:56.832514+00:00",
+  "working_set_id": "88510452-2a1a-432c-b972-398b1561fd7c",
+  "per_outcome": 3,
+  "selection_rule": "Первые k test-результатов каждого исхода по ID; порядок исходов recommendation/review/none/error",
+  "session_rule": "Первая открытая сессия; незавершённую/изменённую не заменять повтором",
+  "documents": [
+    {
+      "source_result_id": "06a9597a-9a2b-4c93-a042-e3ce0af6b097",
+      "outcome": "recommendation",
+      "document_id": "00004443-82e2-4370-8923-0677401ff633",
+      "url": "/review/00004443-82e2-4370-8923-0677401ff633"
+    },
+    {
+      "source_result_id": "06c59587-7d8e-4073-9df0-dd577cd83b40",
+      "outcome": "recommendation",
+      "document_id": "adf124b5-d80f-4046-98c9-8d45b14f38d7",
+      "url": "/review/adf124b5-d80f-4046-98c9-8d45b14f38d7"
+    },
+    {
+      "source_result_id": "0c956501-c286-427a-9359-e3a2531b76b9",
+      "outcome": "recommendation",
+      "document_id": "1911f149-5ba9-4ef1-b72c-67d8b8a9acff",
+      "url": "/review/1911f149-5ba9-4ef1-b72c-67d8b8a9acff"
+    },
+    {
+      "source_result_id": "0095272b-4b2d-4c2f-a82e-9b4c833073fd",
+      "outcome": "review",
+      "document_id": "df412781-0b38-49ac-ba9c-0fe0a2696bff",
+      "url": "/review/df412781-0b38-49ac-ba9c-0fe0a2696bff"
+    },
+    {
+      "source_result_id": "0fb3ed56-6c5d-4479-b8a6-f765ccedaf2e",
+      "outcome": "review",
+      "document_id": "b482df94-24ee-410f-aebb-252df45e2d23",
+      "url": "/review/b482df94-24ee-410f-aebb-252df45e2d23"
+    },
+    {
+      "source_result_id": "11cca980-5365-4064-802c-261fb4ea6acd",
+      "outcome": "review",
+      "document_id": "76c39563-6293-436b-916b-272a4fa96058",
+      "url": "/review/76c39563-6293-436b-916b-272a4fa96058"
+    },
+    {
+      "source_result_id": "64ead7c0-4abf-4ee1-b0e0-505e5e9ceaf0",
+      "outcome": "none",
+      "document_id": "711ca1f3-25c2-411c-a355-ced480b48309",
+      "url": "/review/711ca1f3-25c2-411c-a355-ced480b48309"
+    },
+    {
+      "source_result_id": "71493ea9-034c-4139-9a62-88599f07df15",
+      "outcome": "none",
+      "document_id": "155022d6-42b0-455d-889a-5c2fe6e6635b",
+      "url": "/review/155022d6-42b0-455d-889a-5c2fe6e6635b"
+    },
+    {
+      "source_result_id": "7baae96a-77a6-49c6-9673-c8340584566f",
+      "outcome": "none",
+      "document_id": "a011f2c6-1bc0-47ad-a0e7-b03de436afca",
+      "url": "/review/a011f2c6-1bc0-47ad-a0e7-b03de436afca"
+    }
+  ],
+  "protocol_hash": "add3ae0bebbd9d3b2cfb29e25480d5ce65ef1c06fba6ca048440a495adf41e41"
+}
