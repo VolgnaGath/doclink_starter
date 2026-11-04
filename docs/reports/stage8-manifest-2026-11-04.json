@@ -9,12 +9,12 @@
     {
       "path": "docs/APPENDIX_G.md",
       "bytes": 6016,
-      "sha256": "cd9f88b1cf3f8328bb0a898778ac3b9cb0db46476d4d9985999cea7a7326eb83"
+      "sha256": "5f1229d8ec0e47fbc44902bb1d20534ae23d12c971d3a2622ce3dcaeb41f5f96"
     },
     {
       "path": "docs/APPENDIX_ZH.md",
       "bytes": 4921,
-      "sha256": "379012fe4efc78769478101aad6a6cb8b3e95e613ed529ae9c00a5ff4dcf96b5"
+      "sha256": "0dab97f1e047bba6bb7e189e8dd4a628984951b4df6e6892a13817a9bf3af096"
     },
     {
       "path": "docs/DB_SCHEMA.md",
@@ -23,13 +23,13 @@
     },
     {
       "path": "docs/DELIVERY.md",
-      "bytes": 10849,
-      "sha256": "419fe3f7d8518f007fa806e5bd6d68ae769af397ff5485ea291044f1069d9096"
+      "bytes": 11008,
+      "sha256": "2ff328c51125052ec3031472dfd47cdc56bd92e35cfd62338dfe08f1b802c10a"
     },
     {
       "path": "docs/EFFECT.md",
-      "bytes": 16027,
-      "sha256": "345e1741f56568dcdd775d6e067588529bd593bfb89e6f77b9cfe3875a7892ec"
+      "bytes": 15065,
+      "sha256": "b72cf909d8239b98b1d88385f516f9fc23aa91dc6d154fafcda53037a7a7352c"
     },
     {
       "path": "docs/reports/stage6-audit-2026-11-04.json",
@@ -58,8 +58,8 @@
     },
     {
       "path": "docs/reports/stage8-acceptance-2026-11-04.md",
-      "bytes": 12940,
-      "sha256": "aaf18ac4bf3b5b573cb5c1a9c8c3b775878ee927f8952fdc9571eb9acffe5ad3"
+      "bytes": 13388,
+      "sha256": "8c8ccfda0bfbdd9a9581aa1f6fd7bc0172e710623c65913886dc2fd4e77a57fe"
     },
     {
       "path": "docs/reports/stage8-artifact-export-2026-11-04.json",
@@ -213,13 +213,13 @@
     },
     {
       "path": "docs/reports/stage8-measurements-2026-11-04.md",
-      "bytes": 3653,
-      "sha256": "69e71dfa04483bf6f7540a3500700f9365cb3a37bd431f9a3697d1820ae7dd5d"
+      "bytes": 3546,
+      "sha256": "d7f906d83646933ed2a2079f04053b6ceee1c9cd1483aac5f4f220c6c893cb29"
     }
   ],
   "notes": [
     "Переносимый пакет реальных вычислений находится в data/ и не коммитится; его хеш и состав — в отчётах export/restore.",
     "Метрики и техническая приёмка отдельно от целей качества и замеров человека."
   ],
-  "manifest_hash": "f1c2979ddadd7382e4080fde90b5d152b8293f1bd40e982563b7f06605cda632"
+  "manifest_hash": "f22aeb7147621120099723c766a75ed4a4c4ef64f4896ba69a698eb520f6f4a2"
 }
