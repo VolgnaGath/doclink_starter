@@ -52,7 +52,7 @@ install-holdout: ## Сохранить неизменный архив №2 и �
 import-holdout: ## Импортировать только отложенный корпус, seed=20261104, все split=test
 	$(COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m app.import_corpus --path corpus --holdout-only --seed 20261104 --tune-share 0
 
-holdout: ## Без оплаты: register|freeze|audit --corpus-version UUID --source-series UUID --output report.json; прежние пороги без tune
+holdout: ## Без оплаты: register|freeze|audit|seal-errors --corpus-version UUID --source-series UUID --output report.json; прежние пороги без tune
 	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace worker python -m app.holdout_cli $(ARGS)
 
 verify-holdout: verify-up ## Изолированные проверки test-only импорта и переноса freeze без подбора порогов

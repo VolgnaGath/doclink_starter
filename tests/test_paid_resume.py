@@ -10,7 +10,8 @@ from test_models_extraction import live as live
 
 from app.config import Settings
 from app.db import get_session
-from app.models import CorpusVersion, Document, Job, LLMCall
+from app.holdout_cli import seal_terminal_errors
+from app.models import CorpusVersion, Document, Extraction, Job, LLMCall
 from app.paid_resume import resume
 from app.services.extraction import extract_document
 from app.services.model_calls import ProcessingError, uncertain_retry_authorized
@@ -66,3 +67,36 @@ def test_explicit_retry_keeps_unknown_cost_and_reserve_and_never_repeats_success
         assert len(calls) == 2
         assert calls[0].cost_rub is None and calls[0].status == "uncertain"
         assert calls[1].status == "success"
+
+
+def test_only_real_terminal_schema_errors_can_be_sealed(live: Settings) -> None:
+    doc, model, prompt, snapshot = setup(live, provider="yandex")
+    with get_session(live.database_url) as session:
+        version = CorpusVersion(
+            name="fixture", fingerprint=str(uuid4()), seed=1, tune_share=1, report={}
+        )
+        session.add(version)
+        session.flush()
+        version_id = version.id
+        session.get(Document, doc).corpus_version_id = version_id
+        session.commit()
+    scripted = Scripted('{"unexpected":true}', '{"unexpected":true}')
+    with pytest.raises(ProcessingError, match="после проверки схемы"):
+        extract_document(live, doc, model, prompt, snapshot, provider=scripted)
+    with get_session(live.database_url) as session:
+        extraction = session.scalar(select(Extraction).where(Extraction.is_current))
+        extraction.error = "Неизвестный расход: требуется сверка журнала"
+        session.commit()
+    with pytest.raises(ProcessingError, match="Инфраструктурную"):
+        seal_terminal_errors(version_id, live)
+    with get_session(live.database_url) as session:
+        extraction = session.scalar(select(Extraction).where(Extraction.is_current))
+        assert not extraction.preserved_error
+        extraction.error = "Невалидное извлечение после проверки схемы"
+        session.commit()
+    report = seal_terminal_errors(version_id, live)
+    assert len(report["terminal_errors"]) == 1 and report["new_network_calls"] == 0
+    assert scripted.count == 2
+    with get_session(live.database_url) as session:
+        extraction = session.scalar(select(Extraction).where(Extraction.is_current))
+        assert extraction.preserved_error and not extraction.valid
