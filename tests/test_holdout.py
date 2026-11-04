@@ -6,6 +6,7 @@ from pathlib import Path
 from uuid import UUID
 
 import pytest
+from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 from test_experiments import create
 from test_experiments import database as database
@@ -14,6 +15,7 @@ from test_experiments import sample as sample
 
 from app.config import Settings
 from app.db import get_session
+from app.main import create_app
 from app.models import (
     CorpusVersion,
     Document,
@@ -149,6 +151,13 @@ def test_transfer_never_retunes_and_freezes_all_before_test(
         assert all(r.status == "frozen" or not r.config for r in runs(session, series_id))
         session.commit()
     execute_series(database, series_id)
+    with TestClient(create_app(database)) as client:
+        client.post("/login", data={"username": "admin", "password": "test-password"})
+        response = client.get(f"/api/v1/experiments/{series_id}")
+        assert response.status_code == 200, response.text
+        assert response.json()["mode"] == "holdout"
+        assert response.json()["status"] == "done"
+        assert client.get(f"/experiments/{series_id}").status_code == 200
     with get_session(database.database_url) as session:
         old = {r.variant: r for r in runs(session, source_id)}
         for run in runs(session, series_id):

@@ -1,0 +1,12 @@
+{
+  "corpus_version_id": "9acfe19b-89e2-43be-ae33-9169ebb8b519",
+  "terminal_errors": [
+    {
+      "extraction_id": "69b40281-d6c9-4065-a105-20df6f56756b",
+      "llm_call_id": "45ad985a-3ad8-4d20-9325-0e3b81e86a03",
+      "document_id": "5234e784-4836-4084-935d-9c42b7c76e22",
+      "error": "Невалидное извлечение после проверки схемы"
+    }
+  ],
+  "new_network_calls": 0
+}

@@ -1812,6 +1812,7 @@ components:
             - matrix
             - single
             - ablations
+            - holdout
         selected_model_id:
           type: string
           allOf:

@@ -58,7 +58,7 @@ model ExperimentDetail {
   name: string;
   corpus_version_id: uuid;
   status: RunStatus;
-  mode: "matrix" | "single" | "ablations";
+  mode: "matrix" | "single" | "ablations" | "holdout";
   selected_model_id: uuid | null;
   progress: int64;
   total: int64;

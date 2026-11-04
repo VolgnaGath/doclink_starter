@@ -68,7 +68,7 @@ class ExperimentView(BaseModel):
     name: str
     corpus_version_id: UUID
     status: Literal["queued", "running", "done", "error"]
-    mode: Literal["matrix", "single", "ablations"]
+    mode: Literal["matrix", "single", "ablations", "holdout"]
     selected_model_id: UUID | None
     progress: int
     total: int
