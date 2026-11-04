@@ -1,0 +1,2318 @@
+{
+  "corpus_version": "196ecb8f-fe6e-41c6-8785-a4faf69a6b1f",
+  "corpus_fingerprint": "fe98fa1d6fdf24237c357b8761ec0e1bf35e8f44fbe9bb8eeb5491c1f9390103",
+  "source_versions": [
+    "1b53cd0c-6eea-4cc3-b5a6-9eebbb6209a4"
+  ],
+  "test_history": [
+    {
+      "corpus_version": "196ecb8f-fe6e-41c6-8785-a4faf69a6b1f",
+      "protocol_hash": "84dcde38e8fb0c0863b065fbc817d9f6ea5aa854d671b5b57e761c5bcc157807"
+    },
+    {
+      "corpus_version": "1b53cd0c-6eea-4cc3-b5a6-9eebbb6209a4",
+      "protocol_hash": "84dcde38e8fb0c0863b065fbc817d9f6ea5aa854d671b5b57e761c5bcc157807"
+    }
+  ],
+  "reused_test": true,
+  "cards_hash": "aa51a62903126f9fa489150bc85445509c12deb4e799b0076ac782dc4812e9a2",
+  "cards": [
+    {
+      "document_id": "01111c60-4536-488e-b5f7-b7a0fd5fe302",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "договор",
+      "date": "2024-05-25",
+      "number": "32/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "4f7d2d29-5b4c-4347-8e55-d2f4ed161d6a"
+    },
+    {
+      "document_id": "0112f01c-22b3-4aef-8797-af88db5e8cd4",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "договор",
+      "date": "2024-10-24",
+      "number": "183-П/2024",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "fd6b9490-d114-41b6-9cf8-2f73117a2a97"
+    },
+    {
+      "document_id": "015e1369-b6e9-47df-ad69-abb82832e5e5",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "счёт",
+      "date": "2025-03-11",
+      "number": "377",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "0d1fadea-3ffd-45ad-b1f0-caed77bf6bcb"
+    },
+    {
+      "document_id": "01a55fe7-b565-429a-a0c2-35bf9ffdab2a",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "акт",
+      "date": "2024-12-23",
+      "number": "451",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "fec40daa-453c-4ade-8631-d62280761fef"
+    },
+    {
+      "document_id": "01c7f958-4354-448b-8b35-e3db3675a4ef",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "счёт",
+      "date": "2024-03-20",
+      "number": "581",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "c515ac02-4349-4834-b4aa-28b333fecd74"
+    },
+    {
+      "document_id": "01ce5c64-2da5-4cd4-99e0-208dcb22e1a5",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "акт",
+      "date": "2025-01-30",
+      "number": "164",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "ba48f4a1-0613-4369-aa35-c32d063d0ead"
+    },
+    {
+      "document_id": "0389f410-8df9-4c5e-812e-9f75d5afd85c",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "акт",
+      "date": "2025-05-07",
+      "number": "764",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "dd7cc55d-a557-41bc-82b8-08584a23967d"
+    },
+    {
+      "document_id": "04470f27-4bf4-4d1f-9410-087e646eea8d",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "договор",
+      "date": "2024-03-13",
+      "number": "79/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "5c313729-40f5-4aa6-ad06-6808110c2e4f"
+    },
+    {
+      "document_id": "06aada3a-ee2a-4004-af43-0946ce30238e",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "договор",
+      "date": "2025-02-13",
+      "number": "22/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "d5f7f82e-0820-408f-9b7b-b5f9350a6221"
+    },
+    {
+      "document_id": "08bf73b5-eec8-4eb2-b7d3-12ce41c06634",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "акт",
+      "date": "2025-09-30",
+      "number": "127",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "e3a9eb42-348a-41c7-88d6-f473e03308ec"
+    },
+    {
+      "document_id": "0bf22aa7-f8c7-4cfd-b8e9-f7f7d9b89deb",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "счёт",
+      "date": "2025-09-18",
+      "number": "302",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "00c7515e-70c1-49bc-b15f-9219a873dca6"
+    },
+    {
+      "document_id": "0d5dcb57-92e6-49f1-b456-9449c9c82b4b",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "договор",
+      "date": "2024-03-13",
+      "number": "1303/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "4767d36e-094d-4e64-9ecb-16c886e5b035"
+    },
+    {
+      "document_id": "0dc682af-e922-4004-b360-f83ca0c62301",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "допсоглашение",
+      "date": "2025-02-19",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "3963591d-cce3-4ead-bf81-c569931910ec"
+    },
+    {
+      "document_id": "0deb6fdf-c4ef-4175-925d-137aa2a5682e",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "акт",
+      "date": "2025-01-25",
+      "number": "482",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "4f7e88ec-627d-4de2-85bd-04837c3bcf23"
+    },
+    {
+      "document_id": "0e018c4b-c85e-4959-92df-b6d5a9f745c4",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "допсоглашение",
+      "date": "2024-10-19",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "ad5c72db-9099-4387-a692-ca1c53d12a0e"
+    },
+    {
+      "document_id": "0f11ee15-fb11-4e28-95bb-14119f9ab522",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "договор",
+      "date": "2024-08-31",
+      "number": "3108/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "0440eb27-e904-4a85-9a54-e05566d7c8e4"
+    },
+    {
+      "document_id": "0f1a4ffd-c404-4d0e-805d-f14a80a401d1",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "акт",
+      "date": "2024-10-01",
+      "number": "223",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "57de388b-e088-4cda-bb3b-75b2f13cdb3c"
+    },
+    {
+      "document_id": "0f6e05f3-7960-4a04-b263-77797861f0fe",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "счёт",
+      "date": "2025-06-12",
+      "number": "501",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "379193f4-ce4f-429f-bfd7-e1dbe061e873"
+    },
+    {
+      "document_id": "0fe0dc50-4fe0-4d83-91cd-6975212dc0f9",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "договор",
+      "date": "2023-09-14",
+      "number": "2",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "ed47dc53-958f-4a83-8d09-ad10d9952299"
+    },
+    {
+      "document_id": "131fdf07-7f20-4b99-8505-0492ec897ae9",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "счёт",
+      "date": "2025-10-10",
+      "number": "617",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "5deb8506-b1d0-437a-b647-3d89ded15ec8"
+    },
+    {
+      "document_id": "13318dd5-1688-4160-8a12-315b4d819b69",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "счёт",
+      "date": "2025-07-19",
+      "number": "663",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "ee33bbd8-9a8b-47f6-96de-3a0ba04cc172"
+    },
+    {
+      "document_id": "1466cdd6-edf6-4b55-b867-f889c2cc4d4d",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "акт",
+      "date": "2026-03-21",
+      "number": "392",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "d85835aa-a5a9-4bd0-962a-18f931760aa1"
+    },
+    {
+      "document_id": "146f67b5-89c1-46e4-8c05-8bc29294c6f6",
+      "client_id": "4117dcad-66d6-475d-82f8-430a677e7d66",
+      "kind": "акт",
+      "date": "2026-08-07",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "ba4f7d67-8d0c-48ba-91bb-d584e0177598"
+    },
+    {
+      "document_id": "15338c5f-ae22-491f-988d-818bc8b95e35",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "счёт",
+      "date": "2026-03-01",
+      "number": "613",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "5845b342-bb76-4837-b0ca-f8e217a1e8b0"
+    },
+    {
+      "document_id": "16fd9b78-a283-417f-85a1-14613f74423d",
+      "client_id": "8a96e29c-d49b-4e3c-ba76-c3c81d0c8c87",
+      "kind": "договор",
+      "date": "2025-04-29",
+      "number": "2904/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "4a1ef889-1895-40cf-9d38-18297a6929a8"
+    },
+    {
+      "document_id": "179fc45a-7958-4c58-938b-d1ac3dee695f",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "акт",
+      "date": "2025-04-05",
+      "number": "738",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "afb4e186-1c9f-45a1-a1e6-9a7203be3b58"
+    },
+    {
+      "document_id": "17f5eef6-3932-4671-8e9a-30a5cdaafe1b",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "акт",
+      "date": "2025-10-01",
+      "number": "176",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "9b614852-8524-4ae8-91f6-e5fbcbc54370"
+    },
+    {
+      "document_id": "180b7deb-833b-4205-913d-7ac8d06b0dfb",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "договор",
+      "date": "2025-09-07",
+      "number": "0709/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "1219ec52-e214-4637-8c21-6c5040253670"
+    },
+    {
+      "document_id": "18507935-4d8f-481a-8841-cf164ae87f2c",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "акт",
+      "date": "2025-01-16",
+      "number": "84",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "4f1d7870-7557-4fc7-85af-a45e3978e88e"
+    },
+    {
+      "document_id": "18d0906b-efbf-42dc-9b36-4a0da3ac5a9f",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "договор",
+      "date": "2024-03-31",
+      "number": "858-У/2024",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "3f8bbc54-6803-4ffe-b978-8a80b6f5689c"
+    },
+    {
+      "document_id": "192e9bd2-1108-46bc-8a62-5649bd8145be",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "акт",
+      "date": "2024-09-10",
+      "number": "345",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "870fbe59-faba-4d31-ab0e-ad9d38fe6689"
+    },
+    {
+      "document_id": "1977b025-59fd-489b-819a-1f709097eb51",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "акт",
+      "date": "2025-04-22",
+      "number": "361",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "9ce375d2-2f0e-4ab3-9152-acbd6e72d2c9"
+    },
+    {
+      "document_id": "198b5187-97fb-481e-b82a-4b4c21f1eb9a",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "договор",
+      "date": "2025-07-13",
+      "number": "29/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "a1f3771e-dcd3-43b7-b5a2-dc479e4a48e2"
+    },
+    {
+      "document_id": "1b0a4e2a-a324-4346-8c52-b2d44cbd72f9",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "договор",
+      "date": "2024-05-20",
+      "number": "12/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "2ea4f69c-d849-4018-b038-db003025224b"
+    },
+    {
+      "document_id": "1ba59ad6-f78b-4b1e-aff6-94f3d81247cf",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "договор",
+      "date": "2025-12-31",
+      "number": "44",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "d0c0bbda-6fd4-4205-91a9-d8382bdca75f"
+    },
+    {
+      "document_id": "1be511f4-f1d5-4875-b307-53b2d6008408",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "договор",
+      "date": "2023-02-19",
+      "number": "282-П/2023",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "6475cf13-a541-4019-b82c-620827aa52e7"
+    },
+    {
+      "document_id": "1c5e3de0-35ea-4d27-a51b-fc4a2a103f78",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "счёт",
+      "date": "2025-08-17",
+      "number": "631",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "f4183967-4492-4ac1-886a-4b31b9e9d123"
+    },
+    {
+      "document_id": "1f1feec9-fd26-473c-85af-db0a83b9c2bb",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "договор",
+      "date": "2025-07-03",
+      "number": "75/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "7f480f87-0ee3-4c22-9d6e-d331ee55d64c"
+    },
+    {
+      "document_id": "20494a83-fd65-4399-9b05-5ee9bb76290f",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "счёт",
+      "date": "2025-08-26",
+      "number": "842",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "246423c8-1754-4f19-ba14-839e42c7543e"
+    },
+    {
+      "document_id": "212c1245-99e4-40c9-be4c-beb6d6c12225",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "договор",
+      "date": "2024-10-26",
+      "number": "2610/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "fa7a2f99-ba9f-4d26-9cbf-608e3b7776b8"
+    },
+    {
+      "document_id": "215c7709-7dc3-4a82-9b84-3140196bd3c0",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "договор",
+      "date": "2025-11-05",
+      "number": "0511/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "64feb15a-ac3e-4db2-8133-a380d301247f"
+    },
+    {
+      "document_id": "2175fd04-ed97-4bb6-839f-1fc332a9b17c",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "акт",
+      "date": "2026-01-30",
+      "number": "589",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "1e8e0bfb-4496-4ac1-b609-4ac8e44d9960"
+    },
+    {
+      "document_id": "2217ec37-67eb-4dc5-b72f-82c50f3b1ca7",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "договор",
+      "date": "2024-08-27",
+      "number": "43",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "9800c9a0-7ff8-484c-bd76-3fd6e89f79af"
+    },
+    {
+      "document_id": "23f57e94-128d-4993-9a2e-bb9ec00c6951",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "договор",
+      "date": "2023-11-07",
+      "number": "70/23",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "9f13fe85-05b8-48da-96c6-b69de9dfd766"
+    },
+    {
+      "document_id": "27098bf0-73d7-441d-b3ea-5be3d379e1fe",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "договор",
+      "date": "2024-12-07",
+      "number": "0712/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "14f66a65-232f-4572-9d55-a03786d888cd"
+    },
+    {
+      "document_id": "273ed3f7-5d23-4cec-8f7e-5106b9c164ae",
+      "client_id": "8a96e29c-d49b-4e3c-ba76-c3c81d0c8c87",
+      "kind": "акт",
+      "date": "2025-12-19",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "f6002e67-b522-4b9d-bab4-6dd4dd4abd02"
+    },
+    {
+      "document_id": "2945736c-d2b9-4afb-a3ad-fd08af15a08d",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "договор",
+      "date": "2026-01-08",
+      "number": "20",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "7484a4a8-c1e8-4847-aa60-72dc685d381e"
+    },
+    {
+      "document_id": "2b8f6e04-f6de-4625-ac91-d98847826132",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "договор",
+      "date": "2024-05-30",
+      "number": "3005/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "0e26fce7-d362-4c16-a949-7fe55e1a2be0"
+    },
+    {
+      "document_id": "2bb6bfad-bffe-45ac-bfff-d5840b343d09",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "счёт",
+      "date": "2024-09-25",
+      "number": "260",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "2d800ffc-fae7-4d4f-8677-338b1e5bf255"
+    },
+    {
+      "document_id": "2be0b8dc-7d4e-424d-9f56-0a6e4e194285",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "УПД",
+      "date": "2024-04-16",
+      "number": "822",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "9e8c120e-574f-4681-8e71-ac8567d57650"
+    },
+    {
+      "document_id": "2cc130a9-2f01-4688-b00c-05f92df1e025",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "счёт",
+      "date": "2026-02-12",
+      "number": "327",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "2059915e-6d99-4214-bfd0-0b3355464472"
+    },
+    {
+      "document_id": "31aeb93d-fc3c-4c6a-a76e-8abe4a6f9718",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "допсоглашение",
+      "date": "2024-06-24",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "a80ea81f-21f0-4c85-945a-c7094c2fbcd5"
+    },
+    {
+      "document_id": "31c34e94-8ab1-4292-99e6-27fbc30c92ab",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "договор",
+      "date": "2023-10-07",
+      "number": "46",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "0cdcdb54-5724-4329-819f-5f1321915826"
+    },
+    {
+      "document_id": "327ba3cc-25dc-4e25-bb1a-c7c9bfc20e4d",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "договор",
+      "date": "2024-03-16",
+      "number": "52",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "53810f12-7326-469a-a9bf-5b592a37a9ae"
+    },
+    {
+      "document_id": "3355c143-599f-4e1c-8498-77b24853befc",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "счёт",
+      "date": "2024-01-28",
+      "number": "522",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "ea1dd2a1-7417-4955-ad19-14f718288133"
+    },
+    {
+      "document_id": "33800cb8-718a-4e19-901e-dcf846ebc92d",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "договор",
+      "date": "2023-07-24",
+      "number": "851-ОК/2023",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "ab10c646-6d44-4b28-bd93-8d12e9e9f405"
+    },
+    {
+      "document_id": "3454cf6d-73e2-4c60-be95-331d4c697560",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "договор",
+      "date": "2025-08-23",
+      "number": "982-К/2025",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "c9f675c4-aad0-40ec-b994-4947d528923c"
+    },
+    {
+      "document_id": "34769313-45d8-4cbe-a980-05f804dd9b7c",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "допсоглашение",
+      "date": "2025-03-17",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "15f7e764-2f63-4b3f-be21-cc8aa24e35eb"
+    },
+    {
+      "document_id": "35003f22-7b2b-477f-996b-9a88759a2a23",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "договор",
+      "date": "2024-12-17",
+      "number": "81/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "940cff36-76dc-44fc-b0ac-87d14f529051"
+    },
+    {
+      "document_id": "35dea42e-ce6a-4acd-8504-20f42ed83f25",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "договор",
+      "date": "2024-10-18",
+      "number": "10/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "6b72c354-0141-4df0-bd3c-0c7052b69c49"
+    },
+    {
+      "document_id": "35ea02a8-9952-4993-a2ef-2d9f84732080",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "счёт",
+      "date": "2025-03-13",
+      "number": "6",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "ef337f5c-bd3b-443e-acc9-db51df11a4d5"
+    },
+    {
+      "document_id": "3872812f-bbd7-4979-a409-435faf9dc61d",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "договор",
+      "date": "2025-06-22",
+      "number": "811-ОК/2025",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "e2e7e4f7-049a-4ce4-a7fc-155fa1418fa2"
+    },
+    {
+      "document_id": "38c526c2-9f25-4f06-a2d6-dae0b8103043",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "договор",
+      "date": "2025-07-14",
+      "number": "459-ОК/2025",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "c6543f5d-9235-4be4-a86b-786476772808"
+    },
+    {
+      "document_id": "3c0d9b6d-9ccf-4fe5-90a4-0c4c44b6cbf2",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "договор",
+      "date": "2025-11-14",
+      "number": "84/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "2b97f78b-4ead-4060-9c34-bb70378086f8"
+    },
+    {
+      "document_id": "3c28b0f5-ef54-4748-a45b-391997997b29",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "счёт",
+      "date": "2024-11-02",
+      "number": "361",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "aaa57953-d991-4a08-b254-6d7456334532"
+    },
+    {
+      "document_id": "3f4caaa5-fa00-40d9-8f0d-83ac7e46f3bb",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "акт",
+      "date": "2024-04-26",
+      "number": "564",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "4154fa6b-1dad-4a96-a059-5edba7d038ee"
+    },
+    {
+      "document_id": "3f802bd2-dc76-47b6-b5d9-ab431ea94aec",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "счёт",
+      "date": "2024-10-07",
+      "number": "65",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "56a2f88a-d685-4d85-9a1c-d9a634e33012"
+    },
+    {
+      "document_id": "3f8ff2e0-f9b7-4f92-ab67-c14d092700f6",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "договор",
+      "date": "2023-07-03",
+      "number": "12/23",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "eab0fa54-73b2-4e11-8165-75b07036b501"
+    },
+    {
+      "document_id": "4189dd64-607d-49a7-a217-b9dbe725667f",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "акт",
+      "date": "2025-04-26",
+      "number": "137",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "7bf75fce-90eb-439c-9735-1e993ff4b57a"
+    },
+    {
+      "document_id": "43bd2348-bb71-400f-ab8c-73e4aaff3960",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "акт",
+      "date": "2024-11-17",
+      "number": "278",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "0299864e-1807-46a6-af16-83ce3ab167a6"
+    },
+    {
+      "document_id": "44110fe1-05f7-4658-ac26-86e3e65026bc",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "договор",
+      "date": "2024-05-08",
+      "number": "19",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "a6e6e491-0314-46b4-9973-eafc1b8b46e7"
+    },
+    {
+      "document_id": "44e77091-7e87-4ae5-b8b4-976124875c61",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "договор",
+      "date": "2025-09-12",
+      "number": "33",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "594e1771-2591-4c83-a49d-079a42a03f05"
+    },
+    {
+      "document_id": "4674cdf6-086a-4c76-aa4c-dc3d313e564a",
+      "client_id": "5327e8f5-d9a9-41e8-9c9b-d12ca55ac8d9",
+      "kind": "договор",
+      "date": "2026-01-12",
+      "number": "1201/2026",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "a2853c00-6c9a-4881-9c0c-50717285a3e6"
+    },
+    {
+      "document_id": "46d806ee-d084-4772-9ae8-dc22505caddb",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "счёт",
+      "date": "2024-05-13",
+      "number": "368",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "67f5a59f-0f58-4385-8903-d260d6c2ea84"
+    },
+    {
+      "document_id": "4805b942-8faf-4870-aa47-b16546d21bde",
+      "client_id": "5327e8f5-d9a9-41e8-9c9b-d12ca55ac8d9",
+      "kind": "счёт",
+      "date": "2026-03-23",
+      "number": "2017 ас(9\\у\\м",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "a159150c-5bd4-4a27-bfde-f90902e067f3"
+    },
+    {
+      "document_id": "4856fa2d-33e6-415e-ad5f-76f0575783e9",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "счёт",
+      "date": "2025-03-01",
+      "number": "753",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "2630497c-a9e7-4a2a-aa8a-3f18240c6f8b"
+    },
+    {
+      "document_id": "48c1f8e5-674c-403f-aad2-c9e40e5a25e8",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "УПД",
+      "date": "2026-04-27",
+      "number": "149",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "587be0e6-499a-4b33-928b-7cd40976e810"
+    },
+    {
+      "document_id": "48c3a48d-a279-45be-8f52-a05b0d279dc4",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "акт",
+      "date": "2025-04-02",
+      "number": "478",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "8115ed3a-bb97-4b45-8f3a-7d6a2f13cdd1"
+    },
+    {
+      "document_id": "49795410-4f9b-4b43-aca4-d8993587a697",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "договор",
+      "date": "2023-06-14",
+      "number": "202-ОК/2023",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "e2bf67c3-a8ab-456e-b4f0-613b5f925646"
+    },
+    {
+      "document_id": "49e71953-63bc-41c6-922c-884c36d07d7a",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "допсоглашение",
+      "date": "2026-03-14",
+      "number": "2",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "55410d3f-6987-4193-9964-93d013a9de70"
+    },
+    {
+      "document_id": "4a390e09-0407-4ed0-8f9b-4cb0a986463f",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "договор",
+      "date": "2025-08-25",
+      "number": "42/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "13a58ed7-c157-4e74-aec3-862e0eca1c5f"
+    },
+    {
+      "document_id": "4a46de51-1419-44d5-8beb-100c3c539c21",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "допсоглашение",
+      "date": "2024-10-15",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "a7c1db16-5f36-4ab6-b10a-1c92a394fa7f"
+    },
+    {
+      "document_id": "4b861328-74cb-4046-995a-b67b35ba3222",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "счёт",
+      "date": "2024-11-23",
+      "number": "730",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "8b0bbe54-8ab3-49c9-b6e5-69a1850470b9"
+    },
+    {
+      "document_id": "4cc5523e-0d74-43b1-80b7-5b30d9f01072",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "акт",
+      "date": "2025-08-02",
+      "number": "354",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "3949bd79-b3d2-403d-ac55-c7cd412a8519"
+    },
+    {
+      "document_id": "4e8fa6bc-8302-4696-9dc0-caf8a578babe",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "акт",
+      "date": "2024-10-24",
+      "number": "868",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "387008ad-daa3-487a-8b83-262bc3e7d1fd"
+    },
+    {
+      "document_id": "55013dc0-f8c4-41ad-9e0a-cde3ab9ae9c1",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "договор",
+      "date": "2025-03-16",
+      "number": "52",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "6662e02b-b309-44b7-978e-69794ebab5cd"
+    },
+    {
+      "document_id": "558b32c7-d959-4b9e-b3f5-d0136886dcda",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "договор",
+      "date": "2023-12-28",
+      "number": "810-ОК/2023",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "504e874d-2241-4adb-905f-1cea019b288b"
+    },
+    {
+      "document_id": "5776476b-4377-4ad5-95a6-1e62787daeb9",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "договор",
+      "date": "2025-06-05",
+      "number": "52",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "19d0bfcf-46ec-4888-942b-f85220a4cb83"
+    },
+    {
+      "document_id": "5a11b39c-5096-41f0-ad00-5c1d1d67075d",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "договор",
+      "date": "2024-05-02",
+      "number": "0205/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "3d52fbff-e310-4c7a-821b-b5f8855de88c"
+    },
+    {
+      "document_id": "5a444796-920f-4379-8fb3-f97e47cd116c",
+      "client_id": "79d5a89d-6df5-4446-af0a-a94f5d59e084",
+      "kind": "акт",
+      "date": null,
+      "number": null,
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "0f9166c3-62fd-4723-a494-cb50f0960775"
+    },
+    {
+      "document_id": "5a718082-853f-402f-a3fa-88740b216617",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "договор",
+      "date": "2024-08-05",
+      "number": "0508/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "713dcd6d-6183-46e1-a342-eb95b926a928"
+    },
+    {
+      "document_id": "5cb6f44e-5018-48e6-bc0f-67c23a553f34",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "допсоглашение",
+      "date": "2025-03-21",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "a682c62d-e7b7-42cc-aad2-aa6cb8f048b1"
+    },
+    {
+      "document_id": "5d2c75c8-bfa9-47af-a65b-2c56143ac95e",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "договор",
+      "date": "2024-08-01",
+      "number": "231-К/2024",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "6e79e5ce-aeeb-4692-99fe-ba27b3ca6b34"
+    },
+    {
+      "document_id": "5d5a5001-a4f2-4f47-b9af-1f02fd4bd911",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "договор",
+      "date": "2023-06-22",
+      "number": "620-У/2023",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "6ceb8190-c212-4d83-8c42-0d9f8a3fcd82"
+    },
+    {
+      "document_id": "5dc2754c-09b1-4f2c-b6fb-2a37252b7f84",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "УПД",
+      "date": "2025-10-12",
+      "number": "331",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "166a1028-6bd7-4187-b453-44db81894196"
+    },
+    {
+      "document_id": "5ea2cdb7-a464-457f-9506-29e42fd6cbee",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "акт",
+      "date": "2026-01-31",
+      "number": "782",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "6e5c3676-5895-4ae7-b432-1d4136f5215e"
+    },
+    {
+      "document_id": "60ad63c5-1b2a-4153-ab15-793cce8eebb4",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "акт",
+      "date": "2025-06-23",
+      "number": "464",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "35a3b608-8ce9-4ee0-a0ca-3de8f7890bc1"
+    },
+    {
+      "document_id": "633dafc1-b4fb-4a90-a0f8-9f64e50c622e",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "счёт",
+      "date": "2025-07-01",
+      "number": "25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "fb1f636e-6f9d-4aac-b99a-8679a5eff32b"
+    },
+    {
+      "document_id": "64c1284a-f720-49c9-924e-d3498d3f0e1c",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "счёт",
+      "date": "2024-10-04",
+      "number": "868",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "3758c1cf-339a-47e4-9b91-0eb864939a7c"
+    },
+    {
+      "document_id": "65feaa89-63ad-472a-b441-70515499c61e",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "счёт",
+      "date": "2026-01-26",
+      "number": "881",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "863741f8-f390-42bf-8b69-bdeb642277d1"
+    },
+    {
+      "document_id": "66af3387-226f-4a51-82c4-9a6d0fb44cb4",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "договор",
+      "date": "2025-06-22",
+      "number": "48",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "f54f5325-a894-464e-bcce-b0c554e389e0"
+    },
+    {
+      "document_id": "67a04d88-ed74-4a93-8757-17629a4fe2e5",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "акт",
+      "date": "2024-04-25",
+      "number": "294",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "6d5942e6-6784-4c96-be02-4a0759c06271"
+    },
+    {
+      "document_id": "6889d617-3845-4835-bbef-4a26a5cdc93c",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "договор",
+      "date": "2025-05-08",
+      "number": "553-П/2025",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "2086a9c7-7808-474f-b5b1-57f2f64f4ea3"
+    },
+    {
+      "document_id": "6931f1cc-a50c-42c2-ac86-316377118bae",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "акт",
+      "date": "2025-04-17",
+      "number": "262",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "c7a89da4-4836-40a2-b5b1-94db80f8ced0"
+    },
+    {
+      "document_id": "696f9e35-d208-415f-b28c-ec1c4b0bbffa",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "акт",
+      "date": "2024-05-27",
+      "number": "321",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "f8c87b7a-dae9-47f5-830a-7f984ff0576c"
+    },
+    {
+      "document_id": "6aace3f3-3cf4-4a0b-9156-51aa6eb7bef7",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "счёт",
+      "date": "2025-10-03",
+      "number": "371",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "2e5cab48-a5f7-4053-81e6-d897e1c2faa3"
+    },
+    {
+      "document_id": "6e1a230c-a68a-4dcd-bd43-294aa76f5bcd",
+      "client_id": "79d5a89d-6df5-4446-af0a-a94f5d59e084",
+      "kind": "договор",
+      "date": null,
+      "number": "16/20/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "77d64f4c-956c-4a85-82d7-a02c4387f7e2"
+    },
+    {
+      "document_id": "6f814b36-d244-469e-a374-da1dcb00346e",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "допсоглашение",
+      "date": "2025-04-24",
+      "number": "2",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "cebafbac-78f1-49f7-ba76-15595be76b50"
+    },
+    {
+      "document_id": "71149e08-6b29-4601-83bd-d8c7fed730c8",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "счёт",
+      "date": "2025-10-18",
+      "number": "328",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "1ada3b7b-f8a2-4910-b5ed-93e73beadf34"
+    },
+    {
+      "document_id": "71407cf0-f67d-49f7-86d7-863b96ea4cc9",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "акт",
+      "date": "2025-02-01",
+      "number": "30",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "069e58fd-8c06-41f0-8a87-15a19051c654"
+    },
+    {
+      "document_id": "71d93e27-5fae-489c-ba38-1fa794c3d530",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "договор",
+      "date": "2024-12-30",
+      "number": "750-П/2024",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "b74fd27a-2251-4be8-9c64-cf793b0e0091"
+    },
+    {
+      "document_id": "720739e2-744d-4106-b6c0-45e8cd6702be",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "счёт",
+      "date": "2025-02-28",
+      "number": "684",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "ed84137a-635a-4b9a-82ff-b5a91c38d7bd"
+    },
+    {
+      "document_id": "7221ac83-af6b-4c07-ad84-63b743c9474c",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "акт",
+      "date": "2025-10-24",
+      "number": "881",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "19cf2724-6b8c-4cdd-9084-1d0f86b08d41"
+    },
+    {
+      "document_id": "74f3b9ae-12d4-4463-a401-bfd96002a7bf",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "счёт",
+      "date": "2025-01-05",
+      "number": "627",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "ca2a7cc5-75e3-4efa-b208-f7520fba646f"
+    },
+    {
+      "document_id": "76c9362c-e46b-4c05-9232-6df4ef7de42b",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "договор",
+      "date": "2025-09-16",
+      "number": "13/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "4432e5bb-613e-4941-af0b-b3cdf7a66d9a"
+    },
+    {
+      "document_id": "77d7d740-ed60-4af9-9774-4c5c897924d8",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "счёт",
+      "date": "2025-02-01",
+      "number": "690",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "4ef5dad1-4a36-4106-8abd-bec4665fe489"
+    },
+    {
+      "document_id": "786fe10f-5702-4e68-9407-f4084ffd6682",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "допсоглашение",
+      "date": "2025-01-11",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "24c4a87f-25e1-4cdc-8c01-780da2fedc62"
+    },
+    {
+      "document_id": "78fc5293-c267-4212-8910-6b7366aca5ee",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "договор",
+      "date": "2025-07-04",
+      "number": "0407/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "5a9c3352-a1ac-42b3-9700-a377a52f6d30"
+    },
+    {
+      "document_id": "791dc208-129f-4003-b78f-8ee8ab023755",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "акт",
+      "date": "2025-08-02",
+      "number": "483",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "10425169-d607-4c27-8c35-7573f748b72b"
+    },
+    {
+      "document_id": "794443bd-6595-4918-9d26-1c36ecd80d77",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "акт",
+      "date": "2025-12-05",
+      "number": "193",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "eea09a7a-e978-4c43-be86-555a0877bab7"
+    },
+    {
+      "document_id": "795cf751-7802-4356-88af-b046e33b37a8",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "договор",
+      "date": "2025-06-05",
+      "number": "969-П/2025",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "72bc57c8-45e3-4209-ad7b-1bfd20e720dc"
+    },
+    {
+      "document_id": "7a123103-5b27-4cc0-a4bf-25fa385851cb",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "договор",
+      "date": "2025-02-13",
+      "number": "642-ОК/2025",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "32d642e5-8a84-4fa4-b5c2-be1909ef3164"
+    },
+    {
+      "document_id": "7a522e78-33ff-4e6f-bc39-1e45a307047f",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "договор",
+      "date": "2026-01-30",
+      "number": "80/26",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "6b1196b6-9395-48d6-a478-05ed9299c85e"
+    },
+    {
+      "document_id": "7ab7cf65-d1c7-41e2-84a8-2fc8f214df7a",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "допсоглашение",
+      "date": "2025-07-17",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "231e306a-fb8a-4c0e-9199-c018e90e536e"
+    },
+    {
+      "document_id": "7b16fdee-015b-4f76-9aa9-9737cc38e505",
+      "client_id": "8a96e29c-d49b-4e3c-ba76-c3c81d0c8c87",
+      "kind": "допсоглашение",
+      "date": "2025-05-30",
+      "number": "№ 1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "2da8360f-06c7-415a-942c-126c01086451"
+    },
+    {
+      "document_id": "7bf90750-97e7-4655-a561-4c71773bf471",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "УПД",
+      "date": "2024-02-02",
+      "number": "652",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "f04c569c-357a-47d0-a488-71d1a43f57e2"
+    },
+    {
+      "document_id": "7c6d1ad8-7a42-4c7f-b802-8d7a648bc7d5",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "допсоглашение",
+      "date": "2025-08-11",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "769e20fe-74d9-4271-a1c2-c737faf6ecf2"
+    },
+    {
+      "document_id": "7cd02d04-23f3-41bb-80e7-60a5ac532176",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "акт",
+      "date": "2025-03-22",
+      "number": "251",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "520c7e52-317e-4f65-a60a-ee0df7748848"
+    },
+    {
+      "document_id": "7e91c40b-9be8-41d2-80cd-e20766c24c3c",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "акт",
+      "date": "2025-08-05",
+      "number": "635",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "203397d7-4537-4dd5-b7d6-7de5ee7bdc2a"
+    },
+    {
+      "document_id": "7ed47c3a-e937-43fd-b2ca-cfd5a4d51f92",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "договор",
+      "date": "2024-12-31",
+      "number": "55",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "dc0932c2-811f-424f-a6e4-c8b87cce78d5"
+    },
+    {
+      "document_id": "7ff3a445-983a-4f3e-89d4-f5502a4ddc49",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "счёт",
+      "date": "2025-03-26",
+      "number": "863",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "9de5aa49-99c0-496f-9041-8c22d79e64d5"
+    },
+    {
+      "document_id": "80c0bb52-daf0-4eaf-a9a0-07fb16521593",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "договор",
+      "date": "2024-12-07",
+      "number": "47",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "862bd2b8-2d6e-4cdf-871a-d583f7fe09fc"
+    },
+    {
+      "document_id": "81d3a9a7-bc04-4555-9406-9b6bd715fb67",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "договор",
+      "date": "2025-08-22",
+      "number": "52",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "fc29c822-c092-4c5c-b1d9-539429125396"
+    },
+    {
+      "document_id": "8453705f-34f6-4dae-8243-579e9533c2e3",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "счёт",
+      "date": "2026-01-13",
+      "number": "820",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "5992f8fe-40b3-41c8-bcc0-251745763af9"
+    },
+    {
+      "document_id": "8487373d-d62f-4b81-9d43-651df9714a3f",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "договор",
+      "date": "2024-02-06",
+      "number": "0602/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "e1448f01-67b2-4582-9707-8bfd2a9c6c56"
+    },
+    {
+      "document_id": "84e96482-bd32-4328-8e7f-df647538604a",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "договор",
+      "date": "2025-03-05",
+      "number": "59",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "9ba0dbd6-3ba4-4fd8-b005-db25a7fde3e4"
+    },
+    {
+      "document_id": "87f59785-2b88-4894-8349-ce92a0303c23",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "акт",
+      "date": "2025-03-31",
+      "number": "880",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "30a68a53-2d20-4605-af81-295f510d09b4"
+    },
+    {
+      "document_id": "88621341-5f6d-4aea-aef6-518a50d0d78f",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "УПД",
+      "date": "2024-12-05",
+      "number": "119",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "1a0054e1-ab01-43a2-9929-f708d9497f2e"
+    },
+    {
+      "document_id": "89c78c97-241c-4fb3-8a9d-55739f80e459",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "счёт",
+      "date": "2025-08-15",
+      "number": "118",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "71ef9dc0-e9a7-47a0-a6de-2190e7c3f52e"
+    },
+    {
+      "document_id": "8a809e1c-aa41-4bd4-baac-fb964b39eaa2",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "акт",
+      "date": "2025-12-05",
+      "number": "537",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "5fd9a605-3078-4026-97fa-4e17257e438b"
+    },
+    {
+      "document_id": "8ab32177-0962-4e1d-8435-235c5fa5735d",
+      "client_id": "5327e8f5-d9a9-41e8-9c9b-d12ca55ac8d9",
+      "kind": null,
+      "date": null,
+      "number": null,
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "0e94136d-997d-461e-87f2-0c2a67612186"
+    },
+    {
+      "document_id": "8cb927f5-ef90-44fc-aa37-ff4ae0bae135",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "акт",
+      "date": "2025-03-23",
+      "number": "722",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "8c77cb27-f0ce-414a-a7b1-18b4290f6b05"
+    },
+    {
+      "document_id": "8ccba2b1-1d18-4f50-bc42-6d717b3d54b0",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "договор",
+      "date": "2024-03-11",
+      "number": "21",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "a9406b0d-c468-4ebe-832f-f375ddae5329"
+    },
+    {
+      "document_id": "9095745b-2a0a-43f9-b64b-bb6ebb51fbd3",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "допсоглашение",
+      "date": "2025-03-01",
+      "number": "2",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "c4bdbb06-e11d-47c0-a2ba-58c5e28c5e0e"
+    },
+    {
+      "document_id": "90f716cb-207e-48b7-8a56-a1bcc66c6358",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "счёт",
+      "date": "2025-07-22",
+      "number": "786",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "9380857e-36de-45c9-a120-40e373c624f8"
+    },
+    {
+      "document_id": "914d7d14-10d2-4256-9f8e-530b32178ebf",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "договор",
+      "date": "2025-11-11",
+      "number": "1111/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "1107724d-23a3-4ca5-8a8f-12f3f8eeef1c"
+    },
+    {
+      "document_id": "91ef80df-d62a-4c4d-88a5-34c6b3e17961",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "договор",
+      "date": "2023-07-07",
+      "number": "0707/23",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "60cabd76-deab-40e1-b3d3-864f3f2799a4"
+    },
+    {
+      "document_id": "92a5a8f4-53f0-44ce-927b-500d70d6597c",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "акт",
+      "date": "2025-02-25",
+      "number": "817",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "1be64d8c-2036-4adb-acbb-1d86984c5a4f"
+    },
+    {
+      "document_id": "93d3d25c-9f90-4f1b-84fc-14fe68e93b92",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "допсоглашение",
+      "date": "2026-02-15",
+      "number": "2",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "f814abd6-43d0-45c0-b957-91c146e19f55"
+    },
+    {
+      "document_id": "94ff5261-a499-4042-aff4-38e767756e6b",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "договор",
+      "date": "2024-04-07",
+      "number": "32",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "8320d19d-6e38-4640-a714-29124075577b"
+    },
+    {
+      "document_id": "96aca0b5-1319-48b6-8826-c65676fcf280",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "договор",
+      "date": "2023-10-10",
+      "number": "94/23",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "ac5b8ca6-eb69-4ef6-be99-efb97f9c8399"
+    },
+    {
+      "document_id": "96af22bd-6058-4004-9d17-289da66d7318",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "договор",
+      "date": "2025-09-16",
+      "number": "29",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "84bdcebd-6f93-4251-b65d-5a514e831ba5"
+    },
+    {
+      "document_id": "96c71a07-0e68-4111-9d33-0aa63526575f",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "счёт",
+      "date": "2025-04-09",
+      "number": "87",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "c76e7107-5f36-429e-a98d-ba84bea5c45b"
+    },
+    {
+      "document_id": "96dd4625-6c62-48f1-9be3-6405504a304e",
+      "client_id": "24c4ef6e-a389-43e4-bfa5-324aff6ac3aa",
+      "kind": "договор",
+      "date": "2026-07-02",
+      "number": "0207/2026-К",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "3a055daa-b171-492f-ba11-b6f4a5e5f0ee"
+    },
+    {
+      "document_id": "978d5f25-9f25-4f7e-9a45-44e1d23f6dad",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "договор",
+      "date": "2025-12-15",
+      "number": "42/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "92890831-ab46-4022-88aa-db360b392322"
+    },
+    {
+      "document_id": "9a5624e4-9ccf-4896-8999-21d13f6c60e3",
+      "client_id": "5327e8f5-d9a9-41e8-9c9b-d12ca55ac8d9",
+      "kind": "допсоглашение",
+      "date": "2024-09-30",
+      "number": "2",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "8aa6fa65-d083-4744-befc-ed522ac0c37a"
+    },
+    {
+      "document_id": "9ab6b3fd-2dfe-431c-a51a-d8b1a7150af3",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "договор",
+      "date": "2024-04-24",
+      "number": "2404/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "9aa0b473-ba2a-4599-8317-fc0e16aa105c"
+    },
+    {
+      "document_id": "9cdb8aa2-c8b9-48a6-8d12-a973a5e97438",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "договор",
+      "date": "2024-09-11",
+      "number": "79/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "0bfca56e-acde-44d4-8cb7-97d258b0f9da"
+    },
+    {
+      "document_id": "9ee6f944-d371-4267-8ce3-7a1a0fb9665c",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "договор",
+      "date": "2023-11-12",
+      "number": "1211/23",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "7ec39c9e-cf86-4bec-8b0b-5e96477a0dc2"
+    },
+    {
+      "document_id": "9f70e4a5-f1d9-4708-95e0-1bba2f8dbc93",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "допсоглашение",
+      "date": "2024-02-04",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "57375d5e-2a52-459e-8a03-725c4dddfd68"
+    },
+    {
+      "document_id": "a093fbea-44c5-40a7-a17c-f5949061efbc",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "договор",
+      "date": "2024-08-06",
+      "number": "0608/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "7d1c176c-7217-4027-a3e4-d8cd6acd9e10"
+    },
+    {
+      "document_id": "a0ff3da4-73c8-49b3-bda2-9577b3a31bdd",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "допсоглашение",
+      "date": "2025-03-25",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "030a199b-8f06-40a5-8fe3-21f0114ebf21"
+    },
+    {
+      "document_id": "a2e7fe4d-10db-4f21-a633-0768e94988cc",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "договор",
+      "date": "2025-07-21",
+      "number": "2107/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "85a3c7b8-8481-414a-a444-1f1f2fec7eac"
+    },
+    {
+      "document_id": "a39c1480-57e8-46ee-bc9f-3b789127461e",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "счёт",
+      "date": "2024-12-06",
+      "number": "486",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "03fa0662-e826-4b11-a50a-c7a9b66d155e"
+    },
+    {
+      "document_id": "a3da2c8e-16bc-4a4b-85e5-33138d4be795",
+      "client_id": "58bf4aa1-e6ba-4fac-beab-5ea7d9ca2ca0",
+      "kind": "договор",
+      "date": "2026-04-02",
+      "number": "26-91339232",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "4f5c227a-e286-40b6-bc33-46a198d67f49"
+    },
+    {
+      "document_id": "a47ec00b-ccc4-431a-beba-b33a481a6fee",
+      "client_id": "4117dcad-66d6-475d-82f8-430a677e7d66",
+      "kind": "допсоглашение",
+      "date": "2026-07-24",
+      "number": "№1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "f9736c56-10e1-49c9-9426-ac8f233c3d64"
+    },
+    {
+      "document_id": "a4fa7fdd-9acb-41bc-872f-dbb45f794ef7",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "допсоглашение",
+      "date": "2026-01-17",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "d4ef70b6-cdc3-4878-8c76-f3f37837a3e7"
+    },
+    {
+      "document_id": "a8c162a0-d466-48f8-b660-6c203c464ccd",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "договор",
+      "date": "2024-03-18",
+      "number": "16/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "9c463a19-a893-4de8-92ad-45f6f91d68dd"
+    },
+    {
+      "document_id": "a914fc8f-9f43-4791-8f14-95fcc4f3cb8a",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "договор",
+      "date": "2024-12-26",
+      "number": "545-ОК/2024",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "ae961e4b-7190-42fc-b063-f817b96d43a1"
+    },
+    {
+      "document_id": "a91cadca-ed4c-429f-8f4e-84d1d207bdde",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "УПД",
+      "date": "2025-08-22",
+      "number": "379",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "a06c5226-82b7-46f7-9107-bc2d1a2be4a9"
+    },
+    {
+      "document_id": "aa565f33-0239-47e2-8936-033e362fe5e9",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "УПД",
+      "date": "2024-07-31",
+      "number": "798",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "bbced99e-3b0c-4104-86b9-7e82830472a9"
+    },
+    {
+      "document_id": "ab73869a-3dc8-4594-a027-5bdbb98cae47",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "договор",
+      "date": "2025-01-02",
+      "number": "13/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "d543504e-c117-4836-b336-4f539b9510c1"
+    },
+    {
+      "document_id": "ac59d257-7929-423d-b9ee-b78676218d11",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "акт",
+      "date": "2024-04-08",
+      "number": "884",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "b8a8149d-4835-4b59-b3d4-d3aad38aa6b4"
+    },
+    {
+      "document_id": "ac6395d3-6589-493c-b457-c13b8a7ee731",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "счёт",
+      "date": "2025-09-18",
+      "number": "519",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "dfc7b031-fa99-45cf-b4b5-d1952a18e692"
+    },
+    {
+      "document_id": "ac98ccd3-21a8-4ee2-af4e-e4e81434cb44",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "договор",
+      "date": "2025-03-11",
+      "number": "21",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "1f2631df-7dc7-47c3-8276-c33797e975c4"
+    },
+    {
+      "document_id": "b1561577-1019-4972-8d08-e3c1f4580025",
+      "client_id": "4117dcad-66d6-475d-82f8-430a677e7d66",
+      "kind": "договор",
+      "date": "2026-07-24",
+      "number": "24-07/2026",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "84753ddf-bce5-480f-a4dd-aede53f303e7"
+    },
+    {
+      "document_id": "b2b39133-f136-4568-9808-0f11a77bc562",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "договор",
+      "date": "2025-05-23",
+      "number": "42/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "2965f77a-3b7d-4137-885d-91f967646e22"
+    },
+    {
+      "document_id": "b341d5ac-2527-42eb-8e06-2de1085d9b1c",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "договор",
+      "date": "2025-05-16",
+      "number": "21",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "2296dd77-9c92-45c6-bbd2-2e3ea36e7f02"
+    },
+    {
+      "document_id": "b74d4d6c-5947-45e3-b41f-b3e9fa1df003",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "счёт",
+      "date": "2026-03-08",
+      "number": "118",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "956a80d4-4ddb-413e-bf0d-8005ca6c6975"
+    },
+    {
+      "document_id": "b7bb775f-09ee-4672-9f43-fe8a6bbb6d43",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "акт",
+      "date": "2024-07-06",
+      "number": "67",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "2e2ca7de-10a3-4108-9b6c-1bf9525e5565"
+    },
+    {
+      "document_id": "b7cc38bd-d60f-4fba-8cb5-c36feaa3ac65",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "договор",
+      "date": "2024-06-08",
+      "number": "0806/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "2bbf84d4-a8be-4bcb-bbfe-3a1b7c9c374a"
+    },
+    {
+      "document_id": "b87bd1d3-cadf-4d29-aba1-6874f564fad6",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "счёт",
+      "date": "2024-03-28",
+      "number": "222",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "cdc59d9c-e006-4934-b105-a0a41423e8aa"
+    },
+    {
+      "document_id": "b93bb86d-e76b-4f9a-9413-11faa74ca9b2",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "счёт",
+      "date": "2024-07-03",
+      "number": "190",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "2b3c9dc4-78b1-4b72-b333-99c97671b3dd"
+    },
+    {
+      "document_id": "ba681e83-c229-407f-868a-52cb8504083d",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "договор",
+      "date": "2024-08-29",
+      "number": "2908/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "8abccd8c-c9be-47c7-b772-0bd1c3cffd73"
+    },
+    {
+      "document_id": "ba75d887-3e87-4181-8821-c4894fdc0520",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "счёт",
+      "date": "2025-02-01",
+      "number": "135",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "d0652022-f446-4e8a-a0b7-e976e14e751e"
+    },
+    {
+      "document_id": "bcb868c9-269a-481f-9d8b-b2f1ba78ad09",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "договор",
+      "date": "2025-06-20",
+      "number": "2006/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "aa994d71-dc6b-47c7-a1e0-683c1f9680df"
+    },
+    {
+      "document_id": "bce91f34-66a9-40b0-88d4-72d0fc6a5df9",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "счёт",
+      "date": "2025-03-06",
+      "number": "815",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "d9143ebe-6b0b-4ae6-8a41-a83e2ef00b25"
+    },
+    {
+      "document_id": "be5db7d4-d1bd-4af3-847d-d1ae1e4f9989",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "договор",
+      "date": "2024-01-12",
+      "number": "31/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "883b6789-a71a-4773-9d39-f8b4ff974c1e"
+    },
+    {
+      "document_id": "be853643-0c26-4300-9c6d-e9eff35025aa",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "счёт",
+      "date": "2024-02-27",
+      "number": "819",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "109e1469-c234-4f99-a5c8-85121e90a810"
+    },
+    {
+      "document_id": "bee260c6-6a43-49fd-afa9-9b7d3623aee8",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "счёт",
+      "date": "2024-04-10",
+      "number": "261",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "5e186805-a3f1-42db-9d05-a52e0030e09a"
+    },
+    {
+      "document_id": "bf373bb7-6b17-44a5-bb91-428869561b96",
+      "client_id": "5327e8f5-d9a9-41e8-9c9b-d12ca55ac8d9",
+      "kind": "допсоглашение",
+      "date": "2024-06-20",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "f32de821-525c-475f-9647-495cd91b6d8e"
+    },
+    {
+      "document_id": "c0a16ef5-b9ce-4262-9af4-b06d45b4799e",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "акт",
+      "date": "2025-04-20",
+      "number": "438",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "5f47179b-bbcd-45f3-b505-3b1e3a950b86"
+    },
+    {
+      "document_id": "c0e89af2-8e30-4352-a0c7-5a65a41ad7f1",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "УПД",
+      "date": "2026-02-27",
+      "number": "732",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "868c6eee-7368-4f79-bd1d-8b7a4aa0aa88"
+    },
+    {
+      "document_id": "c38cdc4f-1558-4d14-98b6-7ed1e98b231f",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "договор",
+      "date": "2024-12-30",
+      "number": "91/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "d535a3af-17f8-4246-b304-d14581276268"
+    },
+    {
+      "document_id": "c6d82f05-444a-4912-a1c9-c62c1f6250c5",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "договор",
+      "date": "2025-01-30",
+      "number": "3001/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "ff2837d5-5d91-4dab-9644-d1b107aaee99"
+    },
+    {
+      "document_id": "c74a6cc8-b580-4224-bc3e-950ce51a7160",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "УПД",
+      "date": "2024-03-05",
+      "number": "117",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "38cdad47-f4b5-48d7-b63c-12f4bbbd01dc"
+    },
+    {
+      "document_id": "c9391476-fe6a-42ad-b618-1fecc6960098",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "акт",
+      "date": "2025-07-26",
+      "number": "826",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "c7325c9e-a069-458b-81c4-a2ec900e9b1f"
+    },
+    {
+      "document_id": "cb087485-ab73-4c28-b1c9-0b653f7401de",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "счёт",
+      "date": "2024-01-25",
+      "number": "437",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "ff4694cc-c54d-499a-b020-3424f7d9a90b"
+    },
+    {
+      "document_id": "cc293c1b-fe75-4d93-8d2a-48c1f791d348",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "договор",
+      "date": "2024-07-11",
+      "number": "817-П/2024",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "f2966c16-2f9b-44df-8332-d8035ad875c6"
+    },
+    {
+      "document_id": "ccdd1ae0-ad61-4935-9ecf-d8e1cbdf1381",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "договор",
+      "date": "2025-02-23",
+      "number": "2302/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "9d3646bd-a249-4e53-92aa-b627c5f18f42"
+    },
+    {
+      "document_id": "cd6d1658-d0d3-485d-a79d-38cfdc7462ac",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "договор",
+      "date": "2024-02-24",
+      "number": "30/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "c1dc2324-bbdb-4353-99c2-a11cc2046af0"
+    },
+    {
+      "document_id": "cdff88a0-a63b-48bd-82f6-8781b203c1f6",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "допсоглашение",
+      "date": "2025-09-28",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "7a89530d-2e57-4bf7-93b4-6408df4884d3"
+    },
+    {
+      "document_id": "d013b11b-4c6a-4bb5-8ca7-16948f202a83",
+      "client_id": "79d5a89d-6df5-4446-af0a-a94f5d59e084",
+      "kind": "допсоглашение",
+      "date": "2024-07-29",
+      "number": "№ 1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "d2421439-9db6-401e-89a5-17c74d193384"
+    },
+    {
+      "document_id": "d115e8fc-6a4a-4d89-bea8-c8583c8a62e5",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "счёт",
+      "date": "2025-07-14",
+      "number": "649",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "1e08112b-1cf8-455b-861f-d590faa6ee10"
+    },
+    {
+      "document_id": "d17cd71e-2fc6-4ea8-a283-b104ad99d130",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "акт",
+      "date": "2025-02-21",
+      "number": "802",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "e924aba4-7783-4dd0-aaad-4b1ae70cd499"
+    },
+    {
+      "document_id": "d1ea8556-0686-412c-b9a3-11e3218194cd",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "договор",
+      "date": "2024-06-18",
+      "number": "18/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "d321405e-bb3b-45b0-b684-240a85871999"
+    },
+    {
+      "document_id": "d482762b-28a7-4850-9997-e121c303a624",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "УПД",
+      "date": "2025-10-28",
+      "number": "749",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "4eb9f1d9-f9b7-40bf-b5f4-98347a51cf8c"
+    },
+    {
+      "document_id": "d4d5ea2c-1fae-459a-acda-6d18d4cfc2ba",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "акт",
+      "date": "2025-09-09",
+      "number": "590",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "5fdbd521-ae1f-4842-aa4d-8d752d59ea07"
+    },
+    {
+      "document_id": "d82c3d89-2de7-4043-9f9a-0585c48333c4",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "счёт",
+      "date": "2024-09-04",
+      "number": "420",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "5af9c73f-dfa4-4cc8-9415-0a89c00d0934"
+    },
+    {
+      "document_id": "d84c294f-d5d5-4340-bb12-17d0e6edbb69",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "счёт",
+      "date": "2025-09-09",
+      "number": "8",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "a8ff7970-f1d2-432c-a320-d614f341b518"
+    },
+    {
+      "document_id": "d9cdd1bc-553b-467c-8e13-4cf10db71363",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "УПД",
+      "date": "2024-07-13",
+      "number": "526",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "e054f464-9fd9-42a6-828d-8cdc411ab377"
+    },
+    {
+      "document_id": "da24162a-3214-41fa-8396-b31b26e2f200",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "счёт",
+      "date": "2025-01-26",
+      "number": "168",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "f94312be-cb77-4803-8639-972ebc5e08f5"
+    },
+    {
+      "document_id": "da3fcbce-3f69-4f93-a3c2-768fe5916bc2",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "счёт",
+      "date": "2025-09-19",
+      "number": "787",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "aef5ef33-7e1d-4e46-9a39-09c14e605ad9"
+    },
+    {
+      "document_id": "db45b0e3-7c03-4099-82ca-695e5bfc2311",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "счёт",
+      "date": "2024-05-11",
+      "number": "28",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "be498dd6-d7a3-4a11-b5ec-894fe06642ab"
+    },
+    {
+      "document_id": "dbc6048f-2eaf-42ab-be6f-5b45a49a7bdb",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "договор",
+      "date": "2024-05-16",
+      "number": "1605/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "afd7b175-b6a4-437c-b026-fb4acfc7724a"
+    },
+    {
+      "document_id": "dcaf256a-b876-47d3-bd8d-fae8b67ef8ac",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "допсоглашение",
+      "date": "2024-04-02",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "6c24c55d-a402-4086-a42e-3591f9a05f8e"
+    },
+    {
+      "document_id": "dcd6ff21-c99a-4f34-b7f8-4bed15402394",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "акт",
+      "date": "2025-04-25",
+      "number": "106",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "992a5245-39b7-4380-8c03-70d5ea67e727"
+    },
+    {
+      "document_id": "dd886f38-cd94-45aa-91c5-bd34d629c111",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "договор",
+      "date": "2025-01-03",
+      "number": "0301/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "8c5892a0-325f-4e42-92d3-487cf4689fd7"
+    },
+    {
+      "document_id": "e1bcd381-e6f3-47ee-8884-5d7dce2bcd76",
+      "client_id": "24c4ef6e-a389-43e4-bfa5-324aff6ac3aa",
+      "kind": "акт",
+      "date": null,
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "b3286a05-5ce7-4a9a-bb12-5e540d566ee9"
+    },
+    {
+      "document_id": "e3ca7387-559c-4d6f-acc4-e8296068a5d4",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "допсоглашение",
+      "date": "2026-02-14",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "5b654f97-8bc8-4acf-9978-73f83e1d19c5"
+    },
+    {
+      "document_id": "e52f6822-9486-433f-a922-3232e1b04557",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "счёт",
+      "date": "2026-02-03",
+      "number": "775",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "ff97adda-7c7d-4564-a2f4-38aa07b6710b"
+    },
+    {
+      "document_id": "e732e690-ba39-4289-ab09-1c5116a18548",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "акт",
+      "date": "2025-03-31",
+      "number": "384",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "4a51bf74-c72c-4be4-b5b9-03af6f38e096"
+    },
+    {
+      "document_id": "e7d999ef-5c01-468c-be97-f40356e3436e",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "допсоглашение",
+      "date": "2024-11-26",
+      "number": "2",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "da84d807-8d67-45c6-be96-d5e34beef5a5"
+    },
+    {
+      "document_id": "e8001ad7-c93c-450c-b612-149454059683",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "счёт",
+      "date": "2025-08-08",
+      "number": "732",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "2fadfdb2-e2cf-4376-8010-896e421f7b83"
+    },
+    {
+      "document_id": "e85ac99f-951c-411f-967a-48fccc711c3c",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "договор",
+      "date": "2024-07-23",
+      "number": "2307/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "a992219e-a967-4bd6-b55e-e74ac9729781"
+    },
+    {
+      "document_id": "e9967e66-8e23-49e8-9ef9-8cdaad9837e9",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "договор",
+      "date": "2025-02-13",
+      "number": "528-ОК/2025",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "2d8cb66f-c9f7-4260-bab1-c69df9dacfae"
+    },
+    {
+      "document_id": "ed27a451-ff82-403d-8eb6-ce75458f77e1",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "допсоглашение",
+      "date": "2025-10-24",
+      "number": "2",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "4143c4a0-1ce4-45d1-863a-3207b401c46a"
+    },
+    {
+      "document_id": "ee3046e7-9b41-498b-a8ea-5651de95d835",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "счёт",
+      "date": "2024-07-15",
+      "number": "844",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "0a2ddf82-2ddc-4ca2-a394-9eb26438bbe4"
+    },
+    {
+      "document_id": "ee7f63f8-ab42-49b0-a1dc-85c1ee1b3434",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "счёт",
+      "date": "2024-06-13",
+      "number": "884",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "dabd90bf-32dd-4f68-bbd1-1c2afcb1f3c5"
+    },
+    {
+      "document_id": "eeff114f-7b14-470e-970f-b84fea0b7d88",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "счёт",
+      "date": "2026-04-04",
+      "number": "32",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "f4ce32bf-21b5-406b-a49a-4246743cd2b2"
+    },
+    {
+      "document_id": "efc4b90c-82e1-448d-922d-7520611145ec",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "счёт",
+      "date": "2024-11-08",
+      "number": "395",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "e7fb4f64-97b7-4ff6-a118-3f75217a37eb"
+    },
+    {
+      "document_id": "efdaf6a5-3c93-4287-ae34-b4aec1c94230",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "акт",
+      "date": "2024-11-15",
+      "number": "664",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "35f21c36-208d-4e0e-b9c4-dcd0874704d4"
+    },
+    {
+      "document_id": "f1dec6e2-1078-476a-b92d-5331aa6c642a",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "акт",
+      "date": "2024-10-28",
+      "number": "649",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "b798bf6a-ca57-42d1-a4d3-323c5043d519"
+    },
+    {
+      "document_id": "f3161a4c-aaa3-4368-bb4c-fdeba1327a2d",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "акт",
+      "date": "2025-08-12",
+      "number": "521",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "6b4a3f73-0c04-44c0-a714-6bae011d8266"
+    },
+    {
+      "document_id": "f3791547-a133-4801-b054-d02011920b7b",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "счёт",
+      "date": "2026-02-26",
+      "number": "659",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "85358592-eca4-4cbd-bd5d-b8e82cc90fa9"
+    },
+    {
+      "document_id": "f3e954ea-e0d7-457d-a8fd-3e0a080f1a44",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "договор",
+      "date": "2025-01-25",
+      "number": "22/25",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "d940c76f-6db3-4699-9b39-5109ec1454f8"
+    },
+    {
+      "document_id": "f4819b2b-b1b6-40d8-b433-2374d5853647",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "счёт",
+      "date": "2025-07-18",
+      "number": "542",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "3ead68b3-7191-4b0e-8c25-21dec3bb7299"
+    },
+    {
+      "document_id": "f4abff37-a242-4f2a-bcf7-9499be2c7f24",
+      "client_id": "5327e8f5-d9a9-41e8-9c9b-d12ca55ac8d9",
+      "kind": "договор",
+      "date": "2024-06-05",
+      "number": "0605",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "f9ce047a-d449-4226-af92-04650b54db47"
+    },
+    {
+      "document_id": "f52c9938-57b4-4e68-bef0-76dec31cc1c3",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "акт",
+      "date": "2026-03-19",
+      "number": "41",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "883e371a-5ff9-46e3-91f0-d2ef02ca9d42"
+    },
+    {
+      "document_id": "f56b544d-fca7-4ee5-8019-2df4cf6b2788",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "договор",
+      "date": "2024-01-02",
+      "number": "0201/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "ee247246-7fe6-4636-b51f-9601565d5749"
+    },
+    {
+      "document_id": "f58d4803-4d48-4953-81da-02f14d037652",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "УПД",
+      "date": "2026-03-24",
+      "number": "657",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "288e80fb-1971-4900-b959-349ad39832f9"
+    },
+    {
+      "document_id": "f6db5767-1566-4ebf-a925-fc994389d6b2",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "счёт",
+      "date": "2024-07-04",
+      "number": "471",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "fb6c9e28-cadc-40e1-a236-244aac4e0218"
+    },
+    {
+      "document_id": "f739f5e8-c8fd-42d5-89fa-729cfe625312",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "допсоглашение",
+      "date": "2024-07-26",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "954a933b-c14a-4e66-aa70-33a1dd725b9e"
+    },
+    {
+      "document_id": "fa402ed1-dda7-496b-87b1-78f4fa52f664",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "акт",
+      "date": "2025-09-15",
+      "number": "60",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "b3be396b-21a9-45ac-9275-408c3fc7f27f"
+    },
+    {
+      "document_id": "faa13161-ea28-4fb3-92a4-6614ad3ea459",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "допсоглашение",
+      "date": "2025-04-04",
+      "number": "2",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "55df5fa3-ca7e-4ae8-87c5-3ea45ec2f525"
+    },
+    {
+      "document_id": "fb3a916f-7107-4e72-ae6e-bdd1aabef7d9",
+      "client_id": "b868324a-05b2-42e8-b892-7763012484a2",
+      "kind": "акт",
+      "date": "2026-02-15",
+      "number": "138",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "35fed8f4-80a2-4e38-935e-5c1774297299"
+    },
+    {
+      "document_id": "fc89440e-b489-4e22-a8aa-60a59cd59dd2",
+      "client_id": "cd0406fd-5db0-460f-8cbc-0d58806520f5",
+      "kind": "допсоглашение",
+      "date": "2024-05-01",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "f18eb506-9306-4e80-9760-991f100422ef"
+    },
+    {
+      "document_id": "fd012e27-c714-4ff9-bb57-ed88420d5514",
+      "client_id": "8072c436-23d9-49d8-b119-e1db78a60837",
+      "kind": "акт",
+      "date": "2025-08-21",
+      "number": "186",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "2181c574-552c-4359-90eb-519f1321333a"
+    },
+    {
+      "document_id": "fd242eb9-fda1-4261-88e1-5a49ab4d4b7f",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "счёт",
+      "date": "2024-04-20",
+      "number": "507",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "7a473704-5753-4fd9-a4da-6999b6c8e220"
+    },
+    {
+      "document_id": "fd8a8ee9-e1f7-43ad-9383-0802087621f1",
+      "client_id": "85b16d50-1196-4dea-9475-c2552863aad8",
+      "kind": "договор",
+      "date": "2024-01-16",
+      "number": "12/24",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "59979bf5-1b83-4414-a1c4-16f8e8708fc0"
+    },
+    {
+      "document_id": "fd9cfaef-1489-4520-ada9-73f4218ee2b3",
+      "client_id": "4f442814-96e9-4e17-a727-a7238da21187",
+      "kind": "допсоглашение",
+      "date": "2025-02-04",
+      "number": "1",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "1d3c510c-3538-46bb-805a-943528f7398b"
+    },
+    {
+      "document_id": "fe1cd64a-1c4c-4d07-a293-6d35014cc3a8",
+      "client_id": "04077f4a-d090-467a-a767-4a725727c508",
+      "kind": "акт",
+      "date": "2025-07-18",
+      "number": "286",
+      "card_model_id": "40fcba19-9f79-479e-9b0b-5060e5bfefb3",
+      "card_extraction_id": "ad0cbedf-a0fb-4f82-8261-5b53f1904583"
+    }
+  ],
+  "embedder": {
+    "model": "BAAI/bge-m3",
+    "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "preparation": "semantic-text-v1",
+    "encoding": "dense-cls-token-weighted-v1",
+    "dimensions": 1024,
+    "chunk_tokens": 512,
+    "max_chunks": 256,
+    "max_input_chars": 1000000,
+    "device": "cpu",
+    "dtype": "float32",
+    "attention": "sdpa",
+    "normalize": true,
+    "batch_size": 1,
+    "cpu_threads": 2
+  },
+  "method_version": "linking-v1",
+  "weights": {
+    "num": 0.45,
+    "date": 0.15,
+    "inn": 0.15,
+    "name": 0.05,
+    "sem": 0.2
+  },
+  "amount_penalty": 0.2,
+  "invalid_inn_penalty": 0.05,
+  "tau_a": null,
+  "tau_r": null,
+  "status": "pending_tune_not_frozen"
+}
