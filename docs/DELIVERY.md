@@ -91,9 +91,11 @@ make effect ARGS='snapshot --run 37a41963-0dce-4fbb-be64-94858a6f4a7a --protocol
 make effect ARGS='replay --input docs/reports/stage8-effect-2026-11-04.json --output data/effect-replayed.json'
 ```
 
-До получения замеров/ставок денежный эффект и экономия — null. Отдельный
-`stage8-*-effect-*.json` из Chromium содержит **демонстрационные допущения**,
-не человеческие измерения. Form/JSON/Markdown используют один snapshot/hash.
+Расчёт по ставке бухгалтера не выполняется по решению 04.11.2026: денежный
+эффект/окупаемость — null, в материалах остаются часы и фактические затраты API.
+Отдельный `stage8-*-effect-*.json` из Chromium содержит **демонстрационные
+допущения**, не человеческие измерения. Form/JSON/Markdown используют один
+snapshot/hash.
 
 ## Указатель материалов
 
