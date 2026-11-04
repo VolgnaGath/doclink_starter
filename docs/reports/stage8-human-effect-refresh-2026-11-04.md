@@ -4,15 +4,15 @@
 
 Денежные показатели — условная оценка трудового ресурса за вычетом расходов, не фактический денежный приток. Автоматизация операций не заменяет специалиста. Фактическая денежная экономия и финансовая окупаемость не установлены: нужен подтверждённый механизм сокращения денежных расходов.
 
-Хеш: `3c51aaf6bdca5c08e89fda1cfaed35ca4c780f7e5bbc1f149582d932f62b3179`
+Хеш: `d39f3171adbffc836581ded945891a03a8dbbb018acceff079611d72940f55c2`
 
 | Показатель | Значение |
 |---|---:|
 | AS-IS, с/документ | 420,00 |
-| TO-BE, с/документ | 74,18 |
+| TO-BE, с/документ | 39,65 |
 | AS-IS, часов/месяц | 191,33 |
-| TO-BE, часов/месяц | 33,79 |
-| Сценарная разница трудоёмкости, часов/месяц | 157,54 |
+| TO-BE, часов/месяц | 18,06 |
+| Сценарная разница трудоёмкости, часов/месяц | 173,27 |
 | Условная стоимость труда AS-IS, ₽/месяц | нет данных |
 | Условная стоимость труда TO-BE, ₽/месяц | нет данных |
 | Переменные расходы, ₽/месяц | нет данных |
@@ -27,8 +27,8 @@
 
 ```json
 {
-  "calculation_hash": "3c51aaf6bdca5c08e89fda1cfaed35ca4c780f7e5bbc1f149582d932f62b3179",
-  "created_at": "2026-11-04T16:48:30.742116+00:00",
+  "calculation_hash": "d39f3171adbffc836581ded945891a03a8dbbb018acceff079611d72940f55c2",
+  "created_at": "2026-11-04T18:56:45.417041+00:00",
   "data": {
     "calls": [
       {
@@ -3755,6 +3755,222 @@
       "seconds": null
     },
     "measurement_protocol": {
+      "batches": [
+        {
+          "dataset_hash": "28fc1e37cad4f7ef5f798a9f1d57c9eb4d2242e282bf2facfba331bf5005775e",
+          "documents": [
+            {
+              "document_id": "00004443-82e2-4370-8923-0677401ff633",
+              "outcome": "recommendation",
+              "source_result_id": "06a9597a-9a2b-4c93-a042-e3ce0af6b097",
+              "url": "/review/00004443-82e2-4370-8923-0677401ff633"
+            },
+            {
+              "document_id": "adf124b5-d80f-4046-98c9-8d45b14f38d7",
+              "outcome": "recommendation",
+              "source_result_id": "06c59587-7d8e-4073-9df0-dd577cd83b40",
+              "url": "/review/adf124b5-d80f-4046-98c9-8d45b14f38d7"
+            },
+            {
+              "document_id": "1911f149-5ba9-4ef1-b72c-67d8b8a9acff",
+              "outcome": "recommendation",
+              "source_result_id": "0c956501-c286-427a-9359-e3a2531b76b9",
+              "url": "/review/1911f149-5ba9-4ef1-b72c-67d8b8a9acff"
+            },
+            {
+              "document_id": "df412781-0b38-49ac-ba9c-0fe0a2696bff",
+              "outcome": "review",
+              "source_result_id": "0095272b-4b2d-4c2f-a82e-9b4c833073fd",
+              "url": "/review/df412781-0b38-49ac-ba9c-0fe0a2696bff"
+            },
+            {
+              "document_id": "b482df94-24ee-410f-aebb-252df45e2d23",
+              "outcome": "review",
+              "source_result_id": "0fb3ed56-6c5d-4479-b8a6-f765ccedaf2e",
+              "url": "/review/b482df94-24ee-410f-aebb-252df45e2d23"
+            },
+            {
+              "document_id": "76c39563-6293-436b-916b-272a4fa96058",
+              "outcome": "review",
+              "source_result_id": "11cca980-5365-4064-802c-261fb4ea6acd",
+              "url": "/review/76c39563-6293-436b-916b-272a4fa96058"
+            },
+            {
+              "document_id": "711ca1f3-25c2-411c-a355-ced480b48309",
+              "outcome": "none",
+              "source_result_id": "64ead7c0-4abf-4ee1-b0e0-505e5e9ceaf0",
+              "url": "/review/711ca1f3-25c2-411c-a355-ced480b48309"
+            },
+            {
+              "document_id": "155022d6-42b0-455d-889a-5c2fe6e6635b",
+              "outcome": "none",
+              "source_result_id": "71493ea9-034c-4139-9a62-88599f07df15",
+              "url": "/review/155022d6-42b0-455d-889a-5c2fe6e6635b"
+            },
+            {
+              "document_id": "a011f2c6-1bc0-47ad-a0e7-b03de436afca",
+              "outcome": "none",
+              "source_result_id": "7baae96a-77a6-49c6-9673-c8340584566f",
+              "url": "/review/a011f2c6-1bc0-47ad-a0e7-b03de436afca"
+            }
+          ],
+          "per_outcome": 3,
+          "protocol_hash": "add3ae0bebbd9d3b2cfb29e25480d5ce65ef1c06fba6ca048440a495adf41e41",
+          "registered_at": "2026-11-04T13:53:56.832514+00:00",
+          "run_id": "37a41963-0dce-4fbb-be64-94858a6f4a7a",
+          "run_protocol_hash": "2a3130c4a39a7ded5cb2a8bc1dc0ca885398fe36dcccd1334a6697d6245a07c6",
+          "selection_rule": "Первые k test-результатов каждого исхода по ID; порядок исходов recommendation/review/none/error",
+          "session_rule": "Первая открытая сессия; незавершённую/изменённую не заменять повтором",
+          "version": "effect-review-v1",
+          "working_set_id": "88510452-2a1a-432c-b972-398b1561fd7c"
+        },
+        {
+          "allocation": {
+            "error": 0,
+            "none": 0,
+            "recommendation": 11,
+            "review": 10
+          },
+          "base_protocol_hash": "add3ae0bebbd9d3b2cfb29e25480d5ce65ef1c06fba6ca048440a495adf41e41",
+          "dataset_hash": "28fc1e37cad4f7ef5f798a9f1d57c9eb4d2242e282bf2facfba331bf5005775e",
+          "documents": [
+            {
+              "document_id": "fb942b9a-e612-4942-889e-c0e115a299a4",
+              "outcome": "recommendation",
+              "source_result_id": "1284d1fa-084b-4cb9-b3ec-4706022a2fe5",
+              "url": "/review/fb942b9a-e612-4942-889e-c0e115a299a4"
+            },
+            {
+              "document_id": "2f5571e3-968f-4a98-9573-c19bd02c18b2",
+              "outcome": "recommendation",
+              "source_result_id": "13374a1d-5ae0-414e-8a6f-9b0c828fbaea",
+              "url": "/review/2f5571e3-968f-4a98-9573-c19bd02c18b2"
+            },
+            {
+              "document_id": "9f5b6e3d-8406-4f8f-8a39-42f51831816e",
+              "outcome": "recommendation",
+              "source_result_id": "1469e871-8aff-405e-945c-98ea2dc5d714",
+              "url": "/review/9f5b6e3d-8406-4f8f-8a39-42f51831816e"
+            },
+            {
+              "document_id": "655cb1b9-044b-4e35-99ef-bd15439d2a40",
+              "outcome": "recommendation",
+              "source_result_id": "152ef89e-5de9-4ddc-ad3e-485c14f6eb15",
+              "url": "/review/655cb1b9-044b-4e35-99ef-bd15439d2a40"
+            },
+            {
+              "document_id": "22eced2a-44eb-4fc2-bf40-81ef787f54ba",
+              "outcome": "recommendation",
+              "source_result_id": "1a2956a1-9cc9-45d0-ac56-6ccf4497a128",
+              "url": "/review/22eced2a-44eb-4fc2-bf40-81ef787f54ba"
+            },
+            {
+              "document_id": "aec803bb-ce4f-4632-9105-1387d07df960",
+              "outcome": "recommendation",
+              "source_result_id": "1d622c7e-3a86-4a35-8889-729b44f6cd0d",
+              "url": "/review/aec803bb-ce4f-4632-9105-1387d07df960"
+            },
+            {
+              "document_id": "1a0394b4-13c8-44da-96ae-23bef3b89d28",
+              "outcome": "recommendation",
+              "source_result_id": "20add17d-fae1-41cd-962a-3705d98ec9c3",
+              "url": "/review/1a0394b4-13c8-44da-96ae-23bef3b89d28"
+            },
+            {
+              "document_id": "d2c208d5-59ef-4db3-a654-5e209b4aa974",
+              "outcome": "recommendation",
+              "source_result_id": "2162e1c1-6f5c-4f75-9006-772f0c0fabb6",
+              "url": "/review/d2c208d5-59ef-4db3-a654-5e209b4aa974"
+            },
+            {
+              "document_id": "500a2c7b-e972-480e-9bce-57b1cba91588",
+              "outcome": "recommendation",
+              "source_result_id": "227457c6-10bc-4ad8-a723-22529d139201",
+              "url": "/review/500a2c7b-e972-480e-9bce-57b1cba91588"
+            },
+            {
+              "document_id": "9ca9b868-9e89-491f-b1e5-d8492a6d500d",
+              "outcome": "recommendation",
+              "source_result_id": "2b2b04de-f27d-481e-bfda-0b54f4e2f407",
+              "url": "/review/9ca9b868-9e89-491f-b1e5-d8492a6d500d"
+            },
+            {
+              "document_id": "23959780-42ac-4d99-8575-45f1db62ba6a",
+              "outcome": "recommendation",
+              "source_result_id": "2bb04009-cb92-412a-bc93-e487a9830ed7",
+              "url": "/review/23959780-42ac-4d99-8575-45f1db62ba6a"
+            },
+            {
+              "document_id": "6e0dfe82-ab25-4baf-84eb-4e0c86cbebd3",
+              "outcome": "review",
+              "source_result_id": "1589e02c-9771-4f93-a685-d82d7e39deaf",
+              "url": "/review/6e0dfe82-ab25-4baf-84eb-4e0c86cbebd3"
+            },
+            {
+              "document_id": "63370f95-0fff-4bd7-9288-570cc76cdcb6",
+              "outcome": "review",
+              "source_result_id": "4a47b5d3-ed02-48b4-9938-f879927433f1",
+              "url": "/review/63370f95-0fff-4bd7-9288-570cc76cdcb6"
+            },
+            {
+              "document_id": "50350539-5f8f-4c44-8fe6-3228f807637d",
+              "outcome": "review",
+              "source_result_id": "4e6e4718-1aba-453f-b473-4b375f6cd9f1",
+              "url": "/review/50350539-5f8f-4c44-8fe6-3228f807637d"
+            },
+            {
+              "document_id": "f2786661-f5cf-4f97-b07d-1e28e332ecfb",
+              "outcome": "review",
+              "source_result_id": "5362fa96-ce8b-4d1e-9580-9f114ea52130",
+              "url": "/review/f2786661-f5cf-4f97-b07d-1e28e332ecfb"
+            },
+            {
+              "document_id": "eed23ee8-2a9e-4d47-9b86-11fed8c6ab04",
+              "outcome": "review",
+              "source_result_id": "5c110959-6a9c-4610-9fbc-1fc54864247b",
+              "url": "/review/eed23ee8-2a9e-4d47-9b86-11fed8c6ab04"
+            },
+            {
+              "document_id": "601ae768-e869-4df7-8fd5-dfbb9b95b6be",
+              "outcome": "review",
+              "source_result_id": "607fe525-751e-4e18-b908-a5fb08532504",
+              "url": "/review/601ae768-e869-4df7-8fd5-dfbb9b95b6be"
+            },
+            {
+              "document_id": "34b88a57-c8eb-433d-883d-264b2d0ed846",
+              "outcome": "review",
+              "source_result_id": "68d17605-f4db-454d-a0ac-34e978cdcfc9",
+              "url": "/review/34b88a57-c8eb-433d-883d-264b2d0ed846"
+            },
+            {
+              "document_id": "5a44dcd4-6833-40ac-8270-3f57f3d66230",
+              "outcome": "review",
+              "source_result_id": "6cfaa5f2-94aa-4568-abbc-86f7a8a2e566",
+              "url": "/review/5a44dcd4-6833-40ac-8270-3f57f3d66230"
+            },
+            {
+              "document_id": "a2f2fd18-d409-49de-8936-e93525653914",
+              "outcome": "review",
+              "source_result_id": "712837db-e978-4aad-80df-700235936c4b",
+              "url": "/review/a2f2fd18-d409-49de-8936-e93525653914"
+            },
+            {
+              "document_id": "ba58137d-c4f0-4378-99fd-5a61759ac9c2",
+              "outcome": "review",
+              "source_result_id": "77357bd3-8c9c-4717-8f76-3c451538c523",
+              "url": "/review/ba58137d-c4f0-4378-99fd-5a61759ac9c2"
+            }
+          ],
+          "protocol_hash": "5412b48c2df51699d74751d2edf69c57859bc9b898a7aa27f9ed3437167076a9",
+          "registered_at": "2026-11-04T18:24:47.145055+00:00",
+          "run_id": "37a41963-0dce-4fbb-be64-94858a6f4a7a",
+          "run_protocol_hash": "2a3130c4a39a7ded5cb2a8bc1dc0ca885398fe36dcccd1334a6697d6245a07c6",
+          "selection_rule": "Следующие test-результаты по ID каждого исхода, исключая базовый протокол",
+          "session_rule": "Первая открытая сессия; незавершённую/изменённую не заменять повтором",
+          "version": "effect-review-v1",
+          "working_set_id": "0ec90034-53bb-4406-bb87-cd68fb0aad47"
+        }
+      ],
       "dataset_hash": "28fc1e37cad4f7ef5f798a9f1d57c9eb4d2242e282bf2facfba331bf5005775e",
       "documents": [
         {
@@ -3810,20 +4026,145 @@
           "outcome": "none",
           "source_result_id": "7baae96a-77a6-49c6-9673-c8340584566f",
           "url": "/review/a011f2c6-1bc0-47ad-a0e7-b03de436afca"
+        },
+        {
+          "document_id": "fb942b9a-e612-4942-889e-c0e115a299a4",
+          "outcome": "recommendation",
+          "source_result_id": "1284d1fa-084b-4cb9-b3ec-4706022a2fe5",
+          "url": "/review/fb942b9a-e612-4942-889e-c0e115a299a4"
+        },
+        {
+          "document_id": "2f5571e3-968f-4a98-9573-c19bd02c18b2",
+          "outcome": "recommendation",
+          "source_result_id": "13374a1d-5ae0-414e-8a6f-9b0c828fbaea",
+          "url": "/review/2f5571e3-968f-4a98-9573-c19bd02c18b2"
+        },
+        {
+          "document_id": "9f5b6e3d-8406-4f8f-8a39-42f51831816e",
+          "outcome": "recommendation",
+          "source_result_id": "1469e871-8aff-405e-945c-98ea2dc5d714",
+          "url": "/review/9f5b6e3d-8406-4f8f-8a39-42f51831816e"
+        },
+        {
+          "document_id": "655cb1b9-044b-4e35-99ef-bd15439d2a40",
+          "outcome": "recommendation",
+          "source_result_id": "152ef89e-5de9-4ddc-ad3e-485c14f6eb15",
+          "url": "/review/655cb1b9-044b-4e35-99ef-bd15439d2a40"
+        },
+        {
+          "document_id": "22eced2a-44eb-4fc2-bf40-81ef787f54ba",
+          "outcome": "recommendation",
+          "source_result_id": "1a2956a1-9cc9-45d0-ac56-6ccf4497a128",
+          "url": "/review/22eced2a-44eb-4fc2-bf40-81ef787f54ba"
+        },
+        {
+          "document_id": "aec803bb-ce4f-4632-9105-1387d07df960",
+          "outcome": "recommendation",
+          "source_result_id": "1d622c7e-3a86-4a35-8889-729b44f6cd0d",
+          "url": "/review/aec803bb-ce4f-4632-9105-1387d07df960"
+        },
+        {
+          "document_id": "1a0394b4-13c8-44da-96ae-23bef3b89d28",
+          "outcome": "recommendation",
+          "source_result_id": "20add17d-fae1-41cd-962a-3705d98ec9c3",
+          "url": "/review/1a0394b4-13c8-44da-96ae-23bef3b89d28"
+        },
+        {
+          "document_id": "d2c208d5-59ef-4db3-a654-5e209b4aa974",
+          "outcome": "recommendation",
+          "source_result_id": "2162e1c1-6f5c-4f75-9006-772f0c0fabb6",
+          "url": "/review/d2c208d5-59ef-4db3-a654-5e209b4aa974"
+        },
+        {
+          "document_id": "500a2c7b-e972-480e-9bce-57b1cba91588",
+          "outcome": "recommendation",
+          "source_result_id": "227457c6-10bc-4ad8-a723-22529d139201",
+          "url": "/review/500a2c7b-e972-480e-9bce-57b1cba91588"
+        },
+        {
+          "document_id": "9ca9b868-9e89-491f-b1e5-d8492a6d500d",
+          "outcome": "recommendation",
+          "source_result_id": "2b2b04de-f27d-481e-bfda-0b54f4e2f407",
+          "url": "/review/9ca9b868-9e89-491f-b1e5-d8492a6d500d"
+        },
+        {
+          "document_id": "23959780-42ac-4d99-8575-45f1db62ba6a",
+          "outcome": "recommendation",
+          "source_result_id": "2bb04009-cb92-412a-bc93-e487a9830ed7",
+          "url": "/review/23959780-42ac-4d99-8575-45f1db62ba6a"
+        },
+        {
+          "document_id": "6e0dfe82-ab25-4baf-84eb-4e0c86cbebd3",
+          "outcome": "review",
+          "source_result_id": "1589e02c-9771-4f93-a685-d82d7e39deaf",
+          "url": "/review/6e0dfe82-ab25-4baf-84eb-4e0c86cbebd3"
+        },
+        {
+          "document_id": "63370f95-0fff-4bd7-9288-570cc76cdcb6",
+          "outcome": "review",
+          "source_result_id": "4a47b5d3-ed02-48b4-9938-f879927433f1",
+          "url": "/review/63370f95-0fff-4bd7-9288-570cc76cdcb6"
+        },
+        {
+          "document_id": "50350539-5f8f-4c44-8fe6-3228f807637d",
+          "outcome": "review",
+          "source_result_id": "4e6e4718-1aba-453f-b473-4b375f6cd9f1",
+          "url": "/review/50350539-5f8f-4c44-8fe6-3228f807637d"
+        },
+        {
+          "document_id": "f2786661-f5cf-4f97-b07d-1e28e332ecfb",
+          "outcome": "review",
+          "source_result_id": "5362fa96-ce8b-4d1e-9580-9f114ea52130",
+          "url": "/review/f2786661-f5cf-4f97-b07d-1e28e332ecfb"
+        },
+        {
+          "document_id": "eed23ee8-2a9e-4d47-9b86-11fed8c6ab04",
+          "outcome": "review",
+          "source_result_id": "5c110959-6a9c-4610-9fbc-1fc54864247b",
+          "url": "/review/eed23ee8-2a9e-4d47-9b86-11fed8c6ab04"
+        },
+        {
+          "document_id": "601ae768-e869-4df7-8fd5-dfbb9b95b6be",
+          "outcome": "review",
+          "source_result_id": "607fe525-751e-4e18-b908-a5fb08532504",
+          "url": "/review/601ae768-e869-4df7-8fd5-dfbb9b95b6be"
+        },
+        {
+          "document_id": "34b88a57-c8eb-433d-883d-264b2d0ed846",
+          "outcome": "review",
+          "source_result_id": "68d17605-f4db-454d-a0ac-34e978cdcfc9",
+          "url": "/review/34b88a57-c8eb-433d-883d-264b2d0ed846"
+        },
+        {
+          "document_id": "5a44dcd4-6833-40ac-8270-3f57f3d66230",
+          "outcome": "review",
+          "source_result_id": "6cfaa5f2-94aa-4568-abbc-86f7a8a2e566",
+          "url": "/review/5a44dcd4-6833-40ac-8270-3f57f3d66230"
+        },
+        {
+          "document_id": "a2f2fd18-d409-49de-8936-e93525653914",
+          "outcome": "review",
+          "source_result_id": "712837db-e978-4aad-80df-700235936c4b",
+          "url": "/review/a2f2fd18-d409-49de-8936-e93525653914"
+        },
+        {
+          "document_id": "ba58137d-c4f0-4378-99fd-5a61759ac9c2",
+          "outcome": "review",
+          "source_result_id": "77357bd3-8c9c-4717-8f76-3c451538c523",
+          "url": "/review/ba58137d-c4f0-4378-99fd-5a61759ac9c2"
         }
       ],
-      "per_outcome": 3,
-      "protocol_hash": "add3ae0bebbd9d3b2cfb29e25480d5ce65ef1c06fba6ca048440a495adf41e41",
-      "registered_at": "2026-11-04T13:53:56.832514+00:00",
+      "protocol_hash": "c891120126489e68ce00915668e832034c84d40576cdf89e3b90b5dae21ae9c6",
+      "registered_at": "2026-11-04T18:24:47.145055+00:00",
       "run_id": "37a41963-0dce-4fbb-be64-94858a6f4a7a",
       "run_protocol_hash": "2a3130c4a39a7ded5cb2a8bc1dc0ca885398fe36dcccd1334a6697d6245a07c6",
-      "selection_rule": "Первые k test-результатов каждого исхода по ID; порядок исходов recommendation/review/none/error",
       "session_rule": "Первая открытая сессия; незавершённую/изменённую не заменять повтором",
-      "version": "effect-review-v1",
-      "working_set_id": "88510452-2a1a-432c-b972-398b1561fd7c"
+      "version": "effect-review-v2"
     },
     "measurements": {
-      "exclusions": {},
+      "exclusions": {
+        "different_outcome": 1
+      },
       "groups": {
         "error": {
           "action_ids": [],
@@ -3855,15 +4196,48 @@
             "72ba02e0-32dc-4ae0-9402-c0c1b7d71c24",
             "f7cd5eab-9757-4ff8-80b9-8f3617306169",
             "1d8fb35e-433a-454c-aa55-f93144db3eaf",
-            "fd40207f-affe-4014-91ee-5ac9d5fe745a"
+            "fd40207f-affe-4014-91ee-5ac9d5fe745a",
+            "6e843849-a439-411f-944f-48d17d94ddb1",
+            "3213f6d8-51d2-4192-ba68-d54fdff2f1b1",
+            "a57583fd-f56b-44af-b4a1-d8cb19733894",
+            "5e5cb369-4d7e-47ad-a809-cc2f7dfaddfa",
+            "0a7be4e9-c129-4320-9066-d692f538c98f",
+            "b474e9b1-1b2d-4bf0-8201-e70b1fabb5d1",
+            "136d7bca-e37f-4b77-844b-e39b575dcd1a",
+            "28a6c448-bf67-4715-9e3d-e774ef95d9ff",
+            "32ed8cb2-8106-4611-94b7-a8b2ed6d0a69",
+            "61f19fd8-4e05-4004-8e6a-fae992544f01",
+            "16631c7e-bbfc-4d76-9014-04ebaf675885",
+            "075312b8-dc8a-43db-beca-51a4f15b832a",
+            "29f64270-cf34-429f-b025-c76909265afa",
+            "5fece590-dc7a-4e23-9aa0-d88b1eb2d169",
+            "be582c0e-38dc-4ef8-a3ff-0a42aa898d7e",
+            "a0a674f8-8573-4001-b94a-e5ef5779826e",
+            "7e06d9d4-6995-41be-b963-f8acfce0a242",
+            "dfd2f997-94b8-4854-855d-1d9cf5e7aeed",
+            "89b7668d-66a1-4e34-a930-da79ebeda8e8",
+            "4795da09-9fee-4568-8670-d539722d8bb4",
+            "f05a7998-2fc8-4fa8-a120-192b96ecd820",
+            "7c39878e-8123-40f6-bb5d-ee46b3556ebb"
           ],
-          "mean_ms": 79722.33333333333,
-          "median_ms": 56703,
-          "n": 3,
+          "mean_ms": 37454.21428571428,
+          "median_ms": 28491.0,
+          "n": 14,
           "session_ids": [
             "d3d6a8a3-7128-4936-9bdd-14400c0bee77",
             "c5e2b268-ef14-4d1f-9e97-a4e53e0c0643",
-            "4de95def-c286-4aac-905d-eba132016177"
+            "4de95def-c286-4aac-905d-eba132016177",
+            "49238e3d-ae99-4a73-bf87-8fcfe498c885",
+            "7acb49b0-fe8c-4507-bc50-0a3c23363031",
+            "c9218a4b-2e3f-40d3-94eb-783f18c60748",
+            "0e0a6fb8-963e-409b-a6ca-68470f7e8e40",
+            "e7623d41-27f9-42fc-9d17-f06b060482cc",
+            "abb6865d-162b-4858-be63-2b8d785b080c",
+            "79cb373b-8bd0-4614-9291-e07182a4d981",
+            "2eb95423-d9c0-4c75-bd4e-d94e853249c8",
+            "d40424ce-8d5a-443d-8de9-aa96186ae623",
+            "374691cf-1b74-44ec-afc4-6a0d6579638a",
+            "42aacb09-e90a-4536-9af0-41f69ae1b8da"
           ]
         },
         "review": {
@@ -3872,21 +4246,51 @@
             "877564a1-4296-4505-8fc2-2ebf213f2718",
             "70bdc69c-4f8b-4700-aa72-ab53218a04c2",
             "14834b18-0383-47db-92ee-3e6c430cbef0",
-            "79c14a98-151a-4235-ac4b-ed093e0c4ab3"
+            "79c14a98-151a-4235-ac4b-ed093e0c4ab3",
+            "74f1e8fe-f6bf-4fe1-a211-1629efe4f701",
+            "69883edc-1f74-4ff4-8d34-7204920f51ce",
+            "f018bc9a-e69e-4d11-b216-e2db25f87c99",
+            "5dbda4ed-908d-4e5f-8b3f-9315852a76a7",
+            "0b2dea59-0cee-46ed-bb13-b1ed775f1f61",
+            "b28c5394-5ab4-42ea-8bec-f44e990b2015",
+            "ee5cfe89-07a5-4056-8f2a-f3dcb9aa7cc2",
+            "3364c9d6-275a-46b2-8de8-556318043dc8",
+            "487ed548-8512-4599-8464-470ec8527165",
+            "54bd53a4-e744-4492-943d-d4da2bdcaa57",
+            "bbe5b6d1-78b9-4ab1-bc4e-f0b17bd88c93",
+            "1ed364fd-726d-4205-93af-b3b4fb48a97b",
+            "41415171-2a33-4409-b5ee-04e8c62281f6",
+            "7485e7c5-5c91-42ea-9a86-f2b2e0dea4e8",
+            "2d5da5fb-23be-4db8-bf05-42205a033832",
+            "3a24ae57-2bd8-4baf-8799-e4b711a26036",
+            "3b5de541-7845-4ab3-848b-b5493743fac6",
+            "233efb91-adf2-4fc6-bcd3-da34257ff5f6",
+            "2abdb9c8-7a7c-4016-8c19-6420ad9f2bf9",
+            "20d84508-1b5b-470c-889d-763b22cb495c",
+            "859d8e42-42c1-4c9f-9b21-27c07ac682c1"
           ],
-          "mean_ms": 52348.333333333336,
-          "median_ms": 43769,
-          "n": 3,
+          "mean_ms": 44627.333333333336,
+          "median_ms": 42595.0,
+          "n": 12,
           "session_ids": [
             "33ecbb8c-7e3c-47a9-8557-424daf13096e",
             "a2097fe9-47fa-408a-917e-ef0fbfcde095",
-            "8a5805eb-f6b4-4fc2-839d-6b530b7f2d4c"
+            "8a5805eb-f6b4-4fc2-839d-6b530b7f2d4c",
+            "b0b6e600-2f0e-46b9-9e72-8863b82fefdf",
+            "015af94b-4992-46b9-950c-8af305c22c27",
+            "01715b17-eafc-4eef-ab28-57f9f5809a80",
+            "c9397a7b-05a1-47cf-9aca-1cc539639221",
+            "fae8dcde-041a-4e41-ab10-b6d911b1b0ae",
+            "d8108ed0-9a4c-4fe1-9547-0ce427d8c301",
+            "ea7519d1-5b09-4977-bef2-8537762df032",
+            "5089a57a-cfa4-4ddd-9e59-9979be1a14ab",
+            "e18cc38b-e489-4f2d-82eb-be4592ae22fe"
           ]
         }
       },
       "not_opened_result_ids": [],
       "note": "Длительности действий накопительные; не суммировать. Без протокола — только аудит.",
-      "protocol": "effect-review-v1",
+      "protocol": "effect-review-v2",
       "sessions": [
         {
           "actions": [
@@ -3907,6 +4311,7 @@
           "document_id": "00004443-82e2-4370-8923-0677401ff633",
           "duration_ms": 127754,
           "excluded_reason": null,
+          "observed_outcome": "recommendation",
           "opened_at": "2026-11-04T15:07:36.211725+00:00",
           "outcome": "recommendation",
           "session_id": "d3d6a8a3-7128-4936-9bdd-14400c0bee77",
@@ -3931,6 +4336,7 @@
           "document_id": "adf124b5-d80f-4046-98c9-8d45b14f38d7",
           "duration_ms": 56703,
           "excluded_reason": null,
+          "observed_outcome": "recommendation",
           "opened_at": "2026-11-04T15:10:05.607787+00:00",
           "outcome": "recommendation",
           "session_id": "c5e2b268-ef14-4d1f-9e97-a4e53e0c0643",
@@ -3955,6 +4361,7 @@
           "document_id": "1911f149-5ba9-4ef1-b72c-67d8b8a9acff",
           "duration_ms": 54710,
           "excluded_reason": null,
+          "observed_outcome": "recommendation",
           "opened_at": "2026-11-04T15:11:18.096087+00:00",
           "outcome": "recommendation",
           "session_id": "4de95def-c286-4aac-905d-eba132016177",
@@ -3979,6 +4386,7 @@
           "document_id": "df412781-0b38-49ac-ba9c-0fe0a2696bff",
           "duration_ms": 71855,
           "excluded_reason": null,
+          "observed_outcome": "review",
           "opened_at": "2026-11-04T15:12:37.950533+00:00",
           "outcome": "review",
           "session_id": "33ecbb8c-7e3c-47a9-8557-424daf13096e",
@@ -3997,6 +4405,7 @@
           "document_id": "b482df94-24ee-410f-aebb-252df45e2d23",
           "duration_ms": 43769,
           "excluded_reason": null,
+          "observed_outcome": "review",
           "opened_at": "2026-11-04T15:14:02.818142+00:00",
           "outcome": "review",
           "session_id": "a2097fe9-47fa-408a-917e-ef0fbfcde095",
@@ -4021,6 +4430,7 @@
           "document_id": "76c39563-6293-436b-916b-272a4fa96058",
           "duration_ms": 41421,
           "excluded_reason": null,
+          "observed_outcome": "review",
           "opened_at": "2026-11-04T15:15:04.725916+00:00",
           "outcome": "review",
           "session_id": "8a5805eb-f6b4-4fc2-839d-6b530b7f2d4c",
@@ -4045,6 +4455,7 @@
           "document_id": "711ca1f3-25c2-411c-a355-ced480b48309",
           "duration_ms": 83149,
           "excluded_reason": null,
+          "observed_outcome": "none",
           "opened_at": "2026-11-04T15:16:08.037822+00:00",
           "outcome": "none",
           "session_id": "9bfc0b02-3c12-4c61-9964-9590b6a9fdfa",
@@ -4063,6 +4474,7 @@
           "document_id": "155022d6-42b0-455d-889a-5c2fe6e6635b",
           "duration_ms": 58243,
           "excluded_reason": null,
+          "observed_outcome": "none",
           "opened_at": "2026-11-04T15:17:43.352318+00:00",
           "outcome": "none",
           "session_id": "ab4ea732-f7d3-41dc-90e9-70e088b0aded",
@@ -4081,14 +4493,556 @@
           "document_id": "a011f2c6-1bc0-47ad-a0e7-b03de436afca",
           "duration_ms": 67428,
           "excluded_reason": null,
+          "observed_outcome": "none",
           "opened_at": "2026-11-04T15:18:53.544043+00:00",
           "outcome": "none",
           "session_id": "e8052f89-90d0-46d2-8139-c89eb60c210c",
           "source_result_id": "7baae96a-77a6-49c6-9673-c8340584566f"
+        },
+        {
+          "actions": [
+            {
+              "action": "confirm",
+              "duration_ms": 27983,
+              "id": "6e843849-a439-411f-944f-48d17d94ddb1",
+              "result_id": "3fce0df8-2dac-43d4-8236-71a931d687f4"
+            },
+            {
+              "action": "complete",
+              "duration_ms": 33578,
+              "id": "3213f6d8-51d2-4192-ba68-d54fdff2f1b1",
+              "result_id": "3fce0df8-2dac-43d4-8236-71a931d687f4"
+            }
+          ],
+          "completed_at": "2026-11-04T18:40:19.052666+00:00",
+          "document_id": "fb942b9a-e612-4942-889e-c0e115a299a4",
+          "duration_ms": 33578,
+          "excluded_reason": null,
+          "observed_outcome": "recommendation",
+          "opened_at": "2026-11-04T18:39:45.474339+00:00",
+          "outcome": "recommendation",
+          "session_id": "49238e3d-ae99-4a73-bf87-8fcfe498c885",
+          "source_result_id": "1284d1fa-084b-4cb9-b3ec-4706022a2fe5"
+        },
+        {
+          "actions": [
+            {
+              "action": "confirm",
+              "duration_ms": 21891,
+              "id": "a57583fd-f56b-44af-b4a1-d8cb19733894",
+              "result_id": "8af7688e-83a4-4c37-8ba9-97c03a7a9c6a"
+            },
+            {
+              "action": "complete",
+              "duration_ms": 28856,
+              "id": "5e5cb369-4d7e-47ad-a809-cc2f7dfaddfa",
+              "result_id": "8af7688e-83a4-4c37-8ba9-97c03a7a9c6a"
+            }
+          ],
+          "completed_at": "2026-11-04T18:41:00.018070+00:00",
+          "document_id": "2f5571e3-968f-4a98-9573-c19bd02c18b2",
+          "duration_ms": 28856,
+          "excluded_reason": null,
+          "observed_outcome": "recommendation",
+          "opened_at": "2026-11-04T18:40:31.161537+00:00",
+          "outcome": "recommendation",
+          "session_id": "7acb49b0-fe8c-4507-bc50-0a3c23363031",
+          "source_result_id": "13374a1d-5ae0-414e-8a6f-9b0c828fbaea"
+        },
+        {
+          "actions": [
+            {
+              "action": "confirm",
+              "duration_ms": 22571,
+              "id": "0a7be4e9-c129-4320-9066-d692f538c98f",
+              "result_id": "964a8d5c-7872-4ee6-a223-8c63ef079b98"
+            },
+            {
+              "action": "complete",
+              "duration_ms": 28126,
+              "id": "b474e9b1-1b2d-4bf0-8201-e70b1fabb5d1",
+              "result_id": "964a8d5c-7872-4ee6-a223-8c63ef079b98"
+            }
+          ],
+          "completed_at": "2026-11-04T18:41:43.263951+00:00",
+          "document_id": "9f5b6e3d-8406-4f8f-8a39-42f51831816e",
+          "duration_ms": 28126,
+          "excluded_reason": null,
+          "observed_outcome": "recommendation",
+          "opened_at": "2026-11-04T18:41:15.137840+00:00",
+          "outcome": "recommendation",
+          "session_id": "c9218a4b-2e3f-40d3-94eb-783f18c60748",
+          "source_result_id": "1469e871-8aff-405e-945c-98ea2dc5d714"
+        },
+        {
+          "actions": [
+            {
+              "action": "confirm",
+              "duration_ms": 15694,
+              "id": "136d7bca-e37f-4b77-844b-e39b575dcd1a",
+              "result_id": "0b12168d-6477-4fe0-9c09-7e0778cdb8f8"
+            },
+            {
+              "action": "complete",
+              "duration_ms": 20791,
+              "id": "28a6c448-bf67-4715-9e3d-e774ef95d9ff",
+              "result_id": "0b12168d-6477-4fe0-9c09-7e0778cdb8f8"
+            }
+          ],
+          "completed_at": "2026-11-04T18:42:16.822932+00:00",
+          "document_id": "655cb1b9-044b-4e35-99ef-bd15439d2a40",
+          "duration_ms": 20791,
+          "excluded_reason": null,
+          "observed_outcome": "recommendation",
+          "opened_at": "2026-11-04T18:41:56.031673+00:00",
+          "outcome": "recommendation",
+          "session_id": "0e0a6fb8-963e-409b-a6ca-68470f7e8e40",
+          "source_result_id": "152ef89e-5de9-4ddc-ad3e-485c14f6eb15"
+        },
+        {
+          "actions": [
+            {
+              "action": "confirm",
+              "duration_ms": 16217,
+              "id": "32ed8cb2-8106-4611-94b7-a8b2ed6d0a69",
+              "result_id": "ffaba22d-b220-4b56-8fd3-9dbd9d47670f"
+            },
+            {
+              "action": "complete",
+              "duration_ms": 20422,
+              "id": "61f19fd8-4e05-4004-8e6a-fae992544f01",
+              "result_id": "ffaba22d-b220-4b56-8fd3-9dbd9d47670f"
+            }
+          ],
+          "completed_at": "2026-11-04T18:42:46.919639+00:00",
+          "document_id": "22eced2a-44eb-4fc2-bf40-81ef787f54ba",
+          "duration_ms": 20422,
+          "excluded_reason": null,
+          "observed_outcome": "recommendation",
+          "opened_at": "2026-11-04T18:42:26.497309+00:00",
+          "outcome": "recommendation",
+          "session_id": "e7623d41-27f9-42fc-9d17-f06b060482cc",
+          "source_result_id": "1a2956a1-9cc9-45d0-ac56-6ccf4497a128"
+        },
+        {
+          "actions": [
+            {
+              "action": "confirm",
+              "duration_ms": 19215,
+              "id": "16631c7e-bbfc-4d76-9014-04ebaf675885",
+              "result_id": "ce0562d6-d599-4513-87c6-f1f35af0dcc8"
+            },
+            {
+              "action": "complete",
+              "duration_ms": 22149,
+              "id": "075312b8-dc8a-43db-beca-51a4f15b832a",
+              "result_id": "ce0562d6-d599-4513-87c6-f1f35af0dcc8"
+            }
+          ],
+          "completed_at": "2026-11-04T18:43:19.026178+00:00",
+          "document_id": "aec803bb-ce4f-4632-9105-1387d07df960",
+          "duration_ms": 22149,
+          "excluded_reason": null,
+          "observed_outcome": "recommendation",
+          "opened_at": "2026-11-04T18:42:56.876860+00:00",
+          "outcome": "recommendation",
+          "session_id": "abb6865d-162b-4858-be63-2b8d785b080c",
+          "source_result_id": "1d622c7e-3a86-4a35-8889-729b44f6cd0d"
+        },
+        {
+          "actions": [
+            {
+              "action": "confirm",
+              "duration_ms": 32841,
+              "id": "29f64270-cf34-429f-b025-c76909265afa",
+              "result_id": "e76f857e-5763-40d6-81cb-cd3bfa933a3a"
+            },
+            {
+              "action": "complete",
+              "duration_ms": 36564,
+              "id": "5fece590-dc7a-4e23-9aa0-d88b1eb2d169",
+              "result_id": "e76f857e-5763-40d6-81cb-cd3bfa933a3a"
+            }
+          ],
+          "completed_at": "2026-11-04T18:44:08.865019+00:00",
+          "document_id": "1a0394b4-13c8-44da-96ae-23bef3b89d28",
+          "duration_ms": 36564,
+          "excluded_reason": null,
+          "observed_outcome": "recommendation",
+          "opened_at": "2026-11-04T18:43:32.300183+00:00",
+          "outcome": "recommendation",
+          "session_id": "79cb373b-8bd0-4614-9291-e07182a4d981",
+          "source_result_id": "20add17d-fae1-41cd-962a-3705d98ec9c3"
+        },
+        {
+          "actions": [
+            {
+              "action": "confirm",
+              "duration_ms": 10098,
+              "id": "be582c0e-38dc-4ef8-a3ff-0a42aa898d7e",
+              "result_id": "04e825f3-d6f1-4c0e-ae40-899db3958b81"
+            },
+            {
+              "action": "complete",
+              "duration_ms": 15710,
+              "id": "a0a674f8-8573-4001-b94a-e5ef5779826e",
+              "result_id": "04e825f3-d6f1-4c0e-ae40-899db3958b81"
+            }
+          ],
+          "completed_at": "2026-11-04T18:44:42.471956+00:00",
+          "document_id": "d2c208d5-59ef-4db3-a654-5e209b4aa974",
+          "duration_ms": 15710,
+          "excluded_reason": null,
+          "observed_outcome": "recommendation",
+          "opened_at": "2026-11-04T18:44:26.761176+00:00",
+          "outcome": "recommendation",
+          "session_id": "2eb95423-d9c0-4c75-bd4e-d94e853249c8",
+          "source_result_id": "2162e1c1-6f5c-4f75-9006-772f0c0fabb6"
+        },
+        {
+          "actions": [
+            {
+              "action": "confirm",
+              "duration_ms": 16368,
+              "id": "7e06d9d4-6995-41be-b963-f8acfce0a242",
+              "result_id": "4afa3c3e-2b53-4512-b053-bcc44083a522"
+            },
+            {
+              "action": "complete",
+              "duration_ms": 19367,
+              "id": "dfd2f997-94b8-4854-855d-1d9cf5e7aeed",
+              "result_id": "4afa3c3e-2b53-4512-b053-bcc44083a522"
+            }
+          ],
+          "completed_at": "2026-11-04T18:45:13.499649+00:00",
+          "document_id": "500a2c7b-e972-480e-9bce-57b1cba91588",
+          "duration_ms": 19367,
+          "excluded_reason": null,
+          "observed_outcome": "recommendation",
+          "opened_at": "2026-11-04T18:44:54.131726+00:00",
+          "outcome": "recommendation",
+          "session_id": "d40424ce-8d5a-443d-8de9-aa96186ae623",
+          "source_result_id": "227457c6-10bc-4ad8-a723-22529d139201"
+        },
+        {
+          "actions": [
+            {
+              "action": "confirm",
+              "duration_ms": 11279,
+              "id": "89b7668d-66a1-4e34-a930-da79ebeda8e8",
+              "result_id": "96d0918b-3dd2-4f1c-a31a-d613b1ab8d28"
+            },
+            {
+              "action": "complete",
+              "duration_ms": 16847,
+              "id": "4795da09-9fee-4568-8670-d539722d8bb4",
+              "result_id": "96d0918b-3dd2-4f1c-a31a-d613b1ab8d28"
+            }
+          ],
+          "completed_at": "2026-11-04T18:45:44.117448+00:00",
+          "document_id": "9ca9b868-9e89-491f-b1e5-d8492a6d500d",
+          "duration_ms": 16847,
+          "excluded_reason": null,
+          "observed_outcome": "recommendation",
+          "opened_at": "2026-11-04T18:45:27.270141+00:00",
+          "outcome": "recommendation",
+          "session_id": "374691cf-1b74-44ec-afc4-6a0d6579638a",
+          "source_result_id": "2b2b04de-f27d-481e-bfda-0b54f4e2f407"
+        },
+        {
+          "actions": [
+            {
+              "action": "confirm",
+              "duration_ms": 38637,
+              "id": "f05a7998-2fc8-4fa8-a120-192b96ecd820",
+              "result_id": "8efe6f99-8e54-4242-9b70-31c4d9918da7"
+            },
+            {
+              "action": "complete",
+              "duration_ms": 42782,
+              "id": "7c39878e-8123-40f6-bb5d-ee46b3556ebb",
+              "result_id": "8efe6f99-8e54-4242-9b70-31c4d9918da7"
+            }
+          ],
+          "completed_at": "2026-11-04T18:46:34.512663+00:00",
+          "document_id": "23959780-42ac-4d99-8575-45f1db62ba6a",
+          "duration_ms": 42782,
+          "excluded_reason": null,
+          "observed_outcome": "recommendation",
+          "opened_at": "2026-11-04T18:45:51.729817+00:00",
+          "outcome": "recommendation",
+          "session_id": "42aacb09-e90a-4536-9af0-41f69ae1b8da",
+          "source_result_id": "2bb04009-cb92-412a-bc93-e487a9830ed7"
+        },
+        {
+          "actions": [
+            {
+              "action": "choose_other",
+              "duration_ms": 22460,
+              "id": "74f1e8fe-f6bf-4fe1-a211-1629efe4f701",
+              "result_id": "b3b3f25b-204f-452f-b78d-888e0ddb060d"
+            },
+            {
+              "action": "complete",
+              "duration_ms": 28102,
+              "id": "69883edc-1f74-4ff4-8d34-7204920f51ce",
+              "result_id": "b3b3f25b-204f-452f-b78d-888e0ddb060d"
+            }
+          ],
+          "completed_at": "2026-11-04T18:47:13.933163+00:00",
+          "document_id": "6e0dfe82-ab25-4baf-84eb-4e0c86cbebd3",
+          "duration_ms": 28102,
+          "excluded_reason": null,
+          "observed_outcome": "review",
+          "opened_at": "2026-11-04T18:46:45.830808+00:00",
+          "outcome": "review",
+          "session_id": "b0b6e600-2f0e-46b9-9e72-8863b82fefdf",
+          "source_result_id": "1589e02c-9771-4f93-a685-d82d7e39deaf"
+        },
+        {
+          "actions": [
+            {
+              "action": "choose_other",
+              "duration_ms": 22534,
+              "id": "f018bc9a-e69e-4d11-b216-e2db25f87c99",
+              "result_id": "fcabf923-6a8d-48aa-af60-1c540260befe"
+            },
+            {
+              "action": "complete",
+              "duration_ms": 28140,
+              "id": "5dbda4ed-908d-4e5f-8b3f-9315852a76a7",
+              "result_id": "fcabf923-6a8d-48aa-af60-1c540260befe"
+            }
+          ],
+          "completed_at": "2026-11-04T18:47:53.224135+00:00",
+          "document_id": "63370f95-0fff-4bd7-9288-570cc76cdcb6",
+          "duration_ms": 28140,
+          "excluded_reason": null,
+          "observed_outcome": "review",
+          "opened_at": "2026-11-04T18:47:25.083656+00:00",
+          "outcome": "review",
+          "session_id": "015af94b-4992-46b9-950c-8af305c22c27",
+          "source_result_id": "4a47b5d3-ed02-48b4-9938-f879927433f1"
+        },
+        {
+          "actions": [
+            {
+              "action": "without_links",
+              "duration_ms": 36194,
+              "id": "d382cbff-4fc6-43a3-aa6a-45347dc925eb",
+              "result_id": "d90c00c6-b5b2-4b15-ae69-5f09d0b0f157"
+            }
+          ],
+          "completed_at": "2026-11-04T18:48:42.371083+00:00",
+          "document_id": "50350539-5f8f-4c44-8fe6-3228f807637d",
+          "duration_ms": 36194,
+          "excluded_reason": "different_outcome",
+          "observed_outcome": "error",
+          "opened_at": "2026-11-04T18:48:06.176298+00:00",
+          "outcome": "review",
+          "session_id": "032dc4f4-ad29-461b-b178-79f93678dc8c",
+          "source_result_id": "4e6e4718-1aba-453f-b473-4b375f6cd9f1"
+        },
+        {
+          "actions": [
+            {
+              "action": "choose_other",
+              "duration_ms": 17760,
+              "id": "0b2dea59-0cee-46ed-bb13-b1ed775f1f61",
+              "result_id": "c7c04fcd-a954-45e5-b9ae-8076f01ab1a7"
+            },
+            {
+              "action": "complete",
+              "duration_ms": 22603,
+              "id": "b28c5394-5ab4-42ea-8bec-f44e990b2015",
+              "result_id": "c7c04fcd-a954-45e5-b9ae-8076f01ab1a7"
+            }
+          ],
+          "completed_at": "2026-11-04T18:49:28.585385+00:00",
+          "document_id": "f2786661-f5cf-4f97-b07d-1e28e332ecfb",
+          "duration_ms": 22603,
+          "excluded_reason": null,
+          "observed_outcome": "review",
+          "opened_at": "2026-11-04T18:49:05.982323+00:00",
+          "outcome": "review",
+          "session_id": "01715b17-eafc-4eef-ab28-57f9f5809a80",
+          "source_result_id": "5362fa96-ce8b-4d1e-9580-9f114ea52130"
+        },
+        {
+          "actions": [
+            {
+              "action": "without_links",
+              "duration_ms": 44929,
+              "id": "ee5cfe89-07a5-4056-8f2a-f3dcb9aa7cc2",
+              "result_id": "8120ed95-0993-495f-aee5-767cf047c97b"
+            }
+          ],
+          "completed_at": "2026-11-04T18:50:30.333517+00:00",
+          "document_id": "eed23ee8-2a9e-4d47-9b86-11fed8c6ab04",
+          "duration_ms": 44929,
+          "excluded_reason": null,
+          "observed_outcome": "review",
+          "opened_at": "2026-11-04T18:49:45.404047+00:00",
+          "outcome": "review",
+          "session_id": "c9397a7b-05a1-47cf-9aca-1cc539639221",
+          "source_result_id": "5c110959-6a9c-4610-9fbc-1fc54864247b"
+        },
+        {
+          "actions": [
+            {
+              "action": "without_links",
+              "duration_ms": 25339,
+              "id": "3364c9d6-275a-46b2-8de8-556318043dc8",
+              "result_id": "350536a8-099b-459a-a33d-e7ed1431f98c"
+            }
+          ],
+          "completed_at": "2026-11-04T18:51:11.113817+00:00",
+          "document_id": "601ae768-e869-4df7-8fd5-dfbb9b95b6be",
+          "duration_ms": 25339,
+          "excluded_reason": null,
+          "observed_outcome": "review",
+          "opened_at": "2026-11-04T18:50:45.774432+00:00",
+          "outcome": "review",
+          "session_id": "fae8dcde-041a-4e41-ab10-b6d911b1b0ae",
+          "source_result_id": "607fe525-751e-4e18-b908-a5fb08532504"
+        },
+        {
+          "actions": [
+            {
+              "action": "choose_other",
+              "duration_ms": 49670,
+              "id": "487ed548-8512-4599-8464-470ec8527165",
+              "result_id": "a0e73544-5e29-4950-b446-31d3d20c35b3"
+            },
+            {
+              "action": "choose_other",
+              "duration_ms": 53482,
+              "id": "54bd53a4-e744-4492-943d-d4da2bdcaa57",
+              "result_id": "a0e73544-5e29-4950-b446-31d3d20c35b3"
+            },
+            {
+              "action": "complete",
+              "duration_ms": 81459,
+              "id": "bbe5b6d1-78b9-4ab1-bc4e-f0b17bd88c93",
+              "result_id": "a0e73544-5e29-4950-b446-31d3d20c35b3"
+            }
+          ],
+          "completed_at": "2026-11-04T18:52:44.818079+00:00",
+          "document_id": "34b88a57-c8eb-433d-883d-264b2d0ed846",
+          "duration_ms": 81459,
+          "excluded_reason": null,
+          "observed_outcome": "review",
+          "opened_at": "2026-11-04T18:51:23.358644+00:00",
+          "outcome": "review",
+          "session_id": "d8108ed0-9a4c-4fe1-9547-0ce427d8c301",
+          "source_result_id": "68d17605-f4db-454d-a0ac-34e978cdcfc9"
+        },
+        {
+          "actions": [
+            {
+              "action": "choose_other",
+              "duration_ms": 22258,
+              "id": "1ed364fd-726d-4205-93af-b3b4fb48a97b",
+              "result_id": "8f32338f-312e-4cbf-8287-b9af20c04a6a"
+            },
+            {
+              "action": "choose_other",
+              "duration_ms": 43314,
+              "id": "41415171-2a33-4409-b5ee-04e8c62281f6",
+              "result_id": "8f32338f-312e-4cbf-8287-b9af20c04a6a"
+            },
+            {
+              "action": "complete",
+              "duration_ms": 59784,
+              "id": "7485e7c5-5c91-42ea-9a86-f2b2e0dea4e8",
+              "result_id": "8f32338f-312e-4cbf-8287-b9af20c04a6a"
+            }
+          ],
+          "completed_at": "2026-11-04T18:53:51.999002+00:00",
+          "document_id": "5a44dcd4-6833-40ac-8270-3f57f3d66230",
+          "duration_ms": 59784,
+          "excluded_reason": null,
+          "observed_outcome": "review",
+          "opened_at": "2026-11-04T18:52:52.214899+00:00",
+          "outcome": "review",
+          "session_id": "ea7519d1-5b09-4977-bef2-8537762df032",
+          "source_result_id": "6cfaa5f2-94aa-4568-abbc-86f7a8a2e566"
+        },
+        {
+          "actions": [
+            {
+              "action": "reject",
+              "duration_ms": 45132,
+              "id": "2d5da5fb-23be-4db8-bf05-42205a033832",
+              "result_id": "ea3076c9-2dfe-4dd0-9a22-ed07c1e1d645"
+            },
+            {
+              "action": "reject",
+              "duration_ms": 48006,
+              "id": "3a24ae57-2bd8-4baf-8799-e4b711a26036",
+              "result_id": "ea3076c9-2dfe-4dd0-9a22-ed07c1e1d645"
+            },
+            {
+              "action": "reject",
+              "duration_ms": 50950,
+              "id": "3b5de541-7845-4ab3-848b-b5493743fac6",
+              "result_id": "ea3076c9-2dfe-4dd0-9a22-ed07c1e1d645"
+            },
+            {
+              "action": "reject",
+              "duration_ms": 56333,
+              "id": "233efb91-adf2-4fc6-bcd3-da34257ff5f6",
+              "result_id": "ea3076c9-2dfe-4dd0-9a22-ed07c1e1d645"
+            },
+            {
+              "action": "without_links",
+              "duration_ms": 62559,
+              "id": "2abdb9c8-7a7c-4016-8c19-6420ad9f2bf9",
+              "result_id": "ea3076c9-2dfe-4dd0-9a22-ed07c1e1d645"
+            }
+          ],
+          "completed_at": "2026-11-04T18:55:05.781916+00:00",
+          "document_id": "a2f2fd18-d409-49de-8936-e93525653914",
+          "duration_ms": 62559,
+          "excluded_reason": null,
+          "observed_outcome": "review",
+          "opened_at": "2026-11-04T18:54:03.221972+00:00",
+          "outcome": "review",
+          "session_id": "5089a57a-cfa4-4ddd-9e59-9979be1a14ab",
+          "source_result_id": "712837db-e978-4aad-80df-700235936c4b"
+        },
+        {
+          "actions": [
+            {
+              "action": "choose_other",
+              "duration_ms": 20012,
+              "id": "20d84508-1b5b-470c-889d-763b22cb495c",
+              "result_id": "67fc1286-0016-4fe6-8809-694228c76f26"
+            },
+            {
+              "action": "complete",
+              "duration_ms": 25568,
+              "id": "859d8e42-42c1-4c9f-9b21-27c07ac682c1",
+              "result_id": "67fc1286-0016-4fe6-8809-694228c76f26"
+            }
+          ],
+          "completed_at": "2026-11-04T18:55:55.614988+00:00",
+          "document_id": "ba58137d-c4f0-4378-99fd-5a61759ac9c2",
+          "duration_ms": 25568,
+          "excluded_reason": null,
+          "observed_outcome": "review",
+          "opened_at": "2026-11-04T18:55:30.046108+00:00",
+          "outcome": "review",
+          "session_id": "e18cc38b-e489-4f2d-82eb-be4592ae22fe",
+          "source_result_id": "77357bd3-8c9c-4717-8f76-3c451538c523"
         }
       ],
       "usable_as_measurement": true,
-      "working_set_id": "88510452-2a1a-432c-b972-398b1561fd7c"
+      "working_set_id": null,
+      "working_set_ids": [
+        "0ec90034-53bb-4406-bb87-cd68fb0aad47",
+        "88510452-2a1a-432c-b972-398b1561fd7c"
+      ]
     },
     "n": 119,
     "placement_label": "Qwen: открытые веса, облачное размещение",
@@ -4850,8 +5804,8 @@
     "monthly_documents": 1640,
     "none_seconds": "69.60666666666667",
     "other_fixed_rub": null,
-    "recommendation_seconds": "79.72233333333333",
-    "review_seconds": "52.348333333333336",
+    "recommendation_seconds": "37.45421428571428",
+    "review_seconds": "44.627333333333336",
     "sources": {
       "card_seconds": "Исходные допущения черновика §1.3, таблица 1.3",
       "common_seconds": "Сценарное допущение: вне полной проверки дополнительных операций нет",
@@ -4862,9 +5816,9 @@
       "incomplete_share": "Исходные допущения черновика §1.3, таблица 1.3",
       "monthly_contracts": "Исходные допущения черновика §1.3, таблица 1.3",
       "monthly_documents": "Исходные допущения черновика §1.3, таблица 1.3",
-      "none_seconds": "Среднее завершённых сессий effect-review-v1: 9bfc0b02-3c12-4c61-9964-9590b6a9fdfa, ab4ea732-f7d3-41dc-90e9-70e088b0aded, e8052f89-90d0-46d2-8139-c89eb60c210c",
-      "recommendation_seconds": "Среднее завершённых сессий effect-review-v1: d3d6a8a3-7128-4936-9bdd-14400c0bee77, c5e2b268-ef14-4d1f-9e97-a4e53e0c0643, 4de95def-c286-4aac-905d-eba132016177",
-      "review_seconds": "Среднее завершённых сессий effect-review-v1: 33ecbb8c-7e3c-47a9-8557-424daf13096e, a2097fe9-47fa-408a-917e-ef0fbfcde095, 8a5805eb-f6b4-4fc2-839d-6b530b7f2d4c"
+      "none_seconds": "Среднее завершённых сессий effect-review-v2: 9bfc0b02-3c12-4c61-9964-9590b6a9fdfa, ab4ea732-f7d3-41dc-90e9-70e088b0aded, e8052f89-90d0-46d2-8139-c89eb60c210c",
+      "recommendation_seconds": "Среднее завершённых сессий effect-review-v2: d3d6a8a3-7128-4936-9bdd-14400c0bee77, c5e2b268-ef14-4d1f-9e97-a4e53e0c0643, 4de95def-c286-4aac-905d-eba132016177, 49238e3d-ae99-4a73-bf87-8fcfe498c885, 7acb49b0-fe8c-4507-bc50-0a3c23363031, c9218a4b-2e3f-40d3-94eb-783f18c60748, 0e0a6fb8-963e-409b-a6ca-68470f7e8e40, e7623d41-27f9-42fc-9d17-f06b060482cc, abb6865d-162b-4858-be63-2b8d785b080c, 79cb373b-8bd0-4614-9291-e07182a4d981, 2eb95423-d9c0-4c75-bd4e-d94e853249c8, d40424ce-8d5a-443d-8de9-aa96186ae623, 374691cf-1b74-44ec-afc4-6a0d6579638a, 42aacb09-e90a-4536-9af0-41f69ae1b8da",
+      "review_seconds": "Среднее завершённых сессий effect-review-v2: 33ecbb8c-7e3c-47a9-8557-424daf13096e, a2097fe9-47fa-408a-917e-ef0fbfcde095, 8a5805eb-f6b4-4fc2-839d-6b530b7f2d4c, b0b6e600-2f0e-46b9-9e72-8863b82fefdf, 015af94b-4992-46b9-950c-8af305c22c27, 01715b17-eafc-4eef-ab28-57f9f5809a80, c9397a7b-05a1-47cf-9aca-1cc539639221, fae8dcde-041a-4e41-ab10-b6d911b1b0ae, d8108ed0-9a4c-4fe1-9547-0ce427d8c301, ea7519d1-5b09-4977-bef2-8537762df032, 5089a57a-cfa4-4ddd-9e59-9979be1a14ab, e18cc38b-e489-4f2d-82eb-be4592ae22fe"
     },
     "v_decode": null,
     "v_prefill": null
@@ -4905,11 +5859,11 @@
     },
     "payback_months": null,
     "payback_status": "unknown",
-    "saved_hours_month": "157.5417968876439473811391223",
+    "saved_hours_month": "173.2700173291538855370681606",
     "test_n": 119,
-    "tobe_hours_month": "33.79153644568938595219421103",
+    "tobe_hours_month": "18.06331600417944779626517273",
     "tobe_labor_rub_month": null,
-    "tobe_seconds": "74.17654341736694477310924370",
+    "tobe_seconds": "39.65118147258903174789915966",
     "variable_rub_month": null
   }
 }
