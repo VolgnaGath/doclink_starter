@@ -321,18 +321,23 @@ def decide(session: Session, document_id: UUID, request: Decision) -> ReviewActi
     session.add(action)
     session.flush()
     if link_type:
-        session.add(
-            Link(
-                source_id=doc.id,
-                target_id=target_id,
-                link_type=link_type,
-                origin="manual" if request.action == "manual" else "confirmed",
-                review_action_id=action.id,
-                suggestion_id=request.suggestion_id,
-            )
+        link = Link(
+            source_id=doc.id,
+            target_id=target_id,
+            link_type=link_type,
+            origin="manual" if request.action == "manual" else "confirmed",
+            review_action_id=action.id,
+            suggestion_id=request.suggestion_id,
         )
+        session.add(link)
+        from app.services.integration import create_event
+
+        create_event(session, link, action, "create")
     if removed:
         removed.removed_at, removed.removal_action_id = now, action.id
+        from app.services.integration import create_event
+
+        create_event(session, removed, action, "remove")
     if request.action in {"complete", "without_links"}:
         state.status, state.needs_review = "completed", False
         review.completed_at, review.duration_ms = now, duration

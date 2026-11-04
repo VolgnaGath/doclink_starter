@@ -15,6 +15,7 @@ from app.documents import router as documents_router
 from app.experiment_api import router as experiment_api_router
 from app.experiment_web import router as experiment_web_router
 from app.health import router as health_router
+from app.integration_web import router as integration_router
 from app.model_web import router as models_router
 from app.review_web import router as review_router
 from app.web import router as web_router
@@ -49,6 +50,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application.include_router(working_router)
     application.include_router(experiment_api_router)
     application.include_router(experiment_web_router)
+    application.include_router(integration_router)
     return application
 
 

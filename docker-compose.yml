@@ -65,6 +65,9 @@ services:
     command: ["uvicorn", "mock1c.main:app", "--host", "0.0.0.0", "--port", "8001"]
     restart: unless-stopped
     env_file: .env
+    volumes:
+      - ./mock1c/inbox:/data/inbox:ro
+      - mock1c_state:/data/mock1c
     ports:
       - "8001:8001"
     healthcheck:
@@ -82,3 +85,4 @@ volumes:
   pgdata:
   files:
   models:
+  mock1c_state:

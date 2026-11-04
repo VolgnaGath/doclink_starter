@@ -159,9 +159,11 @@ def recover(session: Session, guard: Connection) -> None:
         if not guard.scalar(text("SELECT pg_try_advisory_lock(:key)"), {"key": key}):
             continue
         try:
-            if job.type in {"embed", "link"} or job.type.startswith("experiment:"):
-                # Local work can resume. Durable vectors/link outcomes cover a
-                # crash after result commit but before job completion.
+            if job.type in {"embed", "link", "integration:deliver"} or job.type.startswith(
+                "experiment:"
+            ):
+                # Durable outcomes cover a crash after result commit. Delivery
+                # retries use the same external idempotency key.
                 job.status, job.locked_at = "queued", None
                 continue
             pending = list(
@@ -232,8 +234,14 @@ def work_once(
             from app.services.pipeline import reconcile
 
             reconcile(session)
+            if settings.mock1c_enabled:
+                from app.services.integration import enqueue_deliveries
+
+                enqueue_deliveries(session)
             session.commit()
         filters = [Job.status == "queued", Job.run_after <= datetime.now(UTC)]
+        if not settings.mock1c_enabled:
+            filters.append(Job.type != "integration:deliver")
         if document_ids is not None:
             filters.append(Job.document_id.in_(document_ids))
         if model_ids is not None:
@@ -285,6 +293,10 @@ def work_once(
                 from app.services.linking_store import link_document
 
                 link_document(settings, job.document_id, job.payload, job_id=job.id)
+            elif job.type == "integration:deliver":
+                from app.services.integration import deliver
+
+                deliver(settings, UUID(job.payload["event_id"]))
             elif job.type.startswith("experiment:"):
                 from app.services.experiments import execute_series
 

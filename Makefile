@@ -5,6 +5,7 @@
 COMPOSE ?= docker compose
 UV_IMAGE ?= ghcr.io/astral-sh/uv:0.5.18-python3.12-bookworm-slim
 VERIFY_COMPOSE = docker compose -p doclink-verify -f docker-compose.verify.yml
+INTEGRATION_COMPOSE = docker compose -p doclink-integration -f docker-compose.verify.yml -f docker-compose.integration-acceptance.yml
 export GIT_COMMIT := $(shell git rev-parse HEAD)
 
 .DEFAULT_GOAL := help
@@ -29,10 +30,41 @@ export GIT_COMMIT := $(shell git rev-parse HEAD)
 .PHONY: verify-experiments
 .PHONY: experiments
 .PHONY: browser-tools accept-experiments-web
+.PHONY: integration verify-integration
+.PHONY: accept-integration-up accept-integration accept-integration-down accept-integration-disconnect accept-integration-connect accept-integration-restart
 CERT_DIR ?= $(HOME)/Downloads
 
 help: ## Показать список целей
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
+
+integration: ## Обмен mock1c: ARGS='poll --full', 'status', 'retry --kind import|deliver --id UUID', 'audit --output report.json'
+	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace api python -m app.integration_cli $(ARGS)
+
+verify-integration: verify-up ## Inbox/outbox, HTTP, повторы и отмены на отдельной PostgreSQL без оплаты
+	$(VERIFY_COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_integration.py
+
+accept-integration-up: ## Чистый изолированный стенд интеграции: реальный regex и BGE-M3, без LLM/API-расходов
+	$(INTEGRATION_COMPOSE) build api
+	$(INTEGRATION_COMPOSE) up -d --wait db
+	$(INTEGRATION_COMPOSE) run --rm api alembic upgrade head
+	$(INTEGRATION_COMPOSE) run --rm api python -m app.integration_acceptance prepare
+	$(INTEGRATION_COMPOSE) up -d api worker mock1c
+
+accept-integration: ## Chromium: автоимпорт, подтверждение, обрыв сети/отмена/повтор/рестарт; сначала accept-integration-up
+	node contract/accept-integration.mjs
+	$(INTEGRATION_COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace api python -m app.integration_acceptance audit
+
+accept-integration-disconnect: ## Изолированная приёмка: остановить mock1c для проверки сбоя доставки
+	$(INTEGRATION_COMPOSE) stop mock1c
+
+accept-integration-connect: ## Изолированная приёмка: восстановить mock1c
+	$(INTEGRATION_COMPOSE) up -d mock1c
+
+accept-integration-restart: ## Изолированная приёмка: рестарт worker/mock1c с сохранением состояния
+	$(INTEGRATION_COMPOSE) restart worker mock1c
+
+accept-integration-down: ## Удалить только изолированный стенд интеграции и его данные
+	$(INTEGRATION_COMPOSE) down -v
 
 spec: ## Скомпилировать TypeSpec-контракт в OpenAPI
 	npm --prefix contract ci
@@ -241,7 +273,9 @@ verify-down: ## Удалить только изолированные конт�
 verify-test: verify-up ## Интеграционные тесты на отдельной PostgreSQL, включая импорт и веб
 	$(MAKE) test COMPOSE='$(VERIFY_COMPOSE)'
 
-verify-migrations: verify-up ## Откат/повтор миграций 0010–0002, проверка metadata на изолированной БД
+verify-migrations: verify-up ## Откат/повтор миграций 0011–0002, проверка metadata на изолированной БД
+	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0010
+	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
 	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0009
 	$(VERIFY_COMPOSE) run --rm api alembic upgrade head
 	$(VERIFY_COMPOSE) run --rm api alembic downgrade 0008

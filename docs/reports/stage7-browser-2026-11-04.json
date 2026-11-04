@@ -1,0 +1,39 @@
+{
+  "browser": "156.0.8078.4",
+  "extractor": "real regex (not LLM)",
+  "embedder": "real BGE-M3 CPU",
+  "isolated": true,
+  "document_id": "7597df50-ec84-4ccf-9f7e-8ed7f8d7a08c",
+  "result_id": "6785cdc4-68a5-462d-b6fe-8bd8b86bc302",
+  "automatic_pipeline": "passed",
+  "confirmation": "passed",
+  "outage_local_removal": "passed",
+  "reconnect_delivery": "passed",
+  "restart_repeat_no_duplicates": "passed",
+  "journal": {
+    "events": [
+      {
+        "event_id": "993f8832-cd19-43a7-88e1-03485a9c9bc9",
+        "link_id": "54410722-fa8d-4650-a754-288dc63131c1",
+        "link_type": "основание",
+        "occurred_at": "2026-11-04T12:37:12.326461Z",
+        "operation": "create",
+        "review_action_id": "47617632-5bba-426f-b12b-4dee0b94aba1",
+        "source_id": "9bea6fdb-d58c-4cec-8e5a-7a61b883c3df",
+        "target_id": "ebddc6e6-ce73-4765-932b-458ce0e4cd6b"
+      },
+      {
+        "event_id": "9587e116-771d-4c71-8679-e0f2c56c4a93",
+        "link_id": "54410722-fa8d-4650-a754-288dc63131c1",
+        "link_type": "основание",
+        "occurred_at": "2026-11-04T12:37:15.415287Z",
+        "operation": "remove",
+        "review_action_id": "9e447dd5-1456-485a-9b26-253534b0bbff",
+        "source_id": "9bea6fdb-d58c-4cec-8e5a-7a61b883c3df",
+        "target_id": "ebddc6e6-ce73-4765-932b-458ce0e4cd6b"
+      }
+    ],
+    "links": []
+  },
+  "page_errors": []
+}

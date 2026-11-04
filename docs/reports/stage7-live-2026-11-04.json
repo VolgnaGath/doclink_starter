@@ -1,0 +1,579 @@
+{
+  "scope": "isolated integration, real regex + real BGE-M3 CPU; not LLM quality",
+  "paid_calls_enabled": false,
+  "counts": {
+    "documents": 2,
+    "extractions": 2,
+    "embeddings": 2,
+    "document_embeddings": 2,
+    "linking_results": 1,
+    "llm_calls": 0,
+    "integration_events": 2,
+    "links": 1
+  },
+  "result_id": "6785cdc4-68a5-462d-b6fe-8bd8b86bc302",
+  "outcome": "recommendation",
+  "source_id": "7597df50-ec84-4ccf-9f7e-8ed7f8d7a08c",
+  "embeddings": [
+    {
+      "document_id": "7597df50-ec84-4ccf-9f7e-8ed7f8d7a08c",
+      "cache_hit": false,
+      "embedding_id": "1ee027b2-4323-4eab-9b67-0925e176c7b4"
+    },
+    {
+      "document_id": "ace8b1e8-3471-4700-96ec-cbf502641a1c",
+      "cache_hit": false,
+      "embedding_id": "17fa6d0c-11dd-47c1-9773-b24fa90e83f6"
+    }
+  ],
+  "timings": [
+    {
+      "stage": "text",
+      "duration_ms": 11,
+      "ok": true
+    },
+    {
+      "stage": "text",
+      "duration_ms": 1,
+      "ok": true
+    },
+    {
+      "stage": "anonymize",
+      "duration_ms": 5,
+      "ok": true
+    },
+    {
+      "stage": "extract",
+      "duration_ms": 63,
+      "ok": true
+    },
+    {
+      "stage": "anonymize",
+      "duration_ms": 2,
+      "ok": true
+    },
+    {
+      "stage": "extract",
+      "duration_ms": 7,
+      "ok": true
+    },
+    {
+      "stage": "embed",
+      "duration_ms": 117266,
+      "ok": true
+    },
+    {
+      "stage": "embed",
+      "duration_ms": 48978,
+      "ok": true
+    },
+    {
+      "stage": "link",
+      "duration_ms": 1015,
+      "ok": true
+    }
+  ],
+  "events": [
+    {
+      "id": "993f8832-cd19-43a7-88e1-03485a9c9bc9",
+      "operation": "create",
+      "status": "done",
+      "attempts": 1
+    },
+    {
+      "id": "9587e116-771d-4c71-8679-e0f2c56c4a93",
+      "operation": "remove",
+      "status": "done",
+      "attempts": 3
+    }
+  ],
+  "exchange_attempts": [
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 234,
+      "error": null
+    },
+    {
+      "kind": "import",
+      "status_code": 200,
+      "duration_ms": 65,
+      "error": null
+    },
+    {
+      "kind": "import",
+      "status_code": 200,
+      "duration_ms": 19,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 26,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 678,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 873,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 44,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 46,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 43,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 58,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 12,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 47,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 25,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 13,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 25,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 7,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 26,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 15,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 36,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 23,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 17,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 25,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 30,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 26,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 27,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 36,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 35,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 31,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 66,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 47,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 34,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 31,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 26,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 15,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 47,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 56,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 44,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 31,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 33,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 63,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 51,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 64,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 53,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 46,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 29,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 36,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 75,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 65,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 45,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 71,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 88,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 148,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 89,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 128,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 40,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 100,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 76,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 7,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 5,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 4,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 3,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 5,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 3,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 4,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 3,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 10,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 4,
+      "error": null
+    },
+    {
+      "kind": "deliver",
+      "status_code": 200,
+      "duration_ms": 27,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": null,
+      "duration_ms": 25,
+      "error": "mock1c: ConnectError"
+    },
+    {
+      "kind": "deliver",
+      "status_code": null,
+      "duration_ms": 4,
+      "error": "mock1c: ConnectError"
+    },
+    {
+      "kind": "poll",
+      "status_code": null,
+      "duration_ms": 3,
+      "error": "mock1c: ConnectError"
+    },
+    {
+      "kind": "deliver",
+      "status_code": null,
+      "duration_ms": 1,
+      "error": "mock1c: ConnectError"
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 6,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 3,
+      "error": null
+    },
+    {
+      "kind": "deliver",
+      "status_code": 200,
+      "duration_ms": 3,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 50,
+      "error": null
+    },
+    {
+      "kind": "poll",
+      "status_code": 200,
+      "duration_ms": 9,
+      "error": null
+    }
+  ],
+  "mock1c_journal": {
+    "events": [
+      {
+        "event_id": "993f8832-cd19-43a7-88e1-03485a9c9bc9",
+        "link_id": "54410722-fa8d-4650-a754-288dc63131c1",
+        "link_type": "основание",
+        "occurred_at": "2026-11-04T12:37:12.326461Z",
+        "operation": "create",
+        "review_action_id": "47617632-5bba-426f-b12b-4dee0b94aba1",
+        "source_id": "9bea6fdb-d58c-4cec-8e5a-7a61b883c3df",
+        "target_id": "ebddc6e6-ce73-4765-932b-458ce0e4cd6b"
+      },
+      {
+        "event_id": "9587e116-771d-4c71-8679-e0f2c56c4a93",
+        "link_id": "54410722-fa8d-4650-a754-288dc63131c1",
+        "link_type": "основание",
+        "occurred_at": "2026-11-04T12:37:15.415287Z",
+        "operation": "remove",
+        "review_action_id": "9e447dd5-1456-485a-9b26-253534b0bbff",
+        "source_id": "9bea6fdb-d58c-4cec-8e5a-7a61b883c3df",
+        "target_id": "ebddc6e6-ce73-4765-932b-458ce0e4cd6b"
+      }
+    ],
+    "links": []
+  }
+}

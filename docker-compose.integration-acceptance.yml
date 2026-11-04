@@ -1,0 +1,47 @@
+# Overlay on verify: independent DB/files/inbox/journal; only weights are shared read-only.
+services:
+  api:
+    environment: &acceptance_env
+      DATABASE_URL: postgresql+psycopg://doclink:doclink@db:5432/doclink
+      APP_PASSWORD: verification-password
+      SECRET_KEY: verification-secret-key-at-least-32-characters
+      INTEGRATION_ACCEPTANCE_ENABLED: "1"
+      MOCK1C_ENABLED: "true"
+      MOCK1C_POLL_SECONDS: "2"
+      MOCK1C_TIMEOUT_SECONDS: "2"
+      LLM_PROVIDER: mock
+      PAID_CALLS_ENABLED: "false"
+      BUDGET_RUB: "0"
+      HF_HOME: /data/models/hf-home
+      HF_HUB_OFFLINE: "1"
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TOKENIZERS_PARALLELISM: "false"
+    ports:
+      - "127.0.0.1:18000:8000"
+    volumes:
+      - acceptance_inbox:/data/accept-inbox
+      - embedding_model_cache:/data/models:ro
+  worker:
+    image: doclink:dev
+    command: ["python", "-m", "app.worker"]
+    environment: *acceptance_env
+    volumes:
+      - verify_files:/data/files
+      - embedding_model_cache:/data/models:ro
+    depends_on:
+      db:
+        condition: service_healthy
+  mock1c:
+    image: doclink:dev
+    command: ["uvicorn", "mock1c.main:app", "--host", "0.0.0.0", "--port", "8001"]
+    ports:
+      - "127.0.0.1:18001:8001"
+    volumes:
+      - acceptance_inbox:/data/inbox:ro
+      - acceptance_journal:/data/mock1c
+volumes:
+  acceptance_inbox:
+  acceptance_journal:
+  embedding_model_cache:
+    external: true
+    name: ${EMBEDDING_MODEL_VOLUME:-doclink_starter_models}

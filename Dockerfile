@@ -31,8 +31,8 @@ ENV DOCLINK_GIT_COMMIT=$GIT_COMMIT
 
 RUN groupadd --gid 10001 app \
     && useradd --uid 10001 --gid app --no-create-home --shell /usr/sbin/nologin app \
-    && mkdir -p /data/files /data/models \
-    && chown -R app:app /data/files /data/models
+    && mkdir -p /data/files /data/models /data/mock1c /data/accept-inbox \
+    && chown -R app:app /data/files /data/models /data/mock1c /data/accept-inbox
 
 USER app
 

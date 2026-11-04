@@ -12,6 +12,12 @@ logger = logging.getLogger(__name__)
 def run_worker(settings: Settings, stop_event: Event) -> None:
     logger.info("Worker started")
     while not stop_event.is_set():
+        from app.services.integration import poll
+
+        try:
+            poll(settings)
+        except Exception:
+            logger.exception("Integration poll failed")
         try:
             if work_once(settings):
                 continue

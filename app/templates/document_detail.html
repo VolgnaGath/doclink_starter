@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ document.filename }} — DocLink{% endblock %}
 {% block content %}
+<p>Источник: {{ document.source }} · <a href="/integration?document_id={{ document.id }}">Внешний ID и состояние обмена с 1С</a></p>
 <p><a href="/documents">← Документы</a></p>
 <h1>{{ document.filename }}</h1>
 <dl>

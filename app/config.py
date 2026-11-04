@@ -23,6 +23,9 @@ class Settings(BaseSettings):
     ocr_timeout_seconds: int = Field(default=30, gt=0)
     max_docx_uncompressed_bytes: int = Field(default=100 * 1024 * 1024, gt=0)
     mock1c_url: str = "http://mock1c:8001"
+    mock1c_enabled: bool = True
+    mock1c_poll_seconds: int = Field(default=30, ge=1)
+    mock1c_timeout_seconds: int = Field(default=10, gt=0)
     worker_heartbeat_seconds: int = Field(default=30, gt=0)
     embedding_cache_dir: str = "/data/models"
     embedding_local_files_only: bool = True

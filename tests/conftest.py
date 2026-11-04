@@ -23,6 +23,7 @@ def settings() -> Settings:
         gigachat_credentials="",
         gigachat_ca_bundle="",
         llm_provider="mock",
+        mock1c_enabled=False,
         paid_calls_enabled=False,
         budget_rub=0,
         yandex_budget_rub=None,

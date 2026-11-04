@@ -256,6 +256,68 @@ class Extraction(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
+class IntegrationState(Base):
+    __tablename__ = "integration_state"
+
+    source: Mapped[str] = mapped_column(primary_key=True)
+    watermark: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    next_poll_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    last_poll_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    error: Mapped[str | None]
+
+
+class IntegrationInbox(Base):
+    __tablename__ = "integration_inbox"
+    __table_args__ = (
+        UniqueConstraint("source", "external_id"),
+        CheckConstraint("status IN ('pending','done','error','conflict')"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    source: Mapped[str]
+    external_id: Mapped[uuid.UUID]
+    metadata_snapshot: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    document_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("documents.id"), unique=True)
+    status: Mapped[str] = mapped_column(default="pending")
+    attempts: Mapped[int] = mapped_column(default=0)
+    run_after: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    error: Mapped[str | None]
+
+
+class IntegrationEvent(Base):
+    __tablename__ = "integration_events"
+    __table_args__ = (
+        UniqueConstraint("link_id", "operation"),
+        CheckConstraint("operation IN ('create','remove')"),
+        CheckConstraint("status IN ('pending','done','error','blocked')"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    link_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("links.id"))
+    document_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id"))
+    review_action_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("review_actions.id"))
+    operation: Mapped[str]
+    payload: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    status: Mapped[str] = mapped_column(default="pending")
+    attempts: Mapped[int] = mapped_column(default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    run_after: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    delivered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    error: Mapped[str | None]
+
+
+class IntegrationAttempt(Base):
+    __tablename__ = "integration_attempts"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    kind: Mapped[str]
+    reference: Mapped[str]
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    duration_ms: Mapped[int | None]
+    status_code: Mapped[int | None]
+    error: Mapped[str | None]
+
+
 class Job(Base):
     __tablename__ = "jobs"
     __table_args__ = (

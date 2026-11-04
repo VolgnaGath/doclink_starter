@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Интеграция 1С — DocLink{% endblock %}
+{% block content %}
+<h1>Интеграция mock1c</h1>
+<p>Коннектор {{ 'включён' if enabled else 'выключен' }}. Последние 100 записей каждого журнала.</p>
+{% if state %}<p>Последний опрос: {{ state.last_poll_at.strftime('%d.%m.%Y %H:%M:%S') if state.last_poll_at else '—' }} UTC.
+Следующий: {{ state.next_poll_at.strftime('%d.%m.%Y %H:%M:%S') }} UTC. {{ state.error or '' }}</p>{% endif %}
+<form method="post" action="/integration/poll"><button>Запросить опрос worker</button></form>
+{% macro repeat(kind, row) %}{% if row.status == 'error' %}<form method="post" action="/integration/retry"><input type="hidden" name="kind" value="{{ kind }}"><input type="hidden" name="row_id" value="{{ row.id }}"><button>Повторить обмен</button></form>{% endif %}{% endmacro %}
+<h2>Входящие документы</h2>
+<table><tr><th>Внешний ID</th><th>Документ</th><th>Статус</th><th>Попытки / ошибка</th></tr>
+{% for row in incoming %}<tr><td>{{ row.external_id }}</td><td>{% if row.document_id %}<a href="/documents/{{ row.document_id }}">{{ row.metadata_snapshot.filename }}</a>{% else %}{{ row.metadata_snapshot.filename }}{% endif %}</td><td>{{ row.status }}</td><td>{{ row.attempts }} · {{ row.error or '' }}{{ repeat('import', row) }}</td></tr>{% endfor %}</table>
+<h2>Доставка связей и отмен</h2>
+<p>pending — ожидает; done — принято mock1c; error — исчерпаны повторы; blocked — нет внешней привязки. Отмена доставляется после создания.</p>
+<table><tr><th>Событие / связь</th><th>Документ</th><th>Операция</th><th>Статус</th><th>Попытки / ошибка</th></tr>
+{% for row in events %}<tr><td>{{ row.id }} / {{ row.link_id }}</td><td><a href="/review/{{ row.document_id }}">Проверка</a></td><td>{{ row.operation }}</td><td>{{ row.status }}</td><td>{{ row.attempts }} · {{ row.error or '' }}{{ repeat('deliver', row) }}</td></tr>{% endfor %}</table>
+<h2>Попытки обмена</h2><table><tr><th>UTC</th><th>Операция</th><th>Объект</th><th>HTTP / мс</th><th>Ошибка</th></tr>
+{% for row in attempts %}<tr><td>{{ row.started_at.strftime('%d.%m.%Y %H:%M:%S') }}</td><td>{{ row.kind }}</td><td>{{ row.reference }}</td><td>{{ row.status_code if row.status_code is not none else '—' }} / {{ row.duration_ms if row.duration_ms is not none else '—' }}</td><td>{{ row.error or '' }}</td></tr>{% endfor %}</table>
+{% endblock %}

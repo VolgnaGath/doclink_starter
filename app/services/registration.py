@@ -45,10 +45,13 @@ def register_batch(
     files: list[IncomingFile],
     *,
     is_anonymized: bool = False,
+    source: str = "upload",
 ) -> list[RegistrationResult]:
     # Validate common parameters before touching storage. Client lock also serializes
     # admission with decisions and card writes in the same working namespace.
     client = session.scalar(select(Client).where(Client.id == client_id).with_for_update())
+    if source not in {"upload", "mock1c"}:
+        raise ProcessingError("Недопустимый источник")
     if client is None or client.namespace.startswith("corpus"):
         raise ProcessingError("Выберите рабочего клиента")
     config = session.get(OperationalConfig, 1)
@@ -68,7 +71,7 @@ def register_batch(
             continue
         doc = Document(
             client_id=client_id,
-            source="upload",
+            source=source,
             filename=filename,
             sha256=blob.sha256,
             storage_path=str(blob.path),

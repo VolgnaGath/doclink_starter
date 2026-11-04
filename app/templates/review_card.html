@@ -53,6 +53,7 @@
 <label>Причина <input name="reason" list="reasons" required></label><datalist id="reasons"><option value="Договор не требуется"><option value="Подходящий договор отсутствует"></datalist><button>Завершить без связей</button></form>
 {% else %}{{ decision('reopen', 'Открыть проверку повторно') }}{% endif %}
 <h2>Окончательные связи</h2>
+<p><a href="/integration?document_id={{ document.id }}">Доставка связей и отмен в mock1c</a></p>
 {% for link in links %}<p>{{ link.link_type }} → <a href="/documents/{{ link.target_id }}">{{ link.target_id }}</a> · {{ link.origin }} · {{ 'Отменена' if link.removed_at else 'Активна' }}</p>{% if not link.removed_at and state.status == 'open' %}{{ decision('remove', 'Отменить связь', link_id=link.id) }}{% endif %}{% endfor %}
 <h2>История действий</h2><ul>{% for action in actions %}<li>{{ action.decided_at.strftime('%d.%m.%Y %H:%M:%S') }} · {{ action.action }} · {{ action.chosen_target_id or '' }} · {{ action.duration_ms }} мс · {{ action.reason or '' }}</li>{% endfor %}</ul>
 <h2>История исправлений</h2><ul>{% for edit in edits %}<li>{{ edit.created_at.strftime('%d.%m.%Y %H:%M:%S') }}: {{ edit.before }} → {{ edit.after }}</li>{% endfor %}</ul>
