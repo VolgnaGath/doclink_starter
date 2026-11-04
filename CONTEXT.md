@@ -594,7 +594,8 @@
 - Общий предварительный snapshot до новых сессий: 9 замеров, группы 3/3/3/0,
   `calculation_hash=c8a3b73458a95464f60aa66c4892986e13c92d9fb4bbaa2865fa381a6777fe35`,
   `tobe_seconds=74,176543...`, `saved_hours_month=157,541797...`, `missing_times=[]`;
-  сохранён в `data/human-effect-pending.json`, refresh не перезаписан.
+  сохранён в `data/human-effect-pending.json`; затем refresh перезаписан по
+  завершённым сессиям (ниже).
 - Новых LLM-вызовов нет: 1876 попыток / **959.166485 ₽** + исторический неизвестный
   расход, paid=false. Инструкция с 21 URL — `stage8-measurement-protocol-30-2026-11-04.md`;
   preflight — `stage8-human-extension-preflight-2026-11-04.md`.
