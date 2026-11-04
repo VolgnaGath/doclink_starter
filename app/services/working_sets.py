@@ -145,6 +145,8 @@ def create_working_set(session: Session, request: WorkingSetCreate) -> WorkingSe
                     LinkingResult.source_id == original.id,
                     LinkingResult.model_config_id == UUID(operational.snapshot["model_id"]),
                     LinkingResult.method == operational.snapshot["config"]["method"],
+                    LinkingResult.config == operational.snapshot["config"],
+                    LinkingResult.provenance["encoding"] == operational.snapshot["encoding"],
                 )
                 .order_by(LinkingResult.created_at.desc(), LinkingResult.id.desc())
                 .limit(1)

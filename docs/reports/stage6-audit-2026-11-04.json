@@ -1,0 +1,47 @@
+{
+  "series_id": "f396bd92-1639-4193-87ae-d065bc0ee2b9",
+  "stage4_comparison": {
+    "config_equal": true,
+    "input_hashes_equal": true,
+    "result_ids_equal": true,
+    "metrics_equal": true,
+    "controls_equal": true
+  },
+  "selected_variant": "combined/Qwen/none",
+  "controls_passed": 15,
+  "controls_total": 15,
+  "preserved_errors": [
+    {
+      "extraction_id": "58ff9558-c756-4cfe-bd4e-b095706bc6f9",
+      "source_extraction_id": "2192d616-0f01-4ccb-9cba-5b46cf216afa",
+      "llm_call_id": "510882fd-78cd-4109-82b2-45b2cf113c7f",
+      "error": "Невалидное извлечение после проверки схемы"
+    },
+    {
+      "extraction_id": "f819e40a-485f-4e47-a818-8101879f0214",
+      "source_extraction_id": "ce8b2aaf-3e16-4d3b-b77f-892bf2e65b32",
+      "llm_call_id": "03e02014-d65e-4f5f-a1ab-1bd8b381aa7d",
+      "error": "Невалидное извлечение после проверки схемы"
+    }
+  ],
+  "all_physical_llm_calls": 1006,
+  "all_cost_rub": "501.48244000",
+  "unknown_cost_calls": 0,
+  "costs_by_model": [
+    {
+      "model": "GigaChat 2 Lite",
+      "cost_rub": "17.89294000"
+    },
+    {
+      "model": "Qwen",
+      "cost_rub": "60.20310000"
+    },
+    {
+      "model": "YandexGPT 5.1 Pro",
+      "cost_rub": "423.38640000"
+    }
+  ],
+  "active_jobs": 0,
+  "paid_calls_enabled": false,
+  "signature": "e0454ef707eafcbe32ae34e5a97deb92fb9d0cb5aa179952f85f80688a54d090"
+}

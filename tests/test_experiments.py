@@ -343,3 +343,17 @@ def test_api_web_exports_share_saved_dataset_and_enforce_auth(
             result_id = session.scalar(select(ExperimentResult.result_id))
         outcome = client.get(f"/experiments/results/{result_id}")
         assert outcome.status_code == 200 and "Сохранённый исход" in outcome.text
+
+
+def test_concurrent_series_share_physical_results_without_losing_metrics(
+    database: Settings, matrix: tuple[UUID, UUID]
+) -> None:
+    ids = [create(database, matrix[0], mode="single", method="semantic") for _ in range(2)]
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        list(pool.map(lambda id: execute_series(database, id), ids))
+    with get_session(database.database_url) as session:
+        first, second = [runs(session, id)[0] for id in ids]
+        assert first.status == second.status == "done"
+        assert first.report["result_ids"] == second.report["result_ids"]
+        assert first.report["metrics"] == second.report["metrics"]
+        assert first.progress == second.progress == first.total == second.total == 2

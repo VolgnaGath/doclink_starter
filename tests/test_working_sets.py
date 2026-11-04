@@ -104,6 +104,71 @@ def create(live: Settings, request: WorkingSetCreate) -> UUID:
         return row.id
 
 
+def test_matrix_ablations_do_not_replace_default_working_configuration(
+    live: Settings, corpus_sample: tuple[UUID, list[UUID], UUID]
+) -> None:
+    version, ids, original_result = corpus_sample
+    with get_session(live.database_url) as session:
+        original = session.get(LinkingResult, original_result)
+        ablated = LinkingConfig.model_validate(original.config).model_copy(
+            update={"checks": not original.config["checks"]}
+        )
+        payload = linking_payload(
+            session, ids[0], original.model_config_id, ablated, EncodingConfig()
+        )
+    ablation_result = link_document(live, ids[0], payload)
+    work_id = create(
+        live,
+        WorkingSetCreate(
+            name="Default after matrix",
+            corpus_version_id=version,
+            document_ids=[ids[0]],
+            idempotency_key=uuid4(),
+        ),
+    )
+    with get_session(live.database_url) as session:
+        source = session.scalar(
+            select(WorkingCopy).where(
+                WorkingCopy.working_set_id == work_id, WorkingCopy.source_document_id == ids[0]
+            )
+        )
+        assert source.source_result_id == original_result
+        assert source.source_result_id != ablation_result
+        assert session.get(ProcessingPipeline, source.document_id).snapshot[
+            "config"
+        ] != ablated.model_dump(mode="json")
+
+
+def test_regex_result_copy_keeps_provenance_but_is_not_initial_measurement(
+    live: Settings, corpus_sample: tuple[UUID, list[UUID], UUID]
+) -> None:
+    version, ids, _ = corpus_sample
+    with get_session(live.database_url) as session:
+        payload = linking_payload(
+            session, ids[0], None, LinkingConfig(tau_a=0.5, tau_r=0), EncodingConfig(), no_llm=True
+        )
+    regex_result = link_document(live, ids[0], payload)
+    work_id = create(
+        live,
+        WorkingSetCreate(
+            name="Regex origin",
+            corpus_version_id=version,
+            document_ids=[ids[0]],
+            result_ids=[regex_result],
+            idempotency_key=uuid4(),
+        ),
+    )
+    with get_session(live.database_url) as session:
+        source = session.scalar(
+            select(WorkingCopy).where(
+                WorkingCopy.working_set_id == work_id, WorkingCopy.source_document_id == ids[0]
+            )
+        )
+        assert source.source_result_id == regex_result
+        assert not source.source_result_current
+        assert not copy_origin(session, source.document_id)["initial_inputs"]
+
+
 def test_isolated_copy_all_contracts_exact_reuse_and_fresh_search(
     live: Settings, corpus_sample: tuple[UUID, list[UUID], UUID]
 ) -> None:

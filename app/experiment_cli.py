@@ -11,7 +11,15 @@ from sqlalchemy import func, select
 
 from app.config import Settings
 from app.db import get_session
-from app.models import Embedding, ExperimentSeries, LinkingResult, LLMCall
+from app.models import (
+    Embedding,
+    ExperimentSeries,
+    Extraction,
+    Job,
+    LinkingResult,
+    LLMCall,
+    ModelConfig,
+)
 from app.services.experiment_export import export
 from app.services.experiments import (
     ExperimentCreate,
@@ -45,6 +53,102 @@ def signature(dataset: dict[str, Any]) -> str:
             for r in dataset["runs"]
         ]
     )
+
+
+def audit(settings: Settings, series_id: UUID, baseline_path: Path) -> dict[str, Any]:
+    baseline = json.loads(baseline_path.read_text())
+    with get_session(settings.database_url) as session:
+        series = session.get(ExperimentSeries, series_id)
+        if series is None or series.status != "done":
+            raise ProcessingError("Для аудита нужна завершённая серия")
+        qwen = next(r for r in series.dataset["runs"] if r["variant"] == "combined/Qwen/none")
+        comparisons = {
+            "config_equal": qwen["config"] == baseline["protocol"]["frozen"]["config"],
+            "input_hashes_equal": qwen["snapshot"]["input_hashes"]
+            == baseline["protocol"]["frozen"]["input_hashes"],
+            "result_ids_equal": qwen["report"]["result_ids"] == baseline["result_ids"],
+            "metrics_equal": {
+                split: rows["all"] for split, rows in qwen["report"]["metrics"].items()
+            }
+            == baseline["metrics_by_split"],
+            "controls_equal": qwen["report"]["controls"]
+            == [
+                {k: v for k, v in c.items() if k != "candidates"}
+                | {
+                    "candidates": [
+                        {k: v for k, v in candidate.items() if k != "document"}
+                        for candidate in c["candidates"]
+                    ]
+                }
+                for c in baseline["controls"]
+            ],
+        }
+        if not all(comparisons.values()):
+            raise ProcessingError("Combined+Qwen не совпал с исторической приёмкой 4.6")
+        selected = next(
+            r
+            for r in series.dataset["runs"]
+            if r["model_id"] == str(series.selected_model_id)
+            and r["ablation"] == "none"
+            and r["method"] == "combined"
+        )
+        controls = selected["report"]["controls"]
+        preserved = list(
+            session.scalars(
+                select(Extraction).where(
+                    Extraction.id.in_(
+                        [
+                            UUID(e["id"])
+                            for r in series.dataset["runs"]
+                            for e in r["snapshot"].get("extractions", [])
+                        ]
+                    ),
+                    Extraction.preserved_error,
+                )
+            )
+        )
+        costs = [
+            {
+                "model": model.name,
+                "cost_rub": str(
+                    session.scalar(
+                        select(func.sum(LLMCall.cost_rub)).where(
+                            LLMCall.model_config_id == model.id
+                        )
+                    )
+                ),
+            }
+            for model in session.scalars(
+                select(ModelConfig).where(ModelConfig.active).order_by(ModelConfig.name)
+            )
+        ]
+        return {
+            "series_id": str(series_id),
+            "stage4_comparison": comparisons,
+            "selected_variant": selected["variant"],
+            "controls_passed": sum(c["passed"] for c in controls),
+            "controls_total": len(controls),
+            "preserved_errors": [
+                {
+                    "extraction_id": str(e.id),
+                    "source_extraction_id": str(e.source_extraction_id),
+                    "llm_call_id": str(e.llm_call_id),
+                    "error": e.error,
+                }
+                for e in preserved
+            ],
+            "all_physical_llm_calls": session.scalar(select(func.count()).select_from(LLMCall)),
+            "all_cost_rub": str(session.scalar(select(func.sum(LLMCall.cost_rub)))),
+            "unknown_cost_calls": session.scalar(
+                select(func.count()).select_from(LLMCall).where(LLMCall.cost_rub.is_(None))
+            ),
+            "costs_by_model": costs,
+            "active_jobs": session.scalar(
+                select(func.count()).select_from(Job).where(Job.status.in_(["queued", "running"]))
+            ),
+            "paid_calls_enabled": settings.paid_calls_enabled,
+            "signature": signature(series.dataset),
+        }
 
 
 def accept(
@@ -120,13 +224,14 @@ def accept(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["accept", "status", "resume", "export"])
+    parser.add_argument("action", choices=["accept", "status", "resume", "export", "audit"])
     parser.add_argument("--corpus-version", type=UUID)
     parser.add_argument("--series", type=UUID)
     parser.add_argument("--repeat-of", type=UUID)
     parser.add_argument("--idempotency-key", type=UUID)
     parser.add_argument("--mode", choices=["matrix", "ablations"], default="matrix")
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--baseline", type=Path)
     args = parser.parse_args()
     settings = Settings()
     if args.action == "accept":
@@ -138,6 +243,10 @@ def main() -> None:
             args.mode,
             args.idempotency_key,
         )
+    elif args.action == "audit":
+        if args.series is None or args.baseline is None:
+            raise ProcessingError("Укажите --series и --baseline (JSON приёмки 4.6)")
+        report = audit(settings, args.series, args.baseline)
     else:
         if args.series is None:
             raise ProcessingError("Укажите --series")

@@ -16,6 +16,7 @@
     "@typespec/compiler": "1.17.0",
     "@typespec/http": "1.17.0",
     "@typespec/openapi": "1.17.0",
-    "@typespec/openapi3": "1.17.0"
+    "@typespec/openapi3": "1.17.0",
+    "playwright": "1.64.1"
   }
 }

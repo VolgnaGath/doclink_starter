@@ -28,6 +28,7 @@ export GIT_COMMIT := $(shell git rev-parse HEAD)
 .PHONY: accept-working-set api-schema
 .PHONY: verify-experiments
 .PHONY: experiments
+.PHONY: browser-tools accept-experiments-web
 CERT_DIR ?= $(HOME)/Downloads
 
 help: ## Показать список целей
@@ -175,8 +176,15 @@ verify-api: verify-up ## REST, изоляция рабочих копий и б�
 verify-experiments: verify-up ## Матрица, tune/freeze/test, происхождение и восстановление без оплаты
 	$(VERIFY_COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_experiments.py
 
-experiments: ## Без оплаты: ARGS='accept --corpus-version UUID --output report.json'; status/export/resume --series UUID; accept --repeat-of UUID
+experiments: ## Без оплаты: accept --corpus-version UUID --output report.json; status/export/resume --series UUID; accept --repeat-of UUID; audit --series UUID --baseline файл.json
 	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace worker python -m app.experiment_cli $(ARGS)
+
+browser-tools: ## Установить закреплённый dev-инструментарий Chromium для браузерной приёмки
+	npm --prefix contract ci
+	npm --prefix contract exec -- playwright install chromium
+
+accept-experiments-web: ## Реальный Chromium: запуск матрицы, прогресс, сравнение, три скачивания; api/worker должны работать
+	node contract/accept-experiments.mjs
 
 accept-working-set: ## Без оплаты: реальные копии через REST, проверка неизменности корпуса/вызовов; ARGS='--corpus-version UUID --document UUID --output report.json'
 	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace worker python -m app.working_acceptance $(ARGS)

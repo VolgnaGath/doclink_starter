@@ -1,0 +1,58 @@
+{
+  "browser": "Chromium headless",
+  "browser_version": "156.0.8078.4",
+  "series_id": "b7c249d4-7657-4cd7-978d-36022ee2b828",
+  "observed_initial_status": "queued",
+  "final_status": "done",
+  "progress": 1071,
+  "total": 1071,
+  "dataset_hash": "6364084c1961e170016b23a6333109b70f83b547620360656b6f417a754c7298",
+  "downloads": {
+    "csv": {
+      "bytes": 2714754,
+      "sha256": "8592a509513cbec3e9a3501e47159a4846dd6c0d9fb0cf7f16f0475b2122e682"
+    },
+    "md": {
+      "bytes": 28962,
+      "sha256": "8abf560a31a32065ff8ebfc16c0f069a92ccb00460e6011d8fef67754245e190"
+    },
+    "png": {
+      "bytes": 120694,
+      "sha256": "032dc5a79a76a555c9bfa17d34224c4146fa1031fcffb35cc90380358310d1f2"
+    }
+  },
+  "comparison": "passed",
+  "page_errors": [],
+  "operations": {
+    "/api/v1/experiments": {
+      "post": [
+        "202",
+        "401",
+        "404",
+        "409",
+        "422",
+        "500"
+      ]
+    },
+    "/api/v1/experiments/{id}": {
+      "get": [
+        "200",
+        "401",
+        "404",
+        "409",
+        "422",
+        "500"
+      ]
+    },
+    "/api/v1/experiments/{id}/export": {
+      "get": [
+        "200",
+        "401",
+        "404",
+        "409",
+        "422",
+        "500"
+      ]
+    }
+  }
+}
