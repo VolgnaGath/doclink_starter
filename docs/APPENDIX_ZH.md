@@ -6,7 +6,7 @@
 
 Обезличивание и явное усечение перед внешней моделью.
 
-Источник: `app/services/extraction.py:68–74`; версия кода `e040715867d7bf991a67c233a0c509bf1d4997d4`.
+Источник: `app/services/extraction.py:68–74`; версия кода `a37a31c09692985c35ae1c4a5b2b7edb34b257f8`.
 SHA-256 полного файла: `452419bbe83cb020b94eb81ba298196a692bfc149a75a7fe29985c0913ba6f87`.
 
 ```python
@@ -23,7 +23,7 @@ def prepared_request(
 
 История извлечений, валидация и рабочая карточка.
 
-Источник: `app/services/extraction.py:109–180`; версия кода `e040715867d7bf991a67c233a0c509bf1d4997d4`.
+Источник: `app/services/extraction.py:109–180`; версия кода `a37a31c09692985c35ae1c4a5b2b7edb34b257f8`.
 SHA-256 полного файла: `452419bbe83cb020b94eb81ba298196a692bfc149a75a7fe29985c0913ba6f87`.
 
 ```python
@@ -105,7 +105,7 @@ def save_result(
 
 Происхождение и начало человеческой сессии; окончательные связи требуют действия.
 
-Источник: `app/services/review.py:137–149`; версия кода `e040715867d7bf991a67c233a0c509bf1d4997d4`.
+Источник: `app/services/review.py:137–149`; версия кода `a37a31c09692985c35ae1c4a5b2b7edb34b257f8`.
 SHA-256 полного файла: `53afe9a99af52919fa19e43c792b2d8f0fb4dfc0818ff1ca1250f2203a44e4e9`.
 
 ```python
