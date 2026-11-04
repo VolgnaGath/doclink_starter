@@ -37,6 +37,13 @@ CERT_DIR ?= $(HOME)/Downloads
 .PHONY: effect verify-effect accept-effect-web
 .PHONY: delivery-export delivery-up delivery-restore delivery-experiments delivery-prepare delivery-browser delivery-down delivery-materials
 .PHONY: holdout install-holdout import-holdout verify-holdout
+.PHONY: resume-paid-errors verify-paid-resume
+
+resume-paid-errors: ## Явный повтор остановленных jobs без сети; ARGS='--corpus-version UUID --note причина --authorize-uncertain-reservations --output файл.json'
+	$(COMPOSE) run --rm --no-deps --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/workspace" -w /workspace api python -m app.paid_resume $(ARGS)
+
+verify-paid-resume: verify-up ## Проверить резерв неизвестной стоимости и явный повтор без дублирования успехов
+	$(VERIFY_COMPOSE) run --rm --no-deps -v "$(CURDIR):/workspace" -w /workspace api python -m pytest -q tests/test_paid_resume.py tests/test_provider_budgets.py tests/test_models_extraction.py
 
 install-holdout: ## Сохранить неизменный архив №2 и установить synth_holdout; SOURCE=/путь/addendum_2.zip
 	@test -n "$(SOURCE)"

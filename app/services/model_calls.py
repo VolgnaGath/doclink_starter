@@ -45,6 +45,19 @@ def request_hash(snapshot: dict[str, Any], messages: list[dict[str, str]], clien
     )
 
 
+def uncertain_retry_authorized(call: LLMCall) -> bool:
+    """Explicit permission spends against the full old reserve, never invents actual cost."""
+    permission = call.snapshot.get("uncertain_retry_authorization", {})
+    return bool(
+        call.status == "uncertain"
+        and call.reserved_rub is not None
+        and call.reserved_rub > 0
+        and permission.get("note")
+        and permission.get("authorized_at")
+        and permission.get("reserved_rub") == str(call.reserved_rub)
+    )
+
+
 def reserve(
     session: Session, call: LLMCall, settings: Settings, messages: list[dict[str, str]]
 ) -> None:
@@ -60,17 +73,15 @@ def reserve(
             raise ProcessingError("Не заданы тарифы модели")
         session.execute(text("SELECT pg_advisory_xact_lock(310004)"))
         # Reservations remain counted until their actual costs are known/reconciled.
-        unknown = session.scalar(
-            select(LLMCall.id)
-            .where(
+        unknown = session.scalars(
+            select(LLMCall).where(
                 LLMCall.paid,
                 ~LLMCall.reconciled,
                 (LLMCall.status == "uncertain")
                 | ((LLMCall.status != "started") & LLMCall.cost_rub.is_(None)),
             )
-            .limit(1)
         )
-        if unknown:
+        if any(not uncertain_retry_authorized(previous) for previous in unknown):
             raise ProcessingError("Неизвестный расход: требуется сверка журнала")
         used = session.scalar(
             select(
@@ -206,17 +217,15 @@ def complete_fields(
                 True,
             )
         # A crash after a send is not permission to repeat it on a manual rerun.
-        unresolved = session.scalar(
-            select(LLMCall.id)
-            .where(
+        unresolved = session.scalars(
+            select(LLMCall).where(
                 LLMCall.input_hash == key,
                 LLMCall.model_config_id == model_id,
                 LLMCall.status.in_(["started", "uncertain"]),
                 ~LLMCall.reconciled,
             )
-            .limit(1)
         )
-        if unresolved:
+        if any(not uncertain_retry_authorized(previous) for previous in unresolved):
             raise ProcessingError("Исход предыдущего запроса неизвестен; нужна сверка")
         while True:
             call = LLMCall(
